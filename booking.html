@@ -72,14 +72,12 @@
     }
     .cal-day:hover:not(.disabled):not(.empty){background:var(--gray-light);}
     .cal-day.empty{cursor:default;}
-    .cal-day.disabled{color:#ccc;cursor:not-allowed;text-decoration:line-through;}
-    .cal-day.booked{background:#fee2e2;color:#ef4444;cursor:not-allowed;}
-    .cal-day.booked::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#ef4444;}
+    .cal-day.disabled{color:#ccc;cursor:not-allowed;}
+    .cal-day.booked{color:#ccc;cursor:not-allowed;}
     .cal-day.checkin{background:var(--black);color:var(--yellow);font-weight:700;border-radius:2px 0 0 2px;}
     .cal-day.checkout{background:var(--black);color:var(--yellow);font-weight:700;border-radius:0 2px 2px 0;}
     .cal-day.inrange{background:rgba(0,0,0,0.08);}
-    .cal-day.today{font-weight:800;}
-    .cal-day.today::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--terracotta);}
+    .cal-day.today{font-weight:800;border:1.5px solid var(--black);}
     .cal-day.checkin.checkout{border-radius:2px;}
 
     /* LEGEND */
