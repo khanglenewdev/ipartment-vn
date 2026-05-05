@@ -1,0 +1,823 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Book Your Stay – ipartment Vietnam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--green:#22c55e;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);color:var(--black);background:var(--gray-light);font-size:15px;line-height:1.6;}
+
+    /* HEADER */
+    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
+    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
+    .logo span{color:var(--yellow);}
+    nav{display:flex;align-items:center;gap:32px;}
+    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
+    nav a:hover,nav a.active{color:var(--yellow);}
+    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
+
+    /* LAYOUT */
+    .page-wrap{margin-top:72px;display:grid;grid-template-columns:1fr 380px;gap:0;min-height:calc(100vh - 72px);align-items:start;}
+    .main-col{padding:48px 56px;}
+    .sidebar{background:var(--black);padding:40px 36px;position:sticky;top:72px;min-height:calc(100vh - 72px);}
+
+    /* STEP INDICATOR */
+    .steps{display:flex;align-items:center;gap:0;margin-bottom:40px;}
+    .step{display:flex;align-items:center;gap:10px;font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);}
+    .step.active{color:var(--black);}
+    .step.done{color:var(--green);}
+    .step-num{width:28px;height:28px;border-radius:50%;background:#e5e5e5;display:flex;align-items:center;justify-content:center;font-size:12px;font-weight:700;flex-shrink:0;}
+    .step.active .step-num{background:var(--yellow);color:var(--black);}
+    .step.done .step-num{background:var(--green);color:var(--white);}
+    .step-divider{flex:1;height:1px;background:#ddd;margin:0 12px;}
+
+    /* SECTION HEADERS */
+    .section-label{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--terracotta);margin-bottom:12px;}
+    .section-title{font-family:var(--font-heading);font-size:28px;font-weight:900;margin-bottom:8px;}
+    .section-sub{font-size:14px;color:#666;margin-bottom:32px;}
+
+    /* ROOM TYPE SELECTOR */
+    .room-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-bottom:40px;}
+    .room-btn{border:2px solid #e0e0e0;background:var(--white);padding:20px 14px;cursor:pointer;transition:all 0.2s;text-align:left;position:relative;}
+    .room-btn:hover{border-color:var(--black);}
+    .room-btn.selected{border-color:var(--black);background:var(--black);}
+    .room-btn .rm-cat{font-size:22px;font-weight:900;font-family:var(--font-heading);color:var(--yellow);line-height:1;}
+    .room-btn.selected .rm-cat{color:var(--yellow);}
+    .room-btn .rm-size{font-size:11px;font-weight:600;letter-spacing:0.08em;color:var(--gray-mid);margin:4px 0 8px;}
+    .room-btn.selected .rm-size{color:rgba(255,255,255,0.55);}
+    .room-btn .rm-name{font-size:12px;font-weight:700;color:var(--black);}
+    .room-btn.selected .rm-name{color:var(--white);}
+    .room-btn .rm-price{font-size:13px;font-weight:700;color:var(--terracotta);margin-top:8px;}
+    .room-btn.selected .rm-price{color:var(--yellow);}
+    .room-btn .rm-badge{position:absolute;top:0;right:0;background:var(--yellow);color:var(--black);font-size:9px;font-weight:800;letter-spacing:0.1em;text-transform:uppercase;padding:3px 7px;}
+
+    /* CALENDAR */
+    .calendar-wrap{background:var(--white);padding:28px;margin-bottom:32px;}
+    .calendar-nav{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px;}
+    .cal-month-title{font-family:var(--font-heading);font-size:18px;font-weight:900;}
+    .cal-nav-btn{background:none;border:none;cursor:pointer;font-size:18px;color:var(--black);padding:4px 10px;transition:color 0.2s;}
+    .cal-nav-btn:hover{color:var(--terracotta);}
+    .cal-months-container{display:grid;grid-template-columns:repeat(3,1fr);gap:32px;}
+    .cal-month{}
+    .cal-month-header{font-size:13px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--black);margin-bottom:12px;text-align:center;}
+    .cal-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+    .cal-day-label{font-size:10px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray-mid);text-align:center;padding:4px 0 8px;}
+    .cal-day{
+      aspect-ratio:1;display:flex;align-items:center;justify-content:center;
+      font-size:12px;font-weight:500;cursor:pointer;position:relative;
+      transition:all 0.15s;border-radius:2px;
+    }
+    .cal-day:hover:not(.disabled):not(.empty){background:var(--gray-light);}
+    .cal-day.empty{cursor:default;}
+    .cal-day.disabled{color:#ccc;cursor:not-allowed;text-decoration:line-through;}
+    .cal-day.booked{background:#fee2e2;color:#ef4444;cursor:not-allowed;}
+    .cal-day.booked::after{content:'';position:absolute;bottom:3px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:#ef4444;}
+    .cal-day.checkin{background:var(--black);color:var(--yellow);font-weight:700;border-radius:2px 0 0 2px;}
+    .cal-day.checkout{background:var(--black);color:var(--yellow);font-weight:700;border-radius:0 2px 2px 0;}
+    .cal-day.inrange{background:rgba(0,0,0,0.08);}
+    .cal-day.today{font-weight:800;}
+    .cal-day.today::after{content:'';position:absolute;bottom:2px;left:50%;transform:translateX(-50%);width:4px;height:4px;border-radius:50%;background:var(--terracotta);}
+    .cal-day.checkin.checkout{border-radius:2px;}
+
+    /* LEGEND */
+    .cal-legend{display:flex;gap:20px;margin-top:16px;flex-wrap:wrap;}
+    .legend-item{display:flex;align-items:center;gap:6px;font-size:11px;color:#666;}
+    .legend-dot{width:12px;height:12px;border-radius:2px;flex-shrink:0;}
+
+    /* PRICING BREAKDOWN */
+    .pricing-panel{background:var(--white);padding:24px 28px;margin-bottom:24px;border-left:4px solid var(--yellow);}
+    .pricing-title{font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:16px;}
+    .pricing-row{display:flex;justify-content:space-between;align-items:center;padding:8px 0;border-bottom:1px solid #f0f0f0;font-size:14px;}
+    .pricing-row:last-child{border-bottom:none;}
+    .pricing-row.total{font-weight:700;font-size:16px;padding-top:12px;margin-top:4px;border-top:2px solid var(--black);border-bottom:none;}
+    .pricing-row.discount{color:var(--green);font-weight:600;}
+    .pricing-savings{background:#f0fdf4;border:1px solid #bbf7d0;padding:12px 16px;margin-top:12px;font-size:13px;color:#166534;font-weight:600;}
+
+    /* RATE TIERS */
+    .rate-tiers{display:grid;grid-template-columns:repeat(3,1fr);gap:12px;margin-bottom:32px;}
+    .rate-tier{background:var(--white);padding:16px 14px;border:2px solid #e0e0e0;text-align:center;}
+    .rate-tier.active{border-color:var(--yellow);background:#fffde7;}
+    .rate-tier-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:6px;}
+    .rate-tier-price{font-family:var(--font-heading);font-size:22px;font-weight:900;color:var(--black);}
+    .rate-tier-unit{font-size:11px;color:var(--gray-mid);margin-top:2px;}
+    .rate-tier.active .rate-tier-label{color:var(--terracotta);}
+
+    /* GUEST FORM */
+    .form-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px;margin-bottom:24px;}
+    .form-group{display:flex;flex-direction:column;gap:6px;}
+    .form-group.full{grid-column:1/-1;}
+    .form-label{font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);}
+    .form-input{padding:13px 14px;border:1.5px solid #ddd;font-family:var(--font-body);font-size:14px;color:var(--black);background:var(--white);outline:none;transition:border-color 0.2s;}
+    .form-input:focus{border-color:var(--black);}
+    select.form-input{cursor:pointer;}
+    .form-check{display:flex;gap:10px;align-items:flex-start;margin-bottom:20px;}
+    .form-check input{margin-top:3px;width:auto;flex-shrink:0;}
+    .form-check label{font-size:13px;color:#555;line-height:1.5;}
+
+    /* BUTTONS */
+    .btn-next{background:var(--yellow);color:var(--black);font-weight:700;font-size:13px;letter-spacing:0.12em;text-transform:uppercase;padding:18px 40px;border:none;cursor:pointer;width:100%;font-family:var(--font-body);transition:background 0.2s;margin-top:8px;}
+    .btn-next:hover{background:#e0d500;}
+    .btn-next:disabled{background:#e0e0e0;color:#aaa;cursor:not-allowed;}
+    .btn-back{background:transparent;color:var(--black);font-weight:600;font-size:13px;letter-spacing:0.1em;text-transform:uppercase;padding:16px 32px;border:1.5px solid #ddd;cursor:pointer;font-family:var(--font-body);transition:all 0.2s;margin-top:8px;width:100%;}
+    .btn-back:hover{border-color:var(--black);}
+
+    /* SIDEBAR */
+    .sidebar-title{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:rgba(255,255,255,0.4);margin-bottom:20px;}
+    .sidebar-room{font-family:var(--font-heading);font-size:32px;font-weight:900;color:var(--yellow);line-height:1;}
+    .sidebar-room-name{font-size:13px;font-weight:600;color:rgba(255,255,255,0.7);margin:4px 0 24px;}
+    .sidebar-dates{display:flex;flex-direction:column;gap:16px;margin-bottom:28px;}
+    .sidebar-date-item{display:flex;flex-direction:column;gap:3px;}
+    .sidebar-date-label{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:rgba(255,255,255,0.35);}
+    .sidebar-date-val{font-size:15px;font-weight:600;color:var(--white);}
+    .sidebar-divider{height:1px;background:rgba(255,255,255,0.1);margin:20px 0;}
+    .sidebar-price-row{display:flex;justify-content:space-between;font-size:13px;margin-bottom:10px;}
+    .sidebar-price-row .label{color:rgba(255,255,255,0.55);}
+    .sidebar-price-row .val{color:var(--white);font-weight:600;}
+    .sidebar-price-row.discount .val{color:var(--green);}
+    .sidebar-total{display:flex;justify-content:space-between;align-items:center;margin-top:16px;padding-top:16px;border-top:1px solid rgba(255,255,255,0.15);}
+    .sidebar-total .label{font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:rgba(255,255,255,0.6);}
+    .sidebar-total .val{font-family:var(--font-heading);font-size:28px;font-weight:900;color:var(--yellow);}
+    .sidebar-nights-badge{display:inline-block;background:rgba(255,255,255,0.08);padding:6px 14px;font-size:12px;color:rgba(255,255,255,0.6);margin-bottom:20px;}
+    .sidebar-tier-badge{margin-top:12px;background:rgba(255,237,0,0.12);border:1px solid rgba(255,237,0,0.3);padding:10px 14px;font-size:12px;color:rgba(255,237,0,0.9);line-height:1.5;}
+
+    /* CONFIRMATION */
+    .confirmation-box{background:var(--white);padding:48px;text-align:center;max-width:600px;margin:0 auto;}
+    .conf-icon{font-size:56px;margin-bottom:24px;}
+    .conf-ref{display:inline-block;background:var(--yellow);color:var(--black);font-size:13px;font-weight:800;letter-spacing:0.14em;text-transform:uppercase;padding:8px 20px;margin-bottom:24px;}
+    .conf-title{font-family:var(--font-heading);font-size:36px;font-weight:900;margin-bottom:12px;}
+    .conf-sub{font-size:15px;color:#666;line-height:1.7;max-width:420px;margin:0 auto 32px;}
+    .conf-details{background:var(--gray-light);padding:24px 28px;text-align:left;margin-bottom:28px;}
+    .conf-row{display:flex;justify-content:space-between;padding:8px 0;border-bottom:1px solid #e5e5e5;font-size:14px;}
+    .conf-row:last-child{border-bottom:none;}
+    .conf-row .cl{color:#666;}
+    .conf-row .cv{font-weight:700;}
+
+    /* AVAILABILITY NOTICE */
+    .avail-notice{background:#fff3cd;border-left:4px solid #ffc107;padding:12px 16px;font-size:13px;color:#856404;margin-bottom:20px;}
+
+    /* STEP PANELS */
+    .step-panel{display:none;}
+    .step-panel.active{display:block;}
+
+    @media(max-width:1100px){.page-wrap{grid-template-columns:1fr;}.sidebar{position:static;min-height:auto;}.cal-months-container{grid-template-columns:1fr 1fr;}.room-grid{grid-template-columns:repeat(2,1fr);}}
+    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}.main-col{padding:32px 20px;}.cal-months-container{grid-template-columns:1fr;}.room-grid{grid-template-columns:1fr 1fr;}.form-grid{grid-template-columns:1fr;}.rate-tiers{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">i<span>partment</span></a>
+  <nav>
+    <a href="about.html">About</a>
+    <a href="accommodation.html">Accommodation</a>
+    <a href="magazine.html">Magazine</a>
+    <a href="career.html">Career</a>
+    <a href="faq.html">FAQ</a>
+    <a href="my-account.html">My Account</a>
+    <a href="booking.html" class="nav-cta active">Book a Stay</a>
+  </nav>
+</header>
+
+<div class="page-wrap">
+
+  <!-- MAIN COLUMN -->
+  <div class="main-col">
+
+    <!-- STEPS -->
+    <div class="steps">
+      <div class="step active" id="step-ind-1"><div class="step-num">1</div><span>Choose Room</span></div>
+      <div class="step-divider"></div>
+      <div class="step" id="step-ind-2"><div class="step-num">2</div><span>Select Dates</span></div>
+      <div class="step-divider"></div>
+      <div class="step" id="step-ind-3"><div class="step-num">3</div><span>Your Details</span></div>
+      <div class="step-divider"></div>
+      <div class="step" id="step-ind-4"><div class="step-num">4</div><span>Confirm</span></div>
+    </div>
+
+    <!-- ========== STEP 1: CHOOSE ROOM ========== -->
+    <div class="step-panel active" id="panel-1">
+      <div class="section-label">Step 1 of 4</div>
+      <h2 class="section-title">Choose your apartment</h2>
+      <p class="section-sub">All rates are per night. Longer stays unlock significantly better rates — see the pricing tiers below.</p>
+
+      <div class="room-grid">
+        <button class="room-btn selected" data-room="XS" onclick="selectRoom(this)">
+          <div class="rm-cat">XS</div>
+          <div class="rm-size">25 – 30 m²</div>
+          <div class="rm-name">Compact Studio</div>
+          <div class="rm-price">From 1,200,000 ₫/night</div>
+        </button>
+        <button class="room-btn" data-room="S" onclick="selectRoom(this)">
+          <div class="rm-cat">S</div>
+          <div class="rm-size">35 – 40 m²</div>
+          <div class="rm-name">Standard Studio</div>
+          <div class="rm-price">From 1,650,000 ₫/night</div>
+          <div class="rm-badge">Popular</div>
+        </button>
+        <button class="room-btn" data-room="M" onclick="selectRoom(this)">
+          <div class="rm-cat">M</div>
+          <div class="rm-size">45 – 55 m²</div>
+          <div class="rm-name">Spacious Apartment</div>
+          <div class="rm-price">From 2,100,000 ₫/night</div>
+        </button>
+        <button class="room-btn" data-room="L" onclick="selectRoom(this)">
+          <div class="rm-cat">L</div>
+          <div class="rm-size">65 – 75 m²</div>
+          <div class="rm-name">Long-Stay Suite</div>
+          <div class="rm-price">From 2,800,000 ₫/night</div>
+        </button>
+      </div>
+
+      <!-- RATE TIERS -->
+      <div class="section-label">Pricing tiers — <span id="selected-room-label">XS · Compact Studio</span></div>
+      <div class="rate-tiers" id="rate-tiers-display">
+        <!-- filled by JS -->
+      </div>
+
+      <div style="background:var(--white);padding:20px 24px;border-left:4px solid var(--yellow);margin-bottom:32px;">
+        <p style="font-size:13px;color:#444;line-height:1.7;"><strong>All rates include:</strong> High-speed Wi-Fi · Housekeeping · All utilities · Fully equipped kitchen · 24/7 digital check-in · No hidden fees.</p>
+      </div>
+
+      <button class="btn-next" onclick="goToStep(2)">Continue to Date Selection →</button>
+    </div>
+
+    <!-- ========== STEP 2: SELECT DATES ========== -->
+    <div class="step-panel" id="panel-2">
+      <div class="section-label">Step 2 of 4</div>
+      <h2 class="section-title">Select your dates</h2>
+      <p class="section-sub">Click a check-in date, then click a check-out date. Stays of 7+ nights and 28+ nights unlock lower rates automatically.</p>
+
+      <div class="avail-notice" id="avail-notice" style="display:none;">
+        ⚠️ Some dates in your selection are already booked. Please choose different dates.
+      </div>
+
+      <div class="calendar-wrap">
+        <div id="calendar-container"></div>
+        <div class="cal-legend">
+          <div class="legend-item"><div class="legend-dot" style="background:var(--black);"></div> Check-in / Check-out</div>
+          <div class="legend-item"><div class="legend-dot" style="background:rgba(0,0,0,0.08);"></div> Selected range</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#fee2e2;border:1px solid #fca5a5;"></div> Already booked</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e5e5e5;"></div> Unavailable</div>
+        </div>
+      </div>
+
+      <div id="date-pricing-panel" style="display:none;">
+        <div class="pricing-panel">
+          <div class="pricing-title">Rate breakdown</div>
+          <div id="pricing-rows"></div>
+        </div>
+        <div id="savings-msg" style="display:none;" class="pricing-savings"></div>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;margin-top:8px;">
+        <button class="btn-next" id="btn-step2-next" onclick="goToStep(3)" disabled>Continue to Your Details →</button>
+        <button class="btn-back" onclick="goToStep(1)">← Back</button>
+      </div>
+    </div>
+
+    <!-- ========== STEP 3: GUEST DETAILS ========== -->
+    <div class="step-panel" id="panel-3">
+      <div class="section-label">Step 3 of 4</div>
+      <h2 class="section-title">Your details</h2>
+      <p class="section-sub">Please fill in your information to complete the booking.</p>
+
+      <div class="form-grid">
+        <div class="form-group">
+          <label class="form-label">First Name *</label>
+          <input class="form-input" type="text" id="guest-first" placeholder="Your first name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Last Name *</label>
+          <input class="form-input" type="text" id="guest-last" placeholder="Your last name" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Email Address *</label>
+          <input class="form-input" type="email" id="guest-email" placeholder="your@email.com" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Phone Number *</label>
+          <input class="form-input" type="tel" id="guest-phone" placeholder="+84 or international" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Nationality</label>
+          <select class="form-input" id="guest-nationality">
+            <option value="">Select nationality</option>
+            <option>Vietnamese</option>
+            <option>American</option>
+            <option>Australian</option>
+            <option>British</option>
+            <option>Canadian</option>
+            <option>Chinese</option>
+            <option>French</option>
+            <option>German</option>
+            <option>Japanese</option>
+            <option>Korean</option>
+            <option>Singapore</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Purpose of Stay</label>
+          <select class="form-input" id="guest-purpose">
+            <option>Business / Work</option>
+            <option>Relocation</option>
+            <option>Leisure / Tourism</option>
+            <option>Study</option>
+            <option>Other</option>
+          </select>
+        </div>
+        <div class="form-group full">
+          <label class="form-label">Special Requests (optional)</label>
+          <input class="form-input" type="text" id="guest-notes" placeholder="Early check-in, high floor, quiet room, etc." />
+        </div>
+      </div>
+
+      <div style="background:var(--white);padding:20px 24px;border-left:4px solid #e5e5e5;margin-bottom:24px;">
+        <p style="font-size:13px;color:#666;line-height:1.7;">💳 <strong>Payment is not collected at this stage.</strong> This is a booking reservation. Our team will contact you within 2 hours to confirm availability and arrange payment.</p>
+      </div>
+
+      <div class="form-check">
+        <input type="checkbox" id="terms-check" />
+        <label for="terms-check">I agree to the <a href="#" style="color:var(--black);font-weight:600;">Terms & Conditions</a> and <a href="#" style="color:var(--black);font-weight:600;">Privacy Policy</a>. I understand this is a booking request and not a confirmed reservation until contacted by ipartment.</label>
+      </div>
+
+      <div style="display:flex;flex-direction:column;gap:8px;">
+        <button class="btn-next" id="btn-step3-next" onclick="submitBooking()">Confirm Booking Request →</button>
+        <button class="btn-back" onclick="goToStep(2)">← Back</button>
+      </div>
+    </div>
+
+    <!-- ========== STEP 4: CONFIRMATION ========== -->
+    <div class="step-panel" id="panel-4">
+      <div class="confirmation-box" style="max-width:100%;margin:0;">
+        <div class="conf-icon">✅</div>
+        <div class="conf-ref" id="conf-ref">IPT-000000</div>
+        <h2 class="conf-title">Booking Request Received!</h2>
+        <p class="conf-sub">Thank you for choosing ipartment Vietnam. Our team will review your request and contact you within 2 hours to confirm your stay and arrange payment.</p>
+
+        <div class="conf-details" id="conf-details">
+          <!-- filled by JS -->
+        </div>
+
+        <p style="font-size:13px;color:#666;margin-bottom:24px;">A confirmation summary has been saved. Check your email at <strong id="conf-email-display"></strong> for next steps.</p>
+
+        <div style="display:flex;gap:12px;flex-wrap:wrap;justify-content:center;">
+          <a href="index.html" style="background:var(--black);color:var(--white);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:16px 32px;text-decoration:none;">Back to Home</a>
+          <a href="my-account.html#bookings" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:16px 32px;text-decoration:none;">View My Bookings</a>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- end main-col -->
+
+  <!-- SIDEBAR -->
+  <div class="sidebar">
+    <div class="sidebar-title">Booking Summary</div>
+
+    <div id="sb-room-display">
+      <div class="sidebar-room" id="sb-room">XS</div>
+      <div class="sidebar-room-name" id="sb-room-name">Compact Studio · 25–30 m²</div>
+    </div>
+
+    <div class="sidebar-nights-badge" id="sb-nights-badge">No dates selected</div>
+
+    <div class="sidebar-dates">
+      <div class="sidebar-date-item">
+        <div class="sidebar-date-label">Check-in</div>
+        <div class="sidebar-date-val" id="sb-checkin">—</div>
+      </div>
+      <div class="sidebar-date-item">
+        <div class="sidebar-date-label">Check-out</div>
+        <div class="sidebar-date-val" id="sb-checkout">—</div>
+      </div>
+    </div>
+
+    <div class="sidebar-divider"></div>
+
+    <div id="sb-pricing-wrap" style="display:none;">
+      <div class="sidebar-price-row" id="sb-rate-row">
+        <span class="label">Nightly rate</span>
+        <span class="val" id="sb-rate">—</span>
+      </div>
+      <div class="sidebar-price-row" id="sb-nights-row">
+        <span class="label" id="sb-nights-label">× nights</span>
+        <span class="val" id="sb-subtotal">—</span>
+      </div>
+      <div class="sidebar-price-row discount" id="sb-discount-row" style="display:none;">
+        <span class="label" id="sb-discount-label">Discount</span>
+        <span class="val" id="sb-discount-val">—</span>
+      </div>
+      <div class="sidebar-total">
+        <span class="label">Total</span>
+        <span class="val" id="sb-total">—</span>
+      </div>
+      <div class="sidebar-tier-badge" id="sb-tier-badge" style="display:none;"></div>
+    </div>
+
+    <div id="sb-empty-msg" style="font-size:13px;color:rgba(255,255,255,0.35);line-height:1.7;margin-top:8px;">
+      Select your room and dates to see pricing.
+    </div>
+
+    <div class="sidebar-divider" style="margin-top:28px;"></div>
+    <div style="font-size:12px;color:rgba(255,255,255,0.3);line-height:1.8;margin-top:4px;">
+      ✓ All-inclusive pricing<br/>
+      ✓ Free cancellation (48h notice)<br/>
+      ✓ No credit card required now<br/>
+      ✓ 24/7 self check-in
+    </div>
+  </div>
+
+</div><!-- end page-wrap -->
+
+<script>
+// ============================================================
+// DATA
+// ============================================================
+const RATES = {
+  XS: { nightly: 1200000, weekly: 980000,  monthly: 750000,  name: 'Compact Studio',     size: '25–30 m²' },
+  S:  { nightly: 1650000, weekly: 1350000, monthly: 1050000, name: 'Standard Studio',    size: '35–40 m²' },
+  M:  { nightly: 2100000, weekly: 1750000, monthly: 1350000, name: 'Spacious Apartment', size: '45–55 m²' },
+  L:  { nightly: 2800000, weekly: 2300000, monthly: 1800000, name: 'Long-Stay Suite',    size: '65–75 m²' },
+};
+
+// Fake booked dates — spread across the 3-month window
+const TODAY = new Date();
+TODAY.setHours(0,0,0,0);
+
+function generateBookedDates() {
+  const booked = new Set();
+  // A few clusters of booked dates per month to simulate real availability
+  const addRange = (startOffset, len) => {
+    for(let i = 0; i < len; i++) {
+      const d = new Date(TODAY);
+      d.setDate(d.getDate() + startOffset + i);
+      booked.add(dateKey(d));
+    }
+  };
+  addRange(3, 4);   // booked soon
+  addRange(12, 7);  // week booked mid-month
+  addRange(28, 3);  // few days
+  addRange(38, 5);  // next month cluster
+  addRange(52, 8);  // longer booking
+  addRange(67, 4);
+  addRange(78, 6);
+  addRange(88, 3);
+  return booked;
+}
+const BOOKED_DATES = generateBookedDates();
+
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+
+function formatDate(d) {
+  const months = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return `${d.getDate()} ${months[d.getMonth()]} ${d.getFullYear()}`;
+}
+
+function formatVND(n) {
+  return n.toLocaleString('vi-VN') + ' ₫';
+}
+
+// ============================================================
+// STATE
+// ============================================================
+let state = {
+  room: 'XS',
+  checkin: null,
+  checkout: null,
+  selectingCheckin: true,
+  nights: 0,
+  totalPrice: 0,
+  appliedRate: 'nightly',
+  guestDetails: {},
+};
+
+// ============================================================
+// STEP NAVIGATION
+// ============================================================
+function goToStep(n) {
+  if(n === 3) {
+    // validate step 2
+    if(!state.checkin || !state.checkout) return;
+  }
+  document.querySelectorAll('.step-panel').forEach((p,i) => {
+    p.classList.toggle('active', i === n-1);
+  });
+  document.querySelectorAll('.step').forEach((s,i) => {
+    s.classList.remove('active','done');
+    if(i === n-1) s.classList.add('active');
+    else if(i < n-1) s.classList.add('done');
+  });
+  window.scrollTo({top:0,behavior:'smooth'});
+}
+
+// ============================================================
+// ROOM SELECTION
+// ============================================================
+function selectRoom(btn) {
+  document.querySelectorAll('.room-btn').forEach(b => b.classList.remove('selected'));
+  btn.classList.add('selected');
+  state.room = btn.dataset.room;
+  updateRateTiers();
+  updateSidebar();
+  if(state.checkin && state.checkout) recalcPricing();
+}
+
+function updateRateTiers() {
+  const r = RATES[state.room];
+  document.getElementById('selected-room-label').textContent = `${state.room} · ${r.name}`;
+  const tiers = [
+    { label: '1–6 nights', price: r.nightly, unit: 'per night', active: state.nights < 7 && state.nights > 0 },
+    { label: '7–27 nights', price: r.weekly,  unit: 'per night', sub: `Save ${Math.round((1 - r.weekly/r.nightly)*100)}%`, active: state.nights >= 7 && state.nights < 28 },
+    { label: '28+ nights', price: r.monthly, unit: 'per night', sub: `Save ${Math.round((1 - r.monthly/r.nightly)*100)}%`, active: state.nights >= 28 },
+  ];
+  document.getElementById('rate-tiers-display').innerHTML = tiers.map(t => `
+    <div class="rate-tier ${t.active ? 'active' : ''}">
+      <div class="rate-tier-label">${t.label}</div>
+      <div class="rate-tier-price">${formatVND(t.price)}</div>
+      <div class="rate-tier-unit">${t.unit}</div>
+      ${t.sub ? `<div style="font-size:11px;color:var(--green);font-weight:700;margin-top:4px;">${t.sub}</div>` : ''}
+    </div>
+  `).join('');
+}
+
+// ============================================================
+// CALENDAR
+// ============================================================
+function buildCalendars() {
+  const container = document.getElementById('calendar-container');
+  container.innerHTML = '';
+  const grid = document.createElement('div');
+  grid.className = 'cal-months-container';
+
+  for(let m = 0; m < 3; m++) {
+    const d = new Date(TODAY.getFullYear(), TODAY.getMonth() + m, 1);
+    grid.appendChild(buildMonth(d));
+  }
+  container.appendChild(grid);
+}
+
+function buildMonth(firstDay) {
+  const year = firstDay.getFullYear();
+  const month = firstDay.getMonth();
+  const monthNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dayNames = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+
+  const div = document.createElement('div');
+  div.className = 'cal-month';
+
+  let html = `<div class="cal-month-header">${monthNames[month]} ${year}</div><div class="cal-grid">`;
+  dayNames.forEach(d => { html += `<div class="cal-day-label">${d}</div>`; });
+
+  // offset: monday=0
+  let startDay = firstDay.getDay(); // 0=Sun
+  startDay = startDay === 0 ? 6 : startDay - 1; // convert to Mon=0
+  for(let i = 0; i < startDay; i++) html += `<div class="cal-day empty"></div>`;
+
+  const daysInMonth = new Date(year, month+1, 0).getDate();
+  for(let day = 1; day <= daysInMonth; day++) {
+    const d = new Date(year, month, day);
+    d.setHours(0,0,0,0);
+    const key = dateKey(d);
+    const isPast = d < TODAY;
+    const isBooked = BOOKED_DATES.has(key);
+    const isToday = d.getTime() === TODAY.getTime();
+
+    // Range highlight
+    const isCheckin  = state.checkin  && d.getTime() === state.checkin.getTime();
+    const isCheckout = state.checkout && d.getTime() === state.checkout.getTime();
+    const inRange = state.checkin && state.checkout &&
+                    d > state.checkin && d < state.checkout;
+
+    let cls = 'cal-day';
+    if(isToday) cls += ' today';
+    if(isPast)  cls += ' disabled';
+    else if(isBooked) cls += ' booked';
+    else {
+      if(isCheckin && isCheckout) cls += ' checkin checkout';
+      else if(isCheckin)  cls += ' checkin';
+      else if(isCheckout) cls += ' checkout';
+      else if(inRange)    cls += ' inrange';
+    }
+
+    const clickable = !isPast && !isBooked;
+    html += `<div class="${cls}" ${clickable ? `onclick="onDayClick('${key}')"` : ''}>${day}</div>`;
+  }
+  html += '</div>';
+  div.innerHTML = html;
+  return div;
+}
+
+function onDayClick(key) {
+  const d = new Date(key);
+  d.setHours(0,0,0,0);
+
+  if(state.selectingCheckin || !state.checkin) {
+    state.checkin = d;
+    state.checkout = null;
+    state.selectingCheckin = false;
+    document.getElementById('avail-notice').style.display = 'none';
+  } else {
+    // clicking before checkin resets
+    if(d <= state.checkin) {
+      state.checkin = d;
+      state.checkout = null;
+      buildCalendars();
+      updateSidebar();
+      return;
+    }
+    // check for booked dates in range
+    let hasBooked = false;
+    const cur = new Date(state.checkin);
+    cur.setDate(cur.getDate() + 1);
+    while(cur < d) {
+      if(BOOKED_DATES.has(dateKey(cur))) { hasBooked = true; break; }
+      cur.setDate(cur.getDate() + 1);
+    }
+    if(hasBooked) {
+      document.getElementById('avail-notice').style.display = 'block';
+      state.checkout = null;
+      buildCalendars();
+      updateSidebar();
+      return;
+    }
+    state.checkout = d;
+    state.selectingCheckin = true;
+    recalcPricing();
+    document.getElementById('btn-step2-next').disabled = false;
+  }
+
+  buildCalendars();
+  updateSidebar();
+  updateSidebarCheckin();
+}
+
+function recalcPricing() {
+  if(!state.checkin || !state.checkout) return;
+  const nights = Math.round((state.checkout - state.checkin) / 86400000);
+  state.nights = nights;
+  const r = RATES[state.room];
+
+  let ratePerNight, tierLabel, discountPct = 0;
+  if(nights >= 28) {
+    ratePerNight = r.monthly; tierLabel = 'Monthly rate (28+ nights)';
+    discountPct = Math.round((1 - r.monthly/r.nightly)*100);
+    state.appliedRate = 'monthly';
+  } else if(nights >= 7) {
+    ratePerNight = r.weekly; tierLabel = 'Weekly rate (7+ nights)';
+    discountPct = Math.round((1 - r.weekly/r.nightly)*100);
+    state.appliedRate = 'weekly';
+  } else {
+    ratePerNight = r.nightly; tierLabel = 'Standard nightly rate';
+    state.appliedRate = 'nightly';
+  }
+
+  const subtotal = ratePerNight * nights;
+  const fullPrice = r.nightly * nights;
+  const saving = fullPrice - subtotal;
+  state.totalPrice = subtotal;
+
+  // Pricing rows
+  let rows = `
+    <div class="pricing-row"><span>${formatVND(ratePerNight)} × ${nights} night${nights>1?'s':''}</span><span>${formatVND(subtotal)}</span></div>
+    <div class="pricing-row" style="font-size:12px;color:#888;"><span>${tierLabel}</span><span></span></div>
+  `;
+  if(saving > 0) {
+    rows += `<div class="pricing-row discount"><span>Discount (${discountPct}% off)</span><span>−${formatVND(saving)}</span></div>`;
+  }
+  rows += `<div class="pricing-row total"><span>Total</span><span>${formatVND(subtotal)}</span></div>`;
+  document.getElementById('pricing-rows').innerHTML = rows;
+  document.getElementById('date-pricing-panel').style.display = 'block';
+
+  // Savings message
+  const savingsMsg = document.getElementById('savings-msg');
+  if(saving > 0) {
+    savingsMsg.style.display = 'block';
+    savingsMsg.textContent = `🎉 You're saving ${formatVND(saving)} compared to the standard nightly rate!`;
+  } else if(nights >= 5) {
+    savingsMsg.style.display = 'block';
+    savingsMsg.style.background = '#fffde7';
+    savingsMsg.style.borderColor = '#fef08a';
+    savingsMsg.style.color = '#713f12';
+    savingsMsg.textContent = `💡 Tip: Stay ${7 - nights} more night${7-nights>1?'s':''} to unlock the weekly rate and save ${Math.round((1-r.weekly/r.nightly)*100)}%!`;
+  } else { savingsMsg.style.display = 'none'; }
+
+  updateRateTiers();
+  updateSidebar();
+}
+
+// ============================================================
+// SIDEBAR UPDATE
+// ============================================================
+function updateSidebar() {
+  const r = RATES[state.room];
+  document.getElementById('sb-room').textContent = state.room;
+  document.getElementById('sb-room-name').textContent = `${r.name} · ${r.size}`;
+
+  if(state.checkin) updateSidebarCheckin();
+}
+
+function updateSidebarCheckin() {
+  const r = RATES[state.room];
+  if(state.checkin) document.getElementById('sb-checkin').textContent = formatDate(state.checkin);
+  if(state.checkout) {
+    document.getElementById('sb-checkout').textContent = formatDate(state.checkout);
+    const nights = state.nights;
+    document.getElementById('sb-nights-badge').textContent = `${nights} night${nights>1?'s':''} · ${state.room}`;
+
+    let ratePerNight, label, discountPct = 0;
+    if(nights >= 28) { ratePerNight = r.monthly; label = 'Monthly rate'; discountPct = Math.round((1-r.monthly/r.nightly)*100); }
+    else if(nights >= 7) { ratePerNight = r.weekly; label = 'Weekly rate'; discountPct = Math.round((1-r.weekly/r.nightly)*100); }
+    else { ratePerNight = r.nightly; label = 'Nightly rate'; }
+
+    document.getElementById('sb-rate').textContent = formatVND(ratePerNight);
+    document.getElementById('sb-nights-label').textContent = `× ${nights} night${nights>1?'s':''}`;
+    document.getElementById('sb-subtotal').textContent = formatVND(ratePerNight * nights);
+    document.getElementById('sb-total').textContent = formatVND(state.totalPrice);
+
+    const discRow = document.getElementById('sb-discount-row');
+    if(discountPct > 0) {
+      discRow.style.display = 'flex';
+      document.getElementById('sb-discount-label').textContent = `${label} (−${discountPct}%)`;
+      document.getElementById('sb-discount-val').textContent = `−${formatVND((r.nightly - ratePerNight) * nights)}`;
+    } else { discRow.style.display = 'none'; }
+
+    document.getElementById('sb-pricing-wrap').style.display = 'block';
+    document.getElementById('sb-empty-msg').style.display = 'none';
+
+    const badge = document.getElementById('sb-tier-badge');
+    if(nights >= 28) { badge.style.display = 'block'; badge.textContent = `✓ Monthly rate applied — you're saving ${discountPct}% vs standard pricing.`; }
+    else if(nights >= 7) { badge.style.display = 'block'; badge.textContent = `✓ Weekly rate applied — you're saving ${discountPct}% vs standard pricing.`; }
+    else { badge.style.display = 'none'; }
+  } else {
+    document.getElementById('sb-checkout').textContent = 'Select check-out';
+    document.getElementById('sb-nights-badge').textContent = 'Check-out not selected';
+  }
+}
+
+// ============================================================
+// BOOKING SUBMIT
+// ============================================================
+function submitBooking() {
+  const first = document.getElementById('guest-first').value.trim();
+  const last  = document.getElementById('guest-last').value.trim();
+  const email = document.getElementById('guest-email').value.trim();
+  const phone = document.getElementById('guest-phone').value.trim();
+  const terms = document.getElementById('terms-check').checked;
+
+  if(!first || !last || !email || !phone) {
+    alert('Please fill in all required fields.');
+    return;
+  }
+  if(!terms) {
+    alert('Please agree to the Terms & Conditions to proceed.');
+    return;
+  }
+
+  const ref = 'IPT-' + Math.floor(100000 + Math.random() * 900000);
+  const r = RATES[state.room];
+
+  // Save to localStorage
+  const booking = {
+    ref, room: state.room, roomName: r.name, roomSize: r.size,
+    checkin: dateKey(state.checkin), checkout: dateKey(state.checkout),
+    nights: state.nights, total: state.totalPrice,
+    rate: state.appliedRate, guest: { first, last, email, phone },
+    createdAt: new Date().toISOString()
+  };
+  const existing = JSON.parse(localStorage.getItem('ipartment_bookings') || '[]');
+  existing.push(booking);
+  localStorage.setItem('ipartment_bookings', JSON.stringify(existing));
+
+  // Fill confirmation
+  document.getElementById('conf-ref').textContent = ref;
+  document.getElementById('conf-email-display').textContent = email;
+  document.getElementById('conf-details').innerHTML = `
+    <div class="conf-row"><span class="cl">Reference</span><span class="cv">${ref}</span></div>
+    <div class="conf-row"><span class="cl">Guest</span><span class="cv">${first} ${last}</span></div>
+    <div class="conf-row"><span class="cl">Apartment</span><span class="cv">Category ${state.room} — ${r.name}</span></div>
+    <div class="conf-row"><span class="cl">Check-in</span><span class="cv">${formatDate(state.checkin)}</span></div>
+    <div class="conf-row"><span class="cl">Check-out</span><span class="cv">${formatDate(state.checkout)}</span></div>
+    <div class="conf-row"><span class="cl">Duration</span><span class="cv">${state.nights} night${state.nights>1?'s':''}</span></div>
+    <div class="conf-row"><span class="cl">Rate applied</span><span class="cv">${state.appliedRate.charAt(0).toUpperCase()+state.appliedRate.slice(1)} rate</span></div>
+    <div class="conf-row"><span class="cl">Total</span><span class="cv">${formatVND(state.totalPrice)}</span></div>
+    <div class="conf-row"><span class="cl">Contact</span><span class="cv">${email}</span></div>
+  `;
+
+  goToStep(4);
+}
+
+// ============================================================
+// INIT
+// ============================================================
+buildCalendars();
+updateRateTiers();
+updateSidebar();
+</script>
+
+</body>
+</html>
