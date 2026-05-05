@@ -259,8 +259,7 @@
         <div class="cal-legend">
           <div class="legend-item"><div class="legend-dot" style="background:var(--black);"></div> Check-in / Check-out</div>
           <div class="legend-item"><div class="legend-dot" style="background:rgba(0,0,0,0.08);"></div> Selected range</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#fee2e2;border:1px solid #fca5a5;"></div> Already booked</div>
-          <div class="legend-item"><div class="legend-dot" style="background:#e5e5e5;"></div> Unavailable</div>
+          <div class="legend-item"><div class="legend-dot" style="background:#e5e5e5;"></div> Past / Unavailable</div>
         </div>
       </div>
 
@@ -448,24 +447,7 @@ const TODAY = new Date();
 TODAY.setHours(0,0,0,0);
 
 function generateBookedDates() {
-  const booked = new Set();
-  // A few clusters of booked dates per month to simulate real availability
-  const addRange = (startOffset, len) => {
-    for(let i = 0; i < len; i++) {
-      const d = new Date(TODAY);
-      d.setDate(d.getDate() + startOffset + i);
-      booked.add(dateKey(d));
-    }
-  };
-  addRange(3, 4);   // booked soon
-  addRange(12, 7);  // week booked mid-month
-  addRange(28, 3);  // few days
-  addRange(38, 5);  // next month cluster
-  addRange(52, 8);  // longer booking
-  addRange(67, 4);
-  addRange(78, 6);
-  addRange(88, 3);
-  return booked;
+  return new Set(); // No booked dates — open calendar for showcase
 }
 const BOOKED_DATES = generateBookedDates();
 
