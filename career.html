@@ -1,0 +1,135 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career – ipartment Vietnam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);color:var(--black);background:var(--white);}
+    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
+    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
+    .logo span{color:var(--yellow);}
+    nav{display:flex;align-items:center;gap:32px;}
+    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
+    nav a:hover,nav a.active{color:var(--yellow);}
+    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
+    footer{background:var(--black);color:var(--white);padding:80px 80px 40px;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;}
+    .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;}
+    .footer-col h5{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;}
+    .footer-col ul{list-style:none;}
+    .footer-col ul li{margin-bottom:10px;}
+    .footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;}
+    .footer-col ul li a:hover{color:var(--white);}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);}
+    .footer-bottom a{color:rgba(255,255,255,0.32);text-decoration:none;}
+    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}.footer-grid{grid-template-columns:1fr;}}
+  </style>
+</head>
+<body>
+<header>
+  <a href="index.html" class="logo">i<span>partment</span></a>
+  <nav>
+    <a href="about.html">About</a>
+    <a href="accommodation.html">Accommodation</a>
+    <a href="magazine.html">Magazine</a>
+    <a href="career.html" class="active">Career</a>
+    <a href="faq.html">FAQ</a>
+    <a href="my-account.html">My Account</a>
+    <a href="accommodation.html" class="nav-cta">Book a Stay</a>
+  </nav>
+</header>
+
+<div style="margin-top:72px;background:var(--black);padding:96px 80px 80px;">
+  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.8);margin-bottom:16px;">Career at ipartment</span>
+  <h1 style="font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,68px);font-weight:900;color:var(--white);line-height:1.1;max-width:700px;">Help us redefine<br/><span style="color:var(--yellow);">how Saigon lives.</span></h1>
+  <p style="font-size:17px;color:rgba(255,255,255,0.68);max-width:560px;margin-top:20px;line-height:1.75;">We're building Vietnam's first European-standard serviced apartment brand — and we're looking for people who care about the details as much as we do.</p>
+</div>
+
+<!-- WHY CHOOSE US -->
+<div style="background:var(--gray-light);padding:80px 80px;">
+  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;">Why Choose Us?</span>
+  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;line-height:1.15;margin-bottom:48px;">A team that takes<br/>hospitality seriously.</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
+    <div style="background:var(--white);padding:36px 32px;border-top:4px solid var(--yellow);">
+      <div style="font-size:32px;margin-bottom:16px;">🏆</div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">European Standards</h3>
+      <p style="font-size:14px;color:#555;line-height:1.7;">Work with processes, training, and quality benchmarks from one of Europe's top serviced apartment operators. Real standards. Real mentorship.</p>
+    </div>
+    <div style="background:var(--white);padding:36px 32px;border-top:4px solid var(--yellow);">
+      <div style="font-size:32px;margin-bottom:16px;">🌍</div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">International Environment</h3>
+      <p style="font-size:14px;color:#555;line-height:1.7;">Work alongside an international team and serve guests from across the globe — in the most cosmopolitan district of Ho Chi Minh City.</p>
+    </div>
+    <div style="background:var(--white);padding:36px 32px;border-top:4px solid var(--yellow);">
+      <div style="font-size:32px;margin-bottom:16px;">🚀</div>
+      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Ground Floor Opportunity</h3>
+      <p style="font-size:14px;color:#555;line-height:1.7;">We're newly opened. The people who join now will shape how this brand grows in Vietnam. Your impact here is real and visible.</p>
+    </div>
+  </div>
+</div>
+
+<!-- CULTURE -->
+<div style="background:var(--white);padding:80px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=80" alt="Team culture" style="width:100%;aspect-ratio:4/3;object-fit:cover;" />
+  <div>
+    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;">Our Culture</span>
+    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,44px);font-weight:900;line-height:1.2;margin-bottom:20px;">We sweat the small stuff.<br/>On purpose.</h2>
+    <p style="font-size:16px;line-height:1.85;color:#444;margin-bottom:20px;">Hospitality done right isn't about grand gestures. It's about the coffee machine that's always clean, the Wi-Fi that just works, the welcome message that feels personal. We hire people who notice these things without being told.</p>
+    <p style="font-size:16px;line-height:1.85;color:#444;">Our culture is direct, warm, and high-trust. We give autonomy early. We expect ownership in return. If you like working in a place where your ideas get heard and tested quickly — welcome home.</p>
+  </div>
+</div>
+
+<!-- OPEN POSITIONS -->
+<div id="positions" style="background:var(--black);padding:80px 80px;">
+  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.7);margin-bottom:16px;">Open Positions</span>
+  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;color:var(--white);line-height:1.15;margin-bottom:48px;">Join the team.</h2>
+  <div style="display:flex;flex-direction:column;gap:2px;">
+    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Guest Experience Manager</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Hospitality / Operations</p>
+      </div>
+      <a href="mailto:careers@ipartment.vn?subject=Guest Experience Manager" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Sales & Corporate Account Executive</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Sales / B2B</p>
+      </div>
+      <a href="mailto:careers@ipartment.vn?subject=Sales Executive" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Housekeeping & Property Supervisor</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Operations</p>
+      </div>
+      <a href="mailto:careers@ipartment.vn?subject=Housekeeping Supervisor" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
+    </div>
+    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
+      <div>
+        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Digital Marketing & Content Coordinator</h3>
+        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Marketing</p>
+      </div>
+      <a href="mailto:careers@ipartment.vn?subject=Marketing Coordinator" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
+    </div>
+  </div>
+  <div style="margin-top:40px;padding:32px;background:rgba(255,237,0,0.08);border-left:4px solid var(--yellow);">
+    <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.7;">Don't see your role? We're always interested in exceptional people. Send your CV to <a href="mailto:careers@ipartment.vn" style="color:var(--yellow);">careers@ipartment.vn</a> with a short note about what you'd like to build here.</p>
+  </div>
+</div>
+
+<footer>
+  <div class="footer-grid">
+    <div class="footer-brand"><a href="index.html" class="logo">i<span>partment</span></a><p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
+    <div class="footer-col"><h5>Accommodation</h5><ul><li><a href="accommodation.html#xs">Studio XS</a></li><li><a href="accommodation.html#s">Studio S</a></li><li><a href="accommodation.html#m">Apartment M</a></li><li><a href="accommodation.html#l">Long-Stay Suite L</a></li></ul></div>
+    <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="career.html">Career</a></li><li><a href="magazine.html">Magazine</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+    <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:hello@ipartment.vn">hello@ipartment.vn</a></li><li><a href="mailto:careers@ipartment.vn">careers@ipartment.vn</a></li><li><a href="#">Xuan Thuy St, Thao Dien</a></li></ul></div>
+  </div>
+  <div class="footer-bottom"><span>© 2025 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="#">Privacy Policy</a><a href="#">Terms</a></div></div>
+</footer>
+</body>
+</html>

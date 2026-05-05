@@ -1,0 +1,524 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>ipartment Vietnam – Premium Serviced Apartments in Thao Dien, Ho Chi Minh City</title>
+  <meta name="description" content="ipartment Vietnam – Your second home in Thao Dien, District 2, Ho Chi Minh City. Premium designed serviced apartments, flexible stays from 1 night to 6 months." />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root {
+      --black: #000000;
+      --white: #ffffff;
+      --yellow: #FFED00;
+      --gray-light: #f9f9f9;
+      --gray-mid: #9d9d9d;
+      --gray-dark: #313131;
+      --terracotta: #D8613C;
+      --font-heading: 'Playfair Display', Georgia, serif;
+      --font-body: 'Inter', 'Helvetica Neue', Arial, sans-serif;
+    }
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    html { scroll-behavior: smooth; }
+    body { font-family: var(--font-body); color: var(--black); background: var(--white); font-size: 16px; line-height: 1.6; }
+
+    /* HEADER */
+    header {
+      position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+      background: var(--black); height: 72px;
+      display: flex; align-items: center; padding: 0 56px; justify-content: space-between;
+    }
+    .logo { font-family: var(--font-body); font-weight: 900; font-size: 22px; letter-spacing: 0.06em; color: var(--white); text-decoration: none; text-transform: lowercase; }
+    .logo span { color: var(--yellow); }
+    nav { display: flex; align-items: center; gap: 32px; }
+    nav a { font-size: 11px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--white); text-decoration: none; transition: color 0.2s; }
+    nav a:hover { color: var(--yellow); }
+    .nav-cta { background: var(--yellow) !important; color: var(--black) !important; padding: 10px 22px; font-weight: 700 !important; transition: background 0.2s !important; }
+    .nav-cta:hover { background: #e0d500 !important; }
+
+    /* HERO */
+    .hero {
+      margin-top: 72px; min-height: calc(100vh - 72px);
+      background: var(--black); position: relative; display: flex; align-items: center; overflow: hidden;
+    }
+    .hero-bg {
+      position: absolute; inset: 0;
+      background: linear-gradient(to right, rgba(0,0,0,0.88) 45%, rgba(0,0,0,0.25) 100%),
+        url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1600&q=80') center/cover no-repeat;
+    }
+    .hero-content { position: relative; z-index: 1; max-width: 740px; padding: 80px 80px 80px 80px; }
+    .hero-eyebrow {
+      display: inline-block; background: var(--yellow); color: var(--black);
+      font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase;
+      padding: 6px 14px; margin-bottom: 28px;
+    }
+    .hero h1 {
+      font-family: var(--font-heading); font-size: clamp(42px, 5vw, 72px);
+      line-height: 1.08; color: var(--white); margin-bottom: 24px; font-weight: 900;
+    }
+    .hero h1 em { font-style: normal; color: var(--yellow); }
+    .hero-sub { font-size: 17px; line-height: 1.75; color: rgba(255,255,255,0.82); max-width: 560px; margin-bottom: 44px; }
+    .hero-buttons { display: flex; gap: 16px; flex-wrap: wrap; }
+    .btn-primary {
+      background: var(--yellow); color: var(--black); font-weight: 700;
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 16px 36px; text-decoration: none; display: inline-block; transition: background 0.2s, transform 0.15s;
+    }
+    .btn-primary:hover { background: #e0d500; transform: translateY(-1px); }
+    .btn-outline {
+      background: transparent; color: var(--white); font-weight: 600;
+      font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase;
+      padding: 15px 36px; text-decoration: none; display: inline-block;
+      border: 1.5px solid rgba(255,255,255,0.45); transition: border-color 0.2s;
+    }
+    .btn-outline:hover { border-color: var(--white); }
+    .hero-stats {
+      position: absolute; bottom: 64px; right: 80px;
+      display: flex; gap: 48px; z-index: 1;
+    }
+    .hero-stat { text-align: right; }
+    .hero-stat-num { font-family: var(--font-heading); font-size: 44px; font-weight: 900; color: var(--yellow); line-height: 1; }
+    .hero-stat-label { font-size: 10px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 6px; }
+
+    /* SECTION SHARED */
+    section { padding: 96px 80px; }
+    .section-eyebrow { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.18em; text-transform: uppercase; color: var(--terracotta); margin-bottom: 16px; }
+    .section-title { font-family: var(--font-heading); font-size: clamp(30px, 3.5vw, 52px); font-weight: 900; line-height: 1.15; margin-bottom: 20px; }
+    .section-body { font-size: 16px; line-height: 1.8; color: #444; max-width: 640px; }
+
+    /* USP */
+    .usp-section { background: var(--white); display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; }
+    .usp-left { background: var(--black); padding: 96px 72px; display: flex; flex-direction: column; justify-content: center; }
+    .usp-left .section-title { color: var(--white); }
+    .usp-left .section-body { color: rgba(255,255,255,0.68); margin-bottom: 40px; }
+    .usp-right { padding: 96px 72px; background: var(--gray-light); }
+    .usp-list { list-style: none; display: flex; flex-direction: column; gap: 32px; }
+    .usp-item { display: flex; gap: 20px; align-items: flex-start; }
+    .usp-icon { width: 46px; height: 46px; background: var(--yellow); display: flex; align-items: center; justify-content: center; flex-shrink: 0; font-size: 20px; }
+    .usp-item-text h4 { font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase; margin-bottom: 6px; }
+    .usp-item-text p { font-size: 14px; line-height: 1.7; color: #555; }
+
+    /* ROOMS */
+    .rooms-section { background: var(--white); padding: 96px 80px; }
+    .rooms-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
+    .rooms-header-left { max-width: 560px; }
+    .rooms-grid { display: grid; grid-template-columns: repeat(4, 1fr); gap: 0; }
+    .room-card { position: relative; overflow: hidden; }
+    .room-img { width: 100%; aspect-ratio: 3/4; object-fit: cover; display: block; transition: transform 0.5s ease; }
+    .room-card:hover .room-img { transform: scale(1.04); }
+    .room-label {
+      position: absolute; top: 0; left: 0;
+      background: var(--yellow); color: var(--black);
+      font-size: 11px; font-weight: 800; letter-spacing: 0.14em; text-transform: uppercase; padding: 8px 14px;
+    }
+    .room-info { padding: 24px 22px; background: var(--black); }
+    .room-size { font-family: var(--font-heading); font-size: 28px; font-weight: 900; color: var(--yellow); }
+    .room-name { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--white); margin: 4px 0 10px; }
+    .room-desc { font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.62); }
+    .room-cta { display: inline-block; margin-top: 14px; font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--yellow); text-decoration: none; border-bottom: 1px solid var(--yellow); padding-bottom: 2px; }
+
+    /* CORPORATE */
+    .corporate-section { background: var(--black); display: grid; grid-template-columns: 1fr 1fr; gap: 0; padding: 0; }
+    .corporate-img { width: 100%; height: 100%; min-height: 560px; object-fit: cover; display: block; }
+    .corporate-content { padding: 96px 72px; display: flex; flex-direction: column; justify-content: center; }
+    .corporate-content .section-title { color: var(--white); }
+    .corporate-content .section-body { color: rgba(255,255,255,0.68); margin-bottom: 40px; }
+    .corporate-perks { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 40px; }
+    .perk { background: rgba(255,255,255,0.06); padding: 20px; border-left: 3px solid var(--yellow); }
+    .perk h5 { font-size: 11px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase; color: var(--yellow); margin-bottom: 6px; }
+    .perk p { font-size: 13px; color: rgba(255,255,255,0.58); line-height: 1.6; }
+
+    /* LOCATION STRIP */
+    .location-strip { background: var(--yellow); padding: 56px 80px; display: flex; align-items: center; justify-content: space-between; gap: 40px; }
+    .location-strip h3 { font-family: var(--font-heading); font-size: clamp(22px, 2.5vw, 36px); font-weight: 900; color: var(--black); max-width: 620px; line-height: 1.3; }
+    .btn-black { background: var(--black); color: var(--white); font-weight: 700; font-size: 12px; letter-spacing: 0.12em; text-transform: uppercase; padding: 16px 36px; text-decoration: none; white-space: nowrap; transition: background 0.2s; }
+    .btn-black:hover { background: #333; }
+
+    /* MAGAZINE */
+    .magazine-section { background: var(--gray-light); padding: 96px 80px; }
+    .magazine-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 56px; }
+    .magazine-grid { display: grid; grid-template-columns: 2fr 1fr 1fr; gap: 24px; }
+    .mag-card { background: var(--white); overflow: hidden; }
+    .mag-img { width: 100%; aspect-ratio: 16/9; object-fit: cover; display: block; }
+    .mag-body { padding: 28px 24px; }
+    .mag-tag { display: inline-block; background: var(--yellow); color: var(--black); font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; padding: 4px 10px; margin-bottom: 14px; }
+    .mag-title { font-family: var(--font-heading); font-size: 20px; font-weight: 700; line-height: 1.3; margin-bottom: 10px; }
+    .mag-card:first-child .mag-title { font-size: 26px; }
+    .mag-excerpt { font-size: 13px; color: #666; line-height: 1.7; }
+    .mag-date { font-size: 11px; color: var(--gray-mid); margin-top: 14px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
+
+    /* REVIEW */
+    .review-section { background: var(--white); padding: 96px 80px; text-align: center; }
+    .review-stars { font-size: 26px; color: var(--yellow); margin-bottom: 24px; letter-spacing: 4px; }
+    .review-quote { font-family: var(--font-heading); font-size: clamp(22px, 3vw, 38px); font-weight: 700; line-height: 1.45; max-width: 820px; margin: 0 auto 28px; color: var(--black); }
+    .review-author { font-size: 12px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: var(--gray-mid); }
+    .review-dots { display: flex; justify-content: center; gap: 8px; margin-top: 40px; }
+    .dot { width: 8px; height: 8px; background: var(--gray-mid); }
+    .dot.active { background: var(--black); width: 28px; }
+
+    /* FOOTER */
+    footer { background: var(--black); color: var(--white); padding: 80px 80px 40px; }
+    .footer-grid { display: grid; grid-template-columns: 2fr 1fr 1fr 1fr; gap: 56px; margin-bottom: 64px; }
+    .footer-brand .logo { display: block; margin-bottom: 20px; font-size: 24px; }
+    .footer-brand p { font-size: 13px; line-height: 1.8; color: rgba(255,255,255,0.52); max-width: 280px; }
+    .footer-col h5 { font-size: 11px; font-weight: 700; letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow); margin-bottom: 20px; }
+    .footer-col ul { list-style: none; }
+    .footer-col ul li { margin-bottom: 10px; }
+    .footer-col ul li a { font-size: 13px; color: rgba(255,255,255,0.58); text-decoration: none; transition: color 0.2s; }
+    .footer-col ul li a:hover { color: var(--white); }
+    .footer-address { font-size: 13px; color: rgba(255,255,255,0.58); line-height: 1.9; font-style: normal; }
+    .footer-address strong { display: block; color: var(--white); margin-bottom: 4px; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; }
+    .footer-bottom { border-top: 1px solid rgba(255,255,255,0.1); padding-top: 28px; display: flex; justify-content: space-between; align-items: center; font-size: 12px; color: rgba(255,255,255,0.32); }
+    .footer-bottom a { color: rgba(255,255,255,0.32); text-decoration: none; transition: color 0.2s; }
+    .footer-bottom a:hover { color: var(--white); }
+
+    /* BOOKING BAR */
+    .booking-bar {
+      background: var(--white); border-top: 3px solid var(--yellow);
+      padding: 0 80px; display: flex; align-items: center; height: 80px; gap: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07); position: sticky; top: 72px; z-index: 100;
+    }
+    .booking-field { flex: 1; padding: 0 28px; border-right: 1px solid #e5e5e5; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    .booking-field:first-child { padding-left: 0; }
+    .booking-field label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 3px; }
+    .booking-field span { font-size: 14px; font-weight: 600; color: var(--black); }
+    .booking-bar .btn-primary { padding: 18px 40px; font-size: 12px; white-space: nowrap; }
+
+    /* RESPONSIVE */
+    @media (max-width: 1100px) {
+      header { padding: 0 32px; }
+      nav { gap: 20px; }
+      section, .usp-left, .usp-right, .corporate-content { padding: 72px 40px; }
+      .hero-content { padding: 60px 40px; }
+      .hero-stats { right: 40px; bottom: 40px; gap: 32px; }
+      .usp-section { grid-template-columns: 1fr; }
+      .rooms-grid { grid-template-columns: 1fr 1fr; }
+      .corporate-section { grid-template-columns: 1fr; }
+      .corporate-img { min-height: 360px; order: -1; }
+      .magazine-grid { grid-template-columns: 1fr 1fr; }
+      .footer-grid { grid-template-columns: 1fr 1fr; gap: 40px; }
+      .booking-bar { display: none; }
+    }
+    @media (max-width: 768px) {
+      header { padding: 0 24px; }
+      nav a:not(.nav-cta) { display: none; }
+      .hero-content { padding: 48px 24px; }
+      .hero-stats { display: none; }
+      section { padding: 64px 24px; }
+      .rooms-grid { grid-template-columns: 1fr; }
+      .location-strip { flex-direction: column; text-align: center; padding: 48px 24px; }
+      .magazine-grid { grid-template-columns: 1fr; }
+      .footer-grid { grid-template-columns: 1fr; }
+      .rooms-header, .magazine-header { flex-direction: column; gap: 20px; align-items: flex-start; }
+    }
+  </style>
+</head>
+<body>
+
+  <!-- HEADER -->
+  <header>
+    <a href="index.html" class="logo">i<span>partment</span></a>
+    <nav>
+      <a href="about.html">About</a>
+      <a href="accommodation.html">Accommodation</a>
+      <a href="magazine.html">Magazine</a>
+      <a href="career.html">Career</a>
+      <a href="faq.html">FAQ</a>
+      <a href="my-account.html">My Account</a>
+      <a href="accommodation.html" class="nav-cta">Book a Stay</a>
+    </nav>
+  </header>
+
+  <!-- BOOKING BAR -->
+  <div class="booking-bar">
+    <div class="booking-field">
+      <label>Check-in</label>
+      <span>Select date</span>
+    </div>
+    <div class="booking-field">
+      <label>Check-out</label>
+      <span>Select date</span>
+    </div>
+    <div class="booking-field">
+      <label>Apartment Type</label>
+      <span>XS, S, M, L</span>
+    </div>
+    <div class="booking-field" style="border-right:none;">
+      <label>Guests</label>
+      <span>1 guest</span>
+    </div>
+    <a href="accommodation.html" class="btn-primary">Check Availability</a>
+  </div>
+
+  <!-- HERO -->
+  <section class="hero" style="padding:0;">
+    <div class="hero-bg"></div>
+    <div class="hero-content">
+      <span class="hero-eyebrow">🇻🇳 Now Open · Thao Dien, Ho Chi Minh City</span>
+      <h1>Your Premium<br/><em>Second Home</em><br/>in Saigon</h1>
+      <p class="hero-sub">Experience the perfect blend of hotel luxury and the comfort of your own home. Located in the vibrant heart of Thao Dien, ipartment offers fully equipped, design-focused serviced apartments for short and long-term stays.</p>
+      <div class="hero-buttons">
+        <a href="accommodation.html" class="btn-primary">Book Your Stay</a>
+        <a href="accommodation.html" class="btn-outline">Explore Apartments</a>
+      </div>
+    </div>
+    <div class="hero-stats">
+      <div class="hero-stat">
+        <div class="hero-stat-num">1,200+</div>
+        <div class="hero-stat-label">Apartments Globally</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">15+</div>
+        <div class="hero-stat-label">Years of Experience</div>
+      </div>
+      <div class="hero-stat">
+        <div class="hero-stat-num">4.8★</div>
+        <div class="hero-stat-label">Average Rating</div>
+      </div>
+    </div>
+  </section>
+
+  <!-- WHY IPARTMENT -->
+  <div class="usp-section">
+    <div class="usp-left">
+      <span class="section-eyebrow">Why ipartment?</span>
+      <h2 class="section-title">More than a room.<br/>A new way of living.</h2>
+      <p class="section-body">Originating from Europe with over 1,200 apartments across Germany and Switzerland, ipartment is now bringing its successful "second home" concept to Vietnam. We understand the needs of relocating professionals, corporate travelers, and expats looking for a place to truly call home.</p>
+      <a href="about.html" class="btn-primary" style="align-self:flex-start;margin-top:8px;">Learn More About Us</a>
+    </div>
+    <div class="usp-right">
+      <ul class="usp-list">
+        <li class="usp-item">
+          <div class="usp-icon">📍</div>
+          <div class="usp-item-text">
+            <h4>Prime Location</h4>
+            <p>Situated on Xuan Thuy Street, Thao Dien — just 15 minutes from District 1 and steps from Metro Line 1.</p>
+          </div>
+        </li>
+        <li class="usp-item">
+          <div class="usp-icon">💰</div>
+          <div class="usp-item-text">
+            <h4>All-Inclusive Pricing</h4>
+            <p>No hidden costs. High-speed Wi-Fi, housekeeping, and premium amenities — all wrapped in one transparent rate.</p>
+          </div>
+        </li>
+        <li class="usp-item">
+          <div class="usp-icon">🗓️</div>
+          <div class="usp-item-text">
+            <h4>Maximum Flexibility</h4>
+            <p>Whether you need a place for a night or up to 6 months, we offer flexible lease terms tailored to your schedule.</p>
+          </div>
+        </li>
+        <li class="usp-item">
+          <div class="usp-icon">💼</div>
+          <div class="usp-item-text">
+            <h4>Work-Life Balance</h4>
+            <p>Smart living spaces with custom-built workspaces, fully equipped kitchens, and digital 24/7 self check-in.</p>
+          </div>
+        </li>
+      </ul>
+    </div>
+  </div>
+
+  <!-- ROOMS -->
+  <section class="rooms-section">
+    <div class="rooms-header">
+      <div class="rooms-header-left">
+        <span class="section-eyebrow">Find Your Perfect Fit</span>
+        <h2 class="section-title">Four categories.<br/>One standard.</h2>
+        <p class="section-body">From compact efficiency to expansive living — discover our four distinct apartment categories designed for your specific needs.</p>
+      </div>
+      <a href="accommodation.html" class="btn-primary" style="align-self:flex-end;">View All Apartments</a>
+    </div>
+    <div class="rooms-grid">
+      <div class="room-card">
+        <img class="room-img" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Category XS" />
+        <div class="room-label">XS</div>
+        <div class="room-info">
+          <div class="room-size">25–30 m²</div>
+          <div class="room-name">Compact Studio</div>
+          <p class="room-desc">Compact and highly functional, perfect for short-term stays with a custom workspace and kitchenette.</p>
+          <a href="accommodation.html#xs" class="room-cta">View Details →</a>
+        </div>
+      </div>
+      <div class="room-card">
+        <img class="room-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80" alt="Category S" />
+        <div class="room-label">S</div>
+        <div class="room-info">
+          <div class="room-size">35–40 m²</div>
+          <div class="room-name">Standard Studio</div>
+          <p class="room-desc">Ideal for mid-term stays, featuring a comfortable seating area and comprehensive dining setup.</p>
+          <a href="accommodation.html#s" class="room-cta">View Details →</a>
+        </div>
+      </div>
+      <div class="room-card">
+        <img class="room-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Category M" />
+        <div class="room-label">M</div>
+        <div class="room-info">
+          <div class="room-size">45–55 m²</div>
+          <div class="room-name">Spacious Apartment</div>
+          <p class="room-desc">A spacious temporary home with designated zones for living, dining, resting, and a dedicated home office.</p>
+          <a href="accommodation.html#m" class="room-cta">View Details →</a>
+        </div>
+      </div>
+      <div class="room-card">
+        <img class="room-img" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=80" alt="Category L" />
+        <div class="room-label">L</div>
+        <div class="room-info">
+          <div class="room-size">65–75 m²</div>
+          <div class="room-name">Long-Stay Suite</div>
+          <p class="room-desc">Our most generous offering for long-term residencies — separate bedroom, large living room, and family-sized kitchen.</p>
+          <a href="accommodation.html#l" class="room-cta">View Details →</a>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- CORPORATE -->
+  <div class="corporate-section">
+    <img class="corporate-img" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=900&q=80" alt="Corporate stays Ho Chi Minh City" />
+    <div class="corporate-content">
+      <span class="section-eyebrow">For Corporate & Long-Stay Guests</span>
+      <h2 class="section-title">Relocating to<br/>Ho Chi Minh City?</h2>
+      <p class="section-body">We specialize in extended stays for corporate clients and expatriates. Enjoy exclusive monthly rates (for stays over 28 nights), dedicated account management, and an environment that integrates you straight into the local Thao Dien community — complete with international schools, specialty cafés, and a riverside lifestyle.</p>
+      <div class="corporate-perks">
+        <div class="perk">
+          <h5>Corporate Rates</h5>
+          <p>Exclusive pricing for contracts of 28+ nights</p>
+        </div>
+        <div class="perk">
+          <h5>Account Manager</h5>
+          <p>Dedicated support for your team 24/7</p>
+        </div>
+        <div class="perk">
+          <h5>Expat Community</h5>
+          <p>Thao Dien — HCMC's most vibrant international district</p>
+        </div>
+        <div class="perk">
+          <h5>Group Bookings</h5>
+          <p>Reserve multiple apartments for your entire team</p>
+        </div>
+      </div>
+      <a href="about.html#corporate" class="btn-primary" style="align-self:flex-start;">View Corporate Benefits</a>
+    </div>
+  </div>
+
+  <!-- LOCATION STRIP -->
+  <div class="location-strip">
+    <h3>Xuan Thuy Street, Thao Dien — the heart of Ho Chi Minh City's international community. Step outside and the world is at your door.</h3>
+    <a href="about.html#location" class="btn-black">View Location &amp; Map</a>
+  </div>
+
+  <!-- MAGAZINE -->
+  <section class="magazine-section">
+    <div class="magazine-header">
+      <div>
+        <span class="section-eyebrow">ipartment Magazine</span>
+        <h2 class="section-title" style="margin-bottom:0;">Live better in Saigon.</h2>
+      </div>
+      <a href="magazine.html" class="btn-primary">View All Articles</a>
+    </div>
+    <div class="magazine-grid">
+      <div class="mag-card">
+        <img class="mag-img" src="https://images.unsplash.com/photo-1565967511849-76a60a516170?w=800&q=80" alt="Thao Dien local guide" style="aspect-ratio:16/10;" />
+        <div class="mag-body">
+          <span class="mag-tag">Local Guide</span>
+          <h3 class="mag-title">The Complete Thao Dien Guide: Where to Eat, Explore & Unwind When You First Arrive in Saigon</h3>
+          <p class="mag-excerpt">From egg coffee mornings to riverside cocktails at sunset — the unmissable spots around ipartment, curated by people who actually live here.</p>
+          <p class="mag-date">May 2025</p>
+        </div>
+      </div>
+      <div class="mag-card">
+        <img class="mag-img" src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&q=80" alt="Upcoming events" />
+        <div class="mag-body">
+          <span class="mag-tag">Upcoming Event</span>
+          <h3 class="mag-title">Grand Opening: ipartment Vietnam Official Launch — June 2025</h3>
+          <p class="mag-excerpt">Join us for our official opening with exclusive offers for our very first guests.</p>
+          <p class="mag-date">May 2025</p>
+        </div>
+      </div>
+      <div class="mag-card">
+        <img class="mag-img" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80" alt="Business article" />
+        <div class="mag-body">
+          <span class="mag-tag">Business</span>
+          <h3 class="mag-title">5 Reasons Thao Dien is the Top Choice for Expats Working in Ho Chi Minh City</h3>
+          <p class="mag-excerpt">Connectivity, community, co-working — all within walking distance of your ipartment front door.</p>
+          <p class="mag-date">April 2025</p>
+        </div>
+      </div>
+    </div>
+  </section>
+
+  <!-- REVIEW -->
+  <section class="review-section">
+    <div class="review-stars">★★★★★</div>
+    <blockquote class="review-quote">
+      "I spent three months at ipartment Berlin before relocating to Saigon — and I was thrilled to discover they were opening in Thao Dien. Same standard, same feeling of home. This is the first place I recommend to every expat colleague moving to the city."
+    </blockquote>
+    <p class="review-author">— Lars M., Senior Manager · Long-Stay Guest</p>
+    <div class="review-dots">
+      <div class="dot active"></div>
+      <div class="dot"></div>
+      <div class="dot"></div>
+    </div>
+  </section>
+
+  <!-- FOOTER -->
+  <footer>
+    <div class="footer-grid">
+      <div class="footer-brand">
+        <a href="index.html" class="logo">i<span>partment</span></a>
+        <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p>
+        <div style="margin-top:24px;display:flex;gap:14px;">
+          <a href="#" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;font-weight:600;">Instagram</a>
+          <a href="#" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;font-weight:600;">Facebook</a>
+          <a href="#" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;font-weight:600;">LinkedIn</a>
+        </div>
+      </div>
+      <div class="footer-col">
+        <h5>Accommodation</h5>
+        <ul>
+          <li><a href="accommodation.html#xs">Studio XS</a></li>
+          <li><a href="accommodation.html#s">Studio S</a></li>
+          <li><a href="accommodation.html#m">Apartment M</a></li>
+          <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
+          <li><a href="accommodation.html#corporate">Corporate Rates</a></li>
+          <li><a href="accommodation.html#reviews">Guest Reviews</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Company</h5>
+        <ul>
+          <li><a href="about.html">About Us</a></li>
+          <li><a href="about.html#story">Brand Story</a></li>
+          <li><a href="about.html#location">Location &amp; Map</a></li>
+          <li><a href="career.html">Career</a></li>
+          <li><a href="magazine.html">Magazine</a></li>
+          <li><a href="faq.html">FAQ</a></li>
+        </ul>
+      </div>
+      <div class="footer-col">
+        <h5>Contact</h5>
+        <address class="footer-address">
+          <strong>ipartment Vietnam</strong>
+          Xuan Thuy Street<br/>
+          Thao Dien, District 2<br/>
+          Ho Chi Minh City, Vietnam<br/><br/>
+          <a href="mailto:hello@ipartment.vn" style="color:var(--yellow);text-decoration:none;">hello@ipartment.vn</a><br/>
+          <a href="tel:+84901234567" style="color:rgba(255,255,255,0.58);text-decoration:none;">+84 90 123 4567</a>
+        </address>
+      </div>
+    </div>
+    <div class="footer-bottom">
+      <span>© 2025 ipartment Vietnam. All rights reserved.</span>
+      <div style="display:flex;gap:24px;">
+        <a href="#">Privacy Policy</a>
+        <a href="#">Terms of Use</a>
+        <a href="faq.html">FAQ</a>
+      </div>
+    </div>
+  </footer>
+
+</body>
+</html>
