@@ -176,14 +176,84 @@
     /* BOOKING BAR */
     .booking-bar {
       background: var(--white); border-top: 3px solid var(--yellow);
-      padding: 0 80px; display: flex; align-items: center; height: 80px; gap: 0;
-      box-shadow: 0 4px 20px rgba(0,0,0,0.07); position: sticky; top: 72px; z-index: 100;
+      padding: 0 56px; display: flex; align-items: center; height: 80px; gap: 0;
+      box-shadow: 0 4px 20px rgba(0,0,0,0.07); position: sticky; top: 72px; z-index: 1000;
     }
-    .booking-field { flex: 1; padding: 0 28px; border-right: 1px solid #e5e5e5; height: 100%; display: flex; flex-direction: column; justify-content: center; }
+    .booking-field {
+      flex: 1; padding: 0 20px; border-right: 1px solid #e5e5e5; height: 100%;
+      display: flex; flex-direction: column; justify-content: center; cursor: pointer;
+      position: relative; transition: background 0.15s;
+    }
     .booking-field:first-child { padding-left: 0; }
-    .booking-field label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 3px; }
-    .booking-field span { font-size: 14px; font-weight: 600; color: var(--black); }
-    .booking-bar .btn-primary { padding: 18px 40px; font-size: 12px; white-space: nowrap; }
+    .booking-field:hover { background: #fafafa; }
+    .booking-field label { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-mid); margin-bottom: 3px; pointer-events: none; }
+    .booking-field .bf-val { font-size: 14px; font-weight: 600; color: var(--black); pointer-events: none; }
+    .booking-field .bf-val.placeholder { color: #aaa; font-weight: 400; }
+    .booking-bar .btn-primary { padding: 18px 32px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+
+    /* DROPDOWN PANELS */
+    .bb-dropdown {
+      position: absolute; top: calc(100% + 4px); left: 0; background: var(--white);
+      box-shadow: 0 12px 40px rgba(0,0,0,0.15); z-index: 2000; display: none; min-width: 320px;
+    }
+    .bb-dropdown.open { display: block; }
+    .bb-dropdown.dd-right { left: auto; right: 0; }
+
+    /* MINI CALENDAR inside dropdown */
+    .mini-cal-wrap { padding: 20px 20px 0; }
+    .mini-cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+    .mini-cal-title { font-family: var(--font-heading); font-size: 15px; font-weight: 900; }
+    .mini-cal-nav { background: none; border: none; cursor: pointer; font-size: 16px; padding: 4px 8px; color: var(--black); }
+    .mini-cal-nav:hover { color: var(--gray-mid); }
+    .mini-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+    .mini-day-lbl { font-size: 9px; font-weight: 700; letter-spacing: 0.06em; text-transform: uppercase; color: var(--gray-mid); text-align: center; padding: 3px 0 6px; }
+    .mini-day {
+      aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+      font-size: 11px; font-weight: 500; cursor: pointer; border-radius: 2px;
+      transition: all 0.12s; position: relative;
+    }
+    .mini-day:hover:not(.md-disabled):not(.md-empty) { background: #f0f0f0; }
+    .mini-day.md-empty { cursor: default; }
+    .mini-day.md-disabled { color: #ccc; cursor: not-allowed; }
+    .mini-day.md-today { font-weight: 800; border: 1.5px solid var(--black); }
+    .mini-day.md-checkin { background: var(--black); color: var(--yellow); font-weight: 700; border-radius: 2px 0 0 2px; }
+    .mini-day.md-checkout { background: var(--black); color: var(--yellow); font-weight: 700; border-radius: 0 2px 2px 0; }
+    .mini-day.md-checkin.md-checkout { border-radius: 2px; }
+    .mini-day.md-inrange { background: rgba(0,0,0,0.07); }
+
+    /* PROMO MESSAGE */
+    .promo-msg {
+      margin: 12px 20px 16px; padding: 9px 12px; font-size: 11px; font-weight: 600;
+      line-height: 1.4; border-radius: 2px;
+    }
+    .promo-msg.nudge { background: #fff8e1; color: #7a5c00; border-left: 3px solid var(--yellow); }
+    .promo-msg.unlocked { background: #f0fdf4; color: #166534; border-left: 3px solid #22c55e; }
+
+    /* APARTMENT DROPDOWN */
+    .apt-options { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+    .apt-opt {
+      display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+      cursor: pointer; transition: background 0.12s; border: 1.5px solid transparent;
+    }
+    .apt-opt:hover { background: #f5f5f5; }
+    .apt-opt.selected { border-color: var(--black); background: #f9f9f9; }
+    .apt-opt-cat { font-family: var(--font-heading); font-size: 20px; font-weight: 900; color: var(--yellow); background: var(--black); width: 40px; height: 40px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+    .apt-opt-info { flex: 1; }
+    .apt-opt-name { font-size: 13px; font-weight: 700; color: var(--black); }
+    .apt-opt-size { font-size: 11px; color: var(--gray-mid); margin-top: 1px; }
+    .apt-opt-price { font-size: 11px; font-weight: 700; color: #666; text-align: right; white-space: nowrap; }
+
+    /* GUEST DROPDOWN */
+    .guest-wrap { padding: 20px; }
+    .guest-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+    .guest-label { font-size: 14px; font-weight: 600; }
+    .guest-sub { font-size: 11px; color: var(--gray-mid); margin-top: 2px; }
+    .guest-controls { display: flex; align-items: center; gap: 12px; }
+    .guest-btn { width: 32px; height: 32px; border: 1.5px solid #ddd; background: none; cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center; transition: border-color 0.15s; }
+    .guest-btn:hover { border-color: var(--black); }
+    .guest-num { font-size: 16px; font-weight: 700; min-width: 24px; text-align: center; }
+    .guest-apply { width: 100%; margin-top: 8px; background: var(--yellow); color: var(--black); border: none; padding: 13px; font-weight: 700; font-size: 12px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-family: var(--font-body); }
+    .guest-apply:hover { background: #e0d500; }
 
     /* RESPONSIVE */
     @media (max-width: 1100px) {
@@ -231,25 +301,259 @@
   </header>
 
   <!-- BOOKING BAR -->
-  <div class="booking-bar">
-    <div class="booking-field">
+  <div class="booking-bar" id="booking-bar">
+
+    <!-- CHECK-IN -->
+    <div class="booking-field" id="bf-checkin" onclick="toggleDrop('dd-checkin', event)">
       <label>Check-in</label>
-      <span>Select date</span>
+      <span class="bf-val placeholder" id="bv-checkin">Select date</span>
+      <!-- DROPDOWN -->
+      <div class="bb-dropdown" id="dd-checkin" onclick="event.stopPropagation()">
+        <div class="mini-cal-wrap">
+          <div class="mini-cal-header">
+            <button class="mini-cal-nav" onclick="shiftCal(-1)">&#8249;</button>
+            <span class="mini-cal-title" id="mc-title"></span>
+            <button class="mini-cal-nav" onclick="shiftCal(1)">&#8250;</button>
+          </div>
+          <div class="mini-grid" id="mc-grid"></div>
+        </div>
+        <div class="promo-msg" id="promo-msg" style="display:none;"></div>
+      </div>
     </div>
-    <div class="booking-field">
+
+    <!-- CHECK-OUT -->
+    <div class="booking-field" id="bf-checkout" onclick="toggleDrop('dd-checkin', event)">
       <label>Check-out</label>
-      <span>Select date</span>
+      <span class="bf-val placeholder" id="bv-checkout">Select date</span>
     </div>
-    <div class="booking-field">
+
+    <!-- APARTMENT TYPE -->
+    <div class="booking-field" id="bf-apt" onclick="toggleDrop('dd-apt', event)">
       <label>Apartment Type</label>
-      <span>XS, S, M, L</span>
+      <span class="bf-val" id="bv-apt">XS – Compact Studio</span>
+      <div class="bb-dropdown" id="dd-apt" onclick="event.stopPropagation()">
+        <div class="apt-options">
+          <div class="apt-opt selected" data-room="XS" onclick="selectApt(this)">
+            <div class="apt-opt-cat">XS</div>
+            <div class="apt-opt-info">
+              <div class="apt-opt-name">Compact Studio</div>
+              <div class="apt-opt-size">25–30 m²</div>
+            </div>
+            <div class="apt-opt-price">From 1,200,000 ₫</div>
+          </div>
+          <div class="apt-opt" data-room="S" onclick="selectApt(this)">
+            <div class="apt-opt-cat">S</div>
+            <div class="apt-opt-info">
+              <div class="apt-opt-name">Standard Studio</div>
+              <div class="apt-opt-size">35–40 m²</div>
+            </div>
+            <div class="apt-opt-price">From 1,650,000 ₫</div>
+          </div>
+          <div class="apt-opt" data-room="M" onclick="selectApt(this)">
+            <div class="apt-opt-cat">M</div>
+            <div class="apt-opt-info">
+              <div class="apt-opt-name">Spacious Apartment</div>
+              <div class="apt-opt-size">45–55 m²</div>
+            </div>
+            <div class="apt-opt-price">From 2,100,000 ₫</div>
+          </div>
+          <div class="apt-opt" data-room="L" onclick="selectApt(this)">
+            <div class="apt-opt-cat">L</div>
+            <div class="apt-opt-info">
+              <div class="apt-opt-name">Long-Stay Suite</div>
+              <div class="apt-opt-size">65–75 m²</div>
+            </div>
+            <div class="apt-opt-price">From 2,800,000 ₫</div>
+          </div>
+        </div>
+      </div>
     </div>
-    <div class="booking-field" style="border-right:none;">
+
+    <!-- GUESTS -->
+    <div class="booking-field" id="bf-guests" onclick="toggleDrop('dd-guests', event)" style="border-right:none;">
       <label>Guests</label>
-      <span>1 guest</span>
+      <span class="bf-val" id="bv-guests">1 guest</span>
+      <div class="bb-dropdown dd-right" id="dd-guests" onclick="event.stopPropagation()">
+        <div class="guest-wrap">
+          <div class="guest-row">
+            <div>
+              <div class="guest-label">Guests</div>
+              <div class="guest-sub">Max 4 per apartment</div>
+            </div>
+            <div class="guest-controls">
+              <button class="guest-btn" onclick="changeGuests(-1)">−</button>
+              <span class="guest-num" id="guest-count">1</span>
+              <button class="guest-btn" onclick="changeGuests(1)">+</button>
+            </div>
+          </div>
+          <button class="guest-apply" onclick="applyGuests()">Apply</button>
+        </div>
+      </div>
     </div>
-    <a href="booking.html" class="btn-primary">Check Availability</a>
+
+    <button class="btn-primary" onclick="goToBooking()">Check Availability</button>
   </div>
+
+  <script>
+  // ── BOOKING BAR STATE ──────────────────────────────────────
+  const BB = {
+    checkin: null,
+    checkout: null,
+    selecting: 'checkin', // 'checkin' | 'checkout'
+    room: 'XS',
+    guests: 1,
+    calOffset: 0, // months from today
+  };
+
+  const TODAY_BB = new Date();
+  TODAY_BB.setHours(0,0,0,0);
+
+  function bbDateKey(d) {
+    return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+  }
+  function bbFmt(d) {
+    const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+    return `${d.getDate()} ${M[d.getMonth()]}`;
+  }
+
+  // ── DROPDOWN TOGGLE ────────────────────────────────────────
+  function toggleDrop(id, e) {
+    e && e.stopPropagation();
+    const all = document.querySelectorAll('.bb-dropdown');
+    all.forEach(d => { if(d.id !== id) d.classList.remove('open'); });
+    const dd = document.getElementById(id);
+    const isOpen = dd.classList.contains('open');
+    dd.classList.toggle('open', !isOpen);
+    if(!isOpen && id === 'dd-checkin') renderMiniCal();
+  }
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
+  });
+
+  // ── MINI CALENDAR ──────────────────────────────────────────
+  function shiftCal(dir) {
+    BB.calOffset = Math.max(0, Math.min(2, BB.calOffset + dir));
+    renderMiniCal();
+  }
+
+  function renderMiniCal() {
+    const base = new Date(TODAY_BB.getFullYear(), TODAY_BB.getMonth() + BB.calOffset, 1);
+    const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+    const dNames = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+    document.getElementById('mc-title').textContent = `${mNames[base.getMonth()]} ${base.getFullYear()}`;
+
+    const grid = document.getElementById('mc-grid');
+    let html = dNames.map(d => `<div class="mini-day-lbl">${d}</div>`).join('');
+
+    let startDay = base.getDay();
+    startDay = startDay === 0 ? 6 : startDay - 1;
+    for(let i = 0; i < startDay; i++) html += `<div class="mini-day md-empty"></div>`;
+
+    const daysInMonth = new Date(base.getFullYear(), base.getMonth()+1, 0).getDate();
+    for(let day = 1; day <= daysInMonth; day++) {
+      const d = new Date(base.getFullYear(), base.getMonth(), day);
+      d.setHours(0,0,0,0);
+      const isPast = d < TODAY_BB;
+      const isToday = d.getTime() === TODAY_BB.getTime();
+      const isCI = BB.checkin && d.getTime() === BB.checkin.getTime();
+      const isCO = BB.checkout && d.getTime() === BB.checkout.getTime();
+      const inRange = BB.checkin && BB.checkout && d > BB.checkin && d < BB.checkout;
+
+      let cls = 'mini-day';
+      if(isToday) cls += ' md-today';
+      if(isPast) cls += ' md-disabled';
+      else {
+        if(isCI && isCO) cls += ' md-checkin md-checkout';
+        else if(isCI) cls += ' md-checkin';
+        else if(isCO) cls += ' md-checkout';
+        else if(inRange) cls += ' md-inrange';
+      }
+      const click = isPast ? '' : `onclick="onMiniDay('${bbDateKey(d)}')"`;
+      html += `<div class="${cls}" ${click}>${day}</div>`;
+    }
+    grid.innerHTML = html;
+    renderPromo();
+  }
+
+  function onMiniDay(key) {
+    const d = new Date(key);
+    d.setHours(0,0,0,0);
+
+    if(BB.selecting === 'checkin' || !BB.checkin) {
+      BB.checkin = d;
+      BB.checkout = null;
+      BB.selecting = 'checkout';
+    } else {
+      if(d <= BB.checkin) {
+        BB.checkin = d;
+        BB.checkout = null;
+        BB.selecting = 'checkout';
+      } else {
+        BB.checkout = d;
+        BB.selecting = 'checkin';
+        // close dropdown after checkout selected
+        setTimeout(() => document.getElementById('dd-checkin').classList.remove('open'), 300);
+      }
+    }
+    // update field labels
+    document.getElementById('bv-checkin').textContent = BB.checkin ? bbFmt(BB.checkin) : 'Select date';
+    document.getElementById('bv-checkin').classList.toggle('placeholder', !BB.checkin);
+    document.getElementById('bv-checkout').textContent = BB.checkout ? bbFmt(BB.checkout) : 'Select date';
+    document.getElementById('bv-checkout').classList.toggle('placeholder', !BB.checkout);
+
+    renderMiniCal();
+  }
+
+  function renderPromo() {
+    const msg = document.getElementById('promo-msg');
+    if(!BB.checkin || !BB.checkout) { msg.style.display='none'; return; }
+    const nights = Math.round((BB.checkout - BB.checkin) / 86400000);
+    if(nights <= 0) { msg.style.display='none'; return; }
+
+    msg.style.display = 'block';
+    if(nights >= 28) {
+      msg.className = 'promo-msg unlocked';
+      msg.innerHTML = '🎉 You\'ve unlocked the <strong>38% long-stay rate</strong>! Best price guaranteed.';
+    } else if(nights >= 7) {
+      const left = 28 - nights;
+      msg.className = 'promo-msg unlocked';
+      msg.innerHTML = `✅ <strong>18% weekly rate unlocked!</strong> Stay ${left} more night${left>1?'s':''} to get the 38% long-stay rate.`;
+    } else {
+      const toWeekly = 7 - nights;
+      const toMonthly = 28 - nights;
+      msg.className = 'promo-msg nudge';
+      msg.innerHTML = `💡 Add <strong>${toWeekly} more night${toWeekly>1?'s':''}</strong> to unlock 18% off — or <strong>${toMonthly} nights</strong> for 38% off.`;
+    }
+  }
+
+  // ── APARTMENT SELECTOR ─────────────────────────────────────
+  function selectApt(el) {
+    document.querySelectorAll('.apt-opt').forEach(o => o.classList.remove('selected'));
+    el.classList.add('selected');
+    BB.room = el.dataset.room;
+    const name = el.querySelector('.apt-opt-name').textContent;
+    document.getElementById('bv-apt').textContent = `${BB.room} – ${name}`;
+    setTimeout(() => document.getElementById('dd-apt').classList.remove('open'), 200);
+  }
+
+  // ── GUEST COUNTER ──────────────────────────────────────────
+  function changeGuests(delta) {
+    BB.guests = Math.max(1, Math.min(4, BB.guests + delta));
+    document.getElementById('guest-count').textContent = BB.guests;
+  }
+  function applyGuests() {
+    document.getElementById('bv-guests').textContent = BB.guests + (BB.guests === 1 ? ' guest' : ' guests');
+    document.getElementById('dd-guests').classList.remove('open');
+  }
+
+  // ── GO TO BOOKING ──────────────────────────────────────────
+  function goToBooking() {
+    let url = 'booking.html?room=' + BB.room + '&guests=' + BB.guests;
+    if(BB.checkin) url += '&ci=' + bbDateKey(BB.checkin);
+    if(BB.checkout) url += '&co=' + bbDateKey(BB.checkout);
+    window.location.href = url;
+  }
+  </script>
 
   <!-- HERO -->
   <section class="hero" style="padding:0;">
