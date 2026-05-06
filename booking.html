@@ -77,7 +77,7 @@
     .cal-day.checkin{background:var(--black);color:var(--yellow);font-weight:700;border-radius:2px 0 0 2px;}
     .cal-day.checkout{background:var(--black);color:var(--yellow);font-weight:700;border-radius:0 2px 2px 0;}
     .cal-day.inrange{background:rgba(0,0,0,0.08);}
-    .cal-day.today{font-weight:800;text-decoration:underline;text-underline-offset:2px;}
+    .cal-day.today{font-weight:800;border:1.5px solid var(--black);}
     .cal-day.checkin.checkout{border-radius:2px;}
 
     /* LEGEND */
@@ -463,18 +463,12 @@ function formatVND(n) {
 }
 
 // ============================================================
-// READ URL PARAMS — pre-fill from results page
-// ============================================================
-const _p = new URLSearchParams(window.location.search);
-function _parseDate(s) { if(!s) return null; const d = new Date(s); d.setHours(0,0,0,0); return isNaN(d) ? null : d; }
-
-// ============================================================
 // STATE
 // ============================================================
 let state = {
-  room: ['XS','S','M','L'].includes(_p.get('room')) ? _p.get('room') : 'XS',
-  checkin:  _parseDate(_p.get('ci')),
-  checkout: _parseDate(_p.get('co')),
+  room: 'XS',
+  checkin: null,
+  checkout: null,
   selectingCheckin: true,
   nights: 0,
   totalPrice: 0,
@@ -798,45 +792,12 @@ function submitBooking() {
 }
 
 // ============================================================
-// INIT — pre-fill from URL params if coming from results page
+// INIT
 // ============================================================
-(function init() {
-  // Pre-select room button
-  document.querySelectorAll('.room-btn').forEach(b => {
-    b.classList.toggle('selected', b.dataset.room === state.room);
-  });
-
-  // If dates already set, calculate nights & pricing immediately
-  if(state.checkin && state.checkout && state.checkout > state.checkin) {
-    const n = Math.round((state.checkout - state.checkin) / 86400000);
-    state.nights = n;
-    const r = RATES[state.room];
-    if(n >= 28)      { state.appliedRate = 'monthly'; state.totalPrice = r.monthly * n; }
-    else if(n >= 7)  { state.appliedRate = 'weekly';  state.totalPrice = r.weekly  * n; }
-    else             { state.appliedRate = 'nightly'; state.totalPrice = r.nightly * n; }
-    document.getElementById('btn-step2-next').disabled = false;
-    // Skip to step 2 automatically — dates + room already chosen
-    goToStep(2);
-  }
-
-  buildCalendars();
-  updateRateTiers();
-  updateSidebar();
-  if(state.checkin && state.checkout) {
-    recalcPricing();
-    document.getElementById('date-pricing-panel').style.display = 'block';
-  }
-})();
+buildCalendars();
+updateRateTiers();
+updateSidebar();
 </script>
 
-<footer style="background:var(--black);color:var(--white);padding:80px 80px 40px;">
-  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;">
-    <div><a href="index.html" style="font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;">i<span style="color:var(--yellow);">partment</span></a><p style="font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;">Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
-    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Accommodation</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="accommodation.html#xs" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Studio XS</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#s" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Studio S</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#m" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Apartment M</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#l" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Long-Stay Suite L</a></li></ul></div>
-    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Company</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="about.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">About Us</a></li><li style="margin-bottom:10px;"><a href="career.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Career</a></li><li style="margin-bottom:10px;"><a href="magazine.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Magazine</a></li><li style="margin-bottom:10px;"><a href="faq.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">FAQ</a></li></ul></div>
-    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Contact</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="mailto:khangle.forwork@gmail.com" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">khangle.forwork@gmail.com</a></li><li style="margin-bottom:10px;"><a href="tel:+84779488070" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">+84 779 488 070</a></li><li style="margin-bottom:10px;"><a href="#" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul></div>
-  </div>
-  <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);"><span>© 2025 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="#" style="color:rgba(255,255,255,0.32);text-decoration:none;">Privacy Policy</a><a href="#" style="color:rgba(255,255,255,0.32);text-decoration:none;">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
-</footer>
 </body>
 </html>
