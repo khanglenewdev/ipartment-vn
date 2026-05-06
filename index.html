@@ -384,7 +384,7 @@
         <div class="hero-stat-label">Apartment sizes</div>
       </div>
       <div class="hero-stat">
-        <div class="hero-stat-num">4.8★</div>
+        <div class="hero-stat-num">4.8<span style="font-family:Arial,sans-serif;font-style:normal;">&#9733;</span></div>
         <div class="hero-stat-label">Guest rating</div>
       </div>
       <div class="hero-stat">
@@ -437,57 +437,57 @@
   </div>
 
   <!-- ROOMS PREVIEW -->
-  <section style="background:var(--gray-light);">
-    <div class="rooms-header" style="display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:48px;">
-      <div>
+  <section class="rooms-section">
+    <div class="rooms-header">
+      <div class="rooms-header-left">
         <span class="section-eyebrow">Accommodation</span>
         <h2 class="section-title">Four sizes.<br/>One standard.</h2>
       </div>
       <a href="accommodation.html" class="btn-outline" style="color:var(--black);border-color:rgba(0,0,0,0.25);">View All</a>
     </div>
-    <div class="rooms-grid" style="display:grid;grid-template-columns:repeat(4,1fr);gap:16px;">
-      <div style="background:var(--white);overflow:hidden;">
-        <div style="aspect-ratio:4/3;background:url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80') center/cover no-repeat;"></div>
-        <div style="padding:24px 20px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
-            <span style="font-family:var(--font-heading);font-size:22px;font-weight:900;">XS</span>
-            <span style="font-size:12px;color:var(--gray-mid);">25–30 m²</span>
-          </div>
-          <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:16px;">Compact smart studio. Everything you need, nothing you don't.</p>
-          <div style="font-size:13px;font-weight:700;">From 1,200,000 ₫<span style="font-weight:400;color:var(--gray-mid);"> / night</span></div>
+    <div class="rooms-grid">
+      <div class="room-card">
+        <span class="room-label">Studio XS</span>
+        <img class="room-img" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Studio XS" />
+        <div class="room-info">
+          <div class="room-size">XS</div>
+          <div class="room-name">Compact Studio &middot; 25&ndash;30 m&sup2;</div>
+          <p class="room-desc">Everything you need, nothing you don't. Perfect for short and mid-term stays.</p>
+          <div style="font-size:13px;font-weight:700;color:var(--white);margin-top:12px;">From 1,200,000 &#x20ab;<span style="font-weight:400;color:rgba(255,255,255,0.45);"> / night</span></div>
+          <a href="accommodation.html#xs" class="room-cta">See details &rarr;</a>
         </div>
       </div>
-      <div style="background:var(--white);overflow:hidden;">
-        <div style="aspect-ratio:4/3;background:url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80') center/cover no-repeat;"></div>
-        <div style="padding:24px 20px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
-            <span style="font-family:var(--font-heading);font-size:22px;font-weight:900;">S</span>
-            <span style="font-size:12px;color:var(--gray-mid);">35–40 m²</span>
-          </div>
-          <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:16px;">Studio with proper seating and dining. Best for mid-term stays.</p>
-          <div style="font-size:13px;font-weight:700;">From 1,650,000 ₫<span style="font-weight:400;color:var(--gray-mid);"> / night</span></div>
+      <div class="room-card">
+        <span class="room-label">Studio S</span>
+        <img class="room-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80" alt="Studio S" />
+        <div class="room-info">
+          <div class="room-size">S</div>
+          <div class="room-name">Studio S &middot; 35&ndash;40 m&sup2;</div>
+          <p class="room-desc">Proper seating and dining area. Best for mid-term stays and remote workers.</p>
+          <div style="font-size:13px;font-weight:700;color:var(--white);margin-top:12px;">From 1,650,000 &#x20ab;<span style="font-weight:400;color:rgba(255,255,255,0.45);"> / night</span></div>
+          <a href="accommodation.html#s" class="room-cta">See details &rarr;</a>
         </div>
       </div>
-      <div style="background:var(--white);overflow:hidden;">
-        <div style="aspect-ratio:4/3;background:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80') center/cover no-repeat;"></div>
-        <div style="padding:24px 20px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
-            <span style="font-family:var(--font-heading);font-size:22px;font-weight:900;">M</span>
-            <span style="font-size:12px;color:var(--gray-mid);">45–55 m²</span>
-          </div>
-          <p style="font-size:13px;color:#555;line-height:1.6;margin-bottom:16px;">Full apartment with separate living, dining, and work zones.</p>
-          <div style="font-size:13px;font-weight:700;">From 2,100,000 ₫<span style="font-weight:400;color:var(--gray-mid);"> / night</span></div>
+      <div class="room-card">
+        <span class="room-label">Apartment M</span>
+        <img class="room-img" src="https://images.unsplash.com/photo-1484154218962-a197022b5858?w=600&q=80" alt="Apartment M" />
+        <div class="room-info">
+          <div class="room-size">M</div>
+          <div class="room-name">Apartment M &middot; 45&ndash;55 m&sup2;</div>
+          <p class="room-desc">Separate living, dining, and home office zones. The most popular choice.</p>
+          <div style="font-size:13px;font-weight:700;color:var(--white);margin-top:12px;">From 2,100,000 &#x20ab;<span style="font-weight:400;color:rgba(255,255,255,0.45);"> / night</span></div>
+          <a href="accommodation.html#m" class="room-cta">See details &rarr;</a>
         </div>
       </div>
-      <div style="background:var(--black);overflow:hidden;">
-        <div style="aspect-ratio:4/3;background:url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80') center/cover no-repeat;"></div>
-        <div style="padding:24px 20px;">
-          <div style="display:flex;align-items:baseline;justify-content:space-between;margin-bottom:8px;">
-            <span style="font-family:var(--font-heading);font-size:22px;font-weight:900;color:var(--yellow);">L</span>
-            <span style="font-size:12px;color:rgba(255,255,255,0.45);">65–75 m²</span>
-          </div>
-          <p style="font-size:13px;color:rgba(255,255,255,0.65);line-height:1.6;margin-bottom:16px;">Our largest — separate bedroom, full living room, family kitchen.</p>
-          <div style="font-size:13px;font-weight:700;color:var(--white);">From 2,800,000 ₫<span style="font-weight:400;color:rgba(255,255,255,0.45);"> / night</span></div>
+      <div class="room-card">
+        <span class="room-label">Long-Stay Suite L</span>
+        <img class="room-img" src="https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=600&q=80" alt="Long-Stay Suite L" />
+        <div class="room-info">
+          <div class="room-size">L</div>
+          <div class="room-name">Long-Stay Suite &middot; 65&ndash;75 m&sup2;</div>
+          <p class="room-desc">Separate bedroom, full living room, family kitchen. Built for long-term living.</p>
+          <div style="font-size:13px;font-weight:700;color:var(--white);margin-top:12px;">From 2,800,000 &#x20ab;<span style="font-weight:400;color:rgba(255,255,255,0.45);"> / night</span></div>
+          <a href="accommodation.html#l" class="room-cta">See details &rarr;</a>
         </div>
       </div>
     </div>
@@ -580,24 +580,6 @@
     const M = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
     return `${d.getDate()} ${M[d.getMonth()]}`;
   }
-
-  // ── DROPDOWN TOGGLE ────────────────────────────────────────
-  function toggleDrop(id, e) {
-    e && e.stopPropagation();
-    const all = document.querySelectorAll('.bb-dropdown');
-    all.forEach(d => { if(d.id !== id) d.classList.remove('open'); });
-    const dd = document.getElementById(id);
-    const isOpen = dd.classList.contains('open');
-    dd.classList.toggle('open', !isOpen);
-    if(!isOpen && id === 'dd-checkin') renderMiniCal();
-    if(!isOpen && id === 'dd-apt') rebuildAptList();
-  }
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
-  });
-
-  // Run on page load so XS is shown correctly as selected from the start
-  document.addEventListener('DOMContentLoaded', () => rebuildAptList());
 
   // ── MINI CALENDAR ──────────────────────────────────────────
   function shiftCal(dir) {
@@ -767,8 +749,10 @@
   }
 
   // Close dropdowns on outside click
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
+  document.addEventListener('click', (e) => {
+    if (!e.target.closest('.booking-field') && !e.target.closest('.bb-dropdown')) {
+      document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
+    }
   });
 
   // Init
