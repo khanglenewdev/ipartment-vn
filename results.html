@@ -127,6 +127,14 @@
     .tier-info-val{font-size:14px;font-weight:700;color:var(--black);}
     .tier-info-discount{font-size:13px;font-weight:800;color:var(--green);}
 
+    /* SORT DROPDOWN OPTIONS */
+    .sort-drop-opt{padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--black);transition:background 0.12s;}
+    .sort-drop-opt:hover{background:#f5f5f5;}
+    .sort-drop-opt.selected{background:var(--yellow);}
+
+    /* MAX GUESTS BADGE on card */
+    .room-guests-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;background:#f3f3f3;color:#444;margin-bottom:14px;}
+
     /* EMPTY STATE */
     .empty-state{text-align:center;padding:80px 40px;}
     .empty-state h3{font-family:var(--font-heading);font-size:24px;margin-bottom:12px;}
@@ -215,14 +223,35 @@
       <div class="results-title" id="results-title">Available Apartments</div>
       <div class="results-sub" id="results-sub">ipartment Vietnam · Thao Dien, Ho Chi Minh City</div>
     </div>
-    <div class="sort-wrap">
-      <span class="sort-label">Sort:</span>
-      <button class="sort-btn active" onclick="sortCards('price-asc', this)">Price ↑</button>
-      <button class="sort-btn" onclick="sortCards('price-desc', this)">Price ↓</button>
-      <button class="sort-btn" onclick="sortCards('size-asc', this)">Size ↑</button>
-    </div>
   </div>
-  <div id="results-list"></div>
+  <!-- PINNED CHOICE -->
+  <div id="pinned-card"></div>
+  <!-- SORT BAR + REST OF RESULTS -->
+  <div id="sort-and-rest" style="display:none;">
+    <div style="height:1px;background:#ddd;margin:0 0 20px;"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);">Sort:</span>
+      <!-- PRICE dropdown -->
+      <div style="position:relative;">
+        <button id="sort-price-btn" class="sort-btn active" onclick="toggleSortDrop('sort-price-drop', event)">Price &#9660;</button>
+        <div id="sort-price-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:300;min-width:170px;">
+          <div class="sort-drop-opt" data-mode="price-asc" onclick="pickSort('price-asc',this)">From cheapest</div>
+          <div class="sort-drop-opt" data-mode="price-desc" onclick="pickSort('price-desc',this)">From most expensive</div>
+        </div>
+      </div>
+      <!-- SIZE dropdown -->
+      <div style="position:relative;">
+        <button id="sort-size-btn" class="sort-btn" onclick="toggleSortDrop('sort-size-drop', event)">Size &#9660;</button>
+        <div id="sort-size-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:300;min-width:140px;">
+          <div class="sort-drop-opt" data-mode="size-asc" onclick="pickSort('size-asc',this)">Smallest first</div>
+          <div class="sort-drop-opt" data-mode="size-desc" onclick="pickSort('size-desc',this)">Largest first</div>
+        </div>
+      </div>
+    </div>
+    <div id="results-list"></div>
+  </div>
+  <!-- FALLBACK list when no room chosen -->
+  <div id="results-list-all"></div>
 </div>
 
 <footer style="background:var(--black);color:rgba(255,255,255,0.45);text-align:center;padding:24px 40px;font-size:12px;">
@@ -238,6 +267,7 @@ const ROOMS = [
     id: 'XS',
     name: 'Compact Studio',
     size: '25–30 m²',
+    maxGuests: 4,
     desc: 'A cleverly designed compact studio with everything you need for a comfortable solo stay. Floor-to-ceiling windows, a full kitchenette, and smart storage maximise every square metre.',
     amenities: ['High-speed Wi-Fi','Kitchenette','Smart TV','Air conditioning','Daily housekeeping','24/7 check-in'],
     nightly: 1200000, weekly: 980000, monthly: 750000,
@@ -248,6 +278,7 @@ const ROOMS = [
     id: 'S',
     name: 'Standard Studio',
     size: '35–40 m²',
+    maxGuests: 4,
     desc: 'Our most popular option — a spacious studio with a dedicated workspace, full kitchen, and a comfortable lounge area. Perfect for professionals on extended assignments.',
     amenities: ['High-speed Wi-Fi','Full kitchen','Workspace','Smart TV','Air conditioning','Daily housekeeping','24/7 check-in'],
     nightly: 1650000, weekly: 1350000, monthly: 1050000,
@@ -258,6 +289,7 @@ const ROOMS = [
     id: 'M',
     name: 'Spacious Apartment',
     size: '45–55 m²',
+    maxGuests: 6,
     desc: 'A full one-bedroom apartment with a separate living room, dining area, and fully equipped kitchen. Ideal for couples or professionals who need room to breathe and work.',
     amenities: ['High-speed Wi-Fi','Full kitchen','Dining area','Living room','Smart TV','Washer/dryer','Daily housekeeping','24/7 check-in'],
     nightly: 2100000, weekly: 1750000, monthly: 1350000,
@@ -268,6 +300,7 @@ const ROOMS = [
     id: 'L',
     name: 'Long-Stay Suite',
     size: '65–75 m²',
+    maxGuests: 8,
     desc: 'Our largest and most premium offering — a full two-room suite with a master bedroom, generous living and dining space, premium furnishings, and panoramic city views.',
     amenities: ['High-speed Wi-Fi','Full gourmet kitchen','Master bedroom','Living & dining room','Smart TV','Washer/dryer','Bathtub','Daily housekeeping','24/7 check-in'],
     nightly: 2800000, weekly: 2300000, monthly: 1800000,
@@ -286,6 +319,7 @@ let S = {
   checkin:  params.get('ci')  ? parseDate(params.get('ci'))  : null,
   checkout: params.get('co')  ? parseDate(params.get('co'))  : null,
   guests:   parseInt(params.get('guests') || '1'),
+  room:     params.get('room') || null,
   calOffset: 0,
   selecting: 'checkin',
 };
@@ -328,8 +362,9 @@ window.addEventListener('DOMContentLoaded', () => {
   syncSearchBar();
   renderResults();
   renderSbCal();
-  document.addEventListener('click', () => {
-    document.querySelectorAll('.sb-dropdown').forEach(d => d.classList.remove('open'));
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.sb-dropdown').forEach(function(d){ d.classList.remove('open'); });
+    document.querySelectorAll('#sort-price-drop, #sort-size-drop').forEach(function(d){ d.style.display='none'; });
   });
 });
 
@@ -357,6 +392,54 @@ function syncSearchBar() {
 // ─────────────────────────────────────────────
 let sortMode = 'price-asc';
 
+function buildCardHTML(room, n, key, hasDates, isPinned) {
+  const rKey = hasDates ? key : 'nightly';
+  const rate = room[rKey];
+  const disc = discountPct(room, rKey);
+  const total = hasDates ? rate * n : null;
+  const bookUrl = buildBookUrl(room.id);
+
+  const promoLine = (rKey === 'monthly')
+    ? '<div class="room-promo-line">38% long-stay rate applied — best price</div>'
+    : (rKey === 'weekly')
+    ? '<div class="room-promo-line">18% weekly rate applied</div>'
+    : '';
+
+  const pinnedLabel = isPinned
+    ? '<div style="display:inline-block;background:var(--yellow);color:var(--black);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;margin-bottom:12px;">Your Choice</div>'
+    : '';
+
+  return '<div class="room-card" data-price="' + rate + '" data-size="' + parseInt(room.size) + '">'
+    + '<div class="room-img">'
+    + (room.badge ? '<div class="room-img-badge">' + room.badge + '</div>' : '')
+    + '<img src="' + room.img + '" alt="' + room.name + '" loading="lazy" />'
+    + '<div class="room-img-size">' + room.size + '</div>'
+    + '</div>'
+    + '<div class="room-body">'
+    + pinnedLabel
+    + '<div class="room-cat">' + room.id + '</div>'
+    + '<div class="room-name">' + room.name + '</div>'
+    + '<div class="room-guests-badge">Up to ' + room.maxGuests + ' guests</div>'
+    + promoLine
+    + '<div class="room-desc">' + room.desc + '</div>'
+    + '<div class="room-amenities">' + room.amenities.map(function(a){return '<span class="amenity-tag">' + a + '</span>';}).join('') + '</div>'
+    + '<div class="room-footer">'
+    + '<div class="room-pricing">'
+    + '<div class="rate-label">' + (hasDates ? 'Your rate' : 'Starting from') + '</div>'
+    + '<div class="rate-main">' + fmtVND(rate) + '</div>'
+    + '<div class="rate-unit">per night' + (hasDates && n > 1 ? ' &middot; ' + n + ' nights' : '') + '</div>'
+    + (disc > 0 ? '<div class="rate-original">' + fmtVND(room.nightly) + ' /night standard</div><div class="rate-discount">-' + disc + '% off</div>' : '')
+    + (total ? '<div class="rate-total" style="margin-top:8px;font-size:15px;">Total: <strong>' + fmtVND(total) + '</strong></div>' : '')
+    + '</div>'
+    + '<div class="room-cta">'
+    + '<button class="btn-book" onclick="window.location.href=\'' + bookUrl + '\'">Book This Room &#8594;</button>'
+    + '<a href="accommodation.html" class="btn-details">View Details</a>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+    + '</div>';
+}
+
 function renderResults() {
   const n = nights();
   const key = rateKey(n);
@@ -367,9 +450,9 @@ function renderResults() {
 
   // Title & sub
   if(hasDates) {
-    document.getElementById('results-title').textContent = `4 Apartments Available`;
+    document.getElementById('results-title').textContent = '4 Apartments Available';
     document.getElementById('results-sub').textContent =
-      `${fmt(S.checkin)} → ${fmt(S.checkout)} · ${n} night${n>1?'s':''} · ${S.guests} guest${S.guests>1?'s':''} · Thao Dien, HCMC`;
+      fmt(S.checkin) + ' → ' + fmt(S.checkout) + ' · ' + n + ' night' + (n>1?'s':'') + ' · ' + S.guests + ' guest' + (S.guests>1?'s':'') + ' · Thao Dien, HCMC';
   } else {
     document.getElementById('results-title').textContent = 'All Apartments';
     document.getElementById('results-sub').textContent = 'ipartment Vietnam · Thao Dien, Ho Chi Minh City · Select dates to see your price';
@@ -379,94 +462,78 @@ function renderResults() {
   const tierBox = document.getElementById('tier-info-box');
   if(hasDates) {
     tierBox.style.display = 'flex';
-    let tierLabel, tierNote;
+    var tierLabel, tierNote;
     if(key === 'monthly') {
-      tierLabel = '38% Long-Stay Rate 🎉'; tierNote = 'Best rate — 28+ nights';
+      tierLabel = '38% Long-Stay Rate'; tierNote = 'Best rate — 28+ nights';
     } else if(key === 'weekly') {
       const left = 28 - n;
-      tierLabel = '18% Weekly Rate ✅'; tierNote = `Stay ${left} more night${left>1?'s':''} for 38% off`;
+      tierLabel = '18% Weekly Rate'; tierNote = 'Stay ' + left + ' more night' + (left>1?'s':'') + ' for 38% off';
     } else {
       const toW = 7 - n; const toM = 28 - n;
-      tierLabel = 'Standard Nightly Rate'; tierNote = `+${toW} nights → 18% off · +${toM} nights → 38% off`;
+      tierLabel = 'Standard Nightly Rate'; tierNote = '+' + toW + ' nights → 18% off · +' + toM + ' nights → 38% off';
     }
-    tierBox.innerHTML = `
-      <div class="tier-info-item"><div class="tier-info-label">Current Rate Tier</div><div class="tier-info-discount">${tierLabel}</div></div>
-      <div class="tier-info-item"><div class="tier-info-label">Tip</div><div class="tier-info-val" style="font-size:12px;font-weight:600;color:#555;">${tierNote}</div></div>
-      <div class="tier-info-item"><div class="tier-info-label">Check-in</div><div class="tier-info-val">${fmt(S.checkin)}</div></div>
-      <div class="tier-info-item"><div class="tier-info-label">Check-out</div><div class="tier-info-val">${fmt(S.checkout)}</div></div>
-    `;
+    tierBox.innerHTML = '<div class="tier-info-item"><div class="tier-info-label">Current Rate Tier</div><div class="tier-info-discount">' + tierLabel + '</div></div>'
+      + '<div class="tier-info-item"><div class="tier-info-label">Tip</div><div class="tier-info-val" style="font-size:12px;font-weight:600;color:#555;">' + tierNote + '</div></div>'
+      + '<div class="tier-info-item"><div class="tier-info-label">Check-in</div><div class="tier-info-val">' + fmt(S.checkin) + '</div></div>'
+      + '<div class="tier-info-item"><div class="tier-info-label">Check-out</div><div class="tier-info-val">' + fmt(S.checkout) + '</div></div>';
   } else {
     tierBox.style.display = 'none';
   }
 
-  // Sort rooms
-  let rooms = [...ROOMS];
-  if(sortMode === 'price-asc')  rooms.sort((a,b) => a[hasDates ? key : 'nightly'] - b[hasDates ? key : 'nightly']);
-  if(sortMode === 'price-desc') rooms.sort((a,b) => b[hasDates ? key : 'nightly'] - a[hasDates ? key : 'nightly']);
-  if(sortMode === 'size-asc')   rooms.sort((a,b) => parseInt(a.size) - parseInt(b.size));
+  const pinnedRoom = S.room ? ROOMS.find(function(r){return r.id === S.room;}) : null;
+  const otherRooms = pinnedRoom ? ROOMS.filter(function(r){return r.id !== S.room;}) : [...ROOMS];
 
-  // Render cards
-  const list = document.getElementById('results-list');
-  list.innerHTML = rooms.map(room => {
-    const rKey = hasDates ? key : 'nightly';
-    const rate = room[rKey];
-    const disc = discountPct(room, rKey);
-    const total = hasDates ? rate * n : null;
-    const bookUrl = buildBookUrl(room.id);
+  // Sort others
+  if(sortMode === 'price-asc')  otherRooms.sort(function(a,b){ return a[hasDates ? key : 'nightly'] - b[hasDates ? key : 'nightly']; });
+  if(sortMode === 'price-desc') otherRooms.sort(function(a,b){ return b[hasDates ? key : 'nightly'] - a[hasDates ? key : 'nightly']; });
+  if(sortMode === 'size-asc')   otherRooms.sort(function(a,b){ return parseInt(a.size) - parseInt(b.size); });
+  if(sortMode === 'size-desc')  otherRooms.sort(function(a,b){ return parseInt(b.size) - parseInt(a.size); });
 
-    const promoLine = (rKey === 'monthly')
-      ? `<div class="room-promo-line">🎉 38% long-stay rate applied — best price</div>`
-      : (rKey === 'weekly')
-      ? `<div class="room-promo-line">✅ 18% weekly rate applied</div>`
-      : '';
+  const pinnedEl = document.getElementById('pinned-card');
+  const sortAndRest = document.getElementById('sort-and-rest');
+  const listAll = document.getElementById('results-list-all');
 
-    return `
-    <div class="room-card" data-price="${rate}" data-size="${parseInt(room.size)}">
-        <div class="room-img">
-          ${room.badge ? `<div class="room-img-badge">${room.badge}</div>` : ''}
-          <img src="${room.img}" alt="${room.name}" loading="lazy" />
-          <div class="room-img-size">📐 ${room.size}</div>
-        </div>
-        <div class="room-body">
-          <div class="room-cat">${room.id}</div>
-          <div class="room-name">${room.name}</div>
-          ${promoLine}
-          <div class="room-desc">${room.desc}</div>
-          <div class="room-amenities">
-            ${room.amenities.map(a => `<span class="amenity-tag">${a}</span>`).join('')}
-          </div>
-          <div class="room-footer">
-            <div class="room-pricing">
-              <div class="rate-label">${hasDates ? 'Your rate' : 'Starting from'}</div>
-              <div class="rate-main">${fmtVND(rate)}</div>
-              <div class="rate-unit">per night${hasDates && n > 1 ? ` · ${n} nights` : ''}</div>
-              ${disc > 0 ? `
-                <div class="rate-original">${fmtVND(room.nightly)} /night standard</div>
-                <div class="rate-discount">-${disc}% off</div>
-              ` : ''}
-              ${total ? `<div class="rate-total" style="margin-top:8px;font-size:15px;">Total: <strong>${fmtVND(total)}</strong></div>` : ''}
-            </div>
-            <div class="room-cta">
-              <button class="btn-book" onclick="window.location.href='${bookUrl}'">Book This Room →</button>
-              <a href="accommodation.html" class="btn-details">View Details</a>
-            </div>
-          </div>
-        </div>
-    </div>`;
-  }).join('');
+  if(pinnedRoom) {
+    // Show pinned card, then separator + sort bar + others
+    pinnedEl.innerHTML = buildCardHTML(pinnedRoom, n, key, hasDates, true);
+    sortAndRest.style.display = 'block';
+    document.getElementById('results-list').innerHTML = otherRooms.map(function(r){return buildCardHTML(r, n, key, hasDates, false);}).join('');
+    listAll.innerHTML = '';
+  } else {
+    // No room chosen — show all sorted, no separator
+    pinnedEl.innerHTML = '';
+    sortAndRest.style.display = 'none';
+    listAll.innerHTML = otherRooms.map(function(r){return buildCardHTML(r, n, key, hasDates, false);}).join('');
+  }
 }
 
 function buildBookUrl(roomId) {
-  let url = `booking.html?room=${roomId}&guests=${S.guests}`;
-  if(S.checkin)  url += `&ci=${dateKey(S.checkin)}`;
-  if(S.checkout) url += `&co=${dateKey(S.checkout)}`;
+  var url = 'booking.html?room=' + roomId + '&guests=' + S.guests;
+  if(S.checkin)  url += '&ci=' + dateKey(S.checkin);
+  if(S.checkout) url += '&co=' + dateKey(S.checkout);
   return url;
 }
 
-function sortCards(mode, btn) {
+function toggleSortDrop(id, e) {
+  e && e.stopPropagation();
+  var drops = ['sort-price-drop','sort-size-drop'];
+  drops.forEach(function(d){
+    var el = document.getElementById(d);
+    if(el) el.style.display = (d === id && el.style.display === 'none') ? 'block' : 'none';
+  });
+}
+
+function pickSort(mode, el) {
   sortMode = mode;
-  document.querySelectorAll('.sort-btn').forEach(b => b.classList.remove('active'));
-  btn.classList.add('active');
+  // Update button labels
+  var isPrice = mode.startsWith('price');
+  document.getElementById('sort-price-btn').classList.toggle('active', isPrice);
+  document.getElementById('sort-size-btn').classList.toggle('active', !isPrice);
+  // Mark selected option
+  document.querySelectorAll('.sort-drop-opt').forEach(function(o){ o.classList.remove('selected'); });
+  el.classList.add('selected');
+  // Close dropdowns
+  document.querySelectorAll('#sort-price-drop, #sort-size-drop').forEach(function(d){ d.style.display='none'; });
   renderResults();
 }
 
@@ -581,7 +648,7 @@ function sbApplyGuests() {
     <div><a href="index.html" style="font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;">i<span style="color:var(--yellow);">partment</span></a><p style="font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;">Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
     <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Accommodation</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="accommodation.html#xs" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Studio XS</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#s" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Studio S</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#m" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Apartment M</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#l" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Long-Stay Suite L</a></li></ul></div>
     <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Company</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="about.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">About Us</a></li><li style="margin-bottom:10px;"><a href="career.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Career</a></li><li style="margin-bottom:10px;"><a href="magazine.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Magazine</a></li><li style="margin-bottom:10px;"><a href="faq.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">FAQ</a></li></ul></div>
-    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Contact</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="mailto:khangle.forwork@gmail.com" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">khangle.forwork@gmail.com</a></li><li style="margin-bottom:10px;"><a href="tel:+84779488070" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">+84 779 488 070</a></li><li style="margin-bottom:10px;"><a href="#" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul></div>
+    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Contact</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="mailto:khangle.forwork@gmail.com" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">khangle.forwork@gmail.com</a></li><li style="margin-bottom:10px;"><a href="tel:+84779488070" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">+84 779 488 070</a></li><li style="margin-bottom:10px;"><a href="#" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-top:28px;margin-bottom:20px;">Social</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Our Facebook</a></li></ul></div>
   </div>
   <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);"><span>© 2025 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="#" style="color:rgba(255,255,255,0.32);text-decoration:none;">Privacy Policy</a><a href="#" style="color:rgba(255,255,255,0.32);text-decoration:none;">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
 </footer>
