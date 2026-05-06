@@ -666,17 +666,17 @@
     if(nights >= 28) {
       msg.style.display = 'block';
       msg.className = 'promo-msg unlocked';
-      msg.innerHTML = '🎉 You've unlocked the 38% long-stay rate!';
+      msg.innerHTML = "You've unlocked the 38% long-stay rate!";
     } else if(nights >= 7) {
       const left = 28 - nights;
       msg.style.display = 'block';
       msg.className = 'promo-msg unlocked';
-      msg.innerHTML = `✅ 18% weekly rate unlocked! ${left} more night${left===1?'':'s'} → 38% off.`;
+      msg.innerHTML = '18% weekly rate unlocked! ' + left + ' more night' + (left===1?'':'s') + ' until 38% off.';
     } else {
       const toWeekly = 7 - nights;
       msg.style.display = 'block';
       msg.className = 'promo-msg nudge';
-      msg.innerHTML = `💡 Add ${toWeekly} more night${toWeekly===1?'':'s'} to unlock 18% off.`;
+      msg.innerHTML = 'Add ' + toWeekly + ' more night' + (toWeekly===1?'':'s') + ' to unlock 18% off.';
     }
   }
 
