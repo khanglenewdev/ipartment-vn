@@ -623,17 +623,11 @@ function renderSbPromo() {
   }
 }
 
-function sbCloseCal(e) {
-  e && e.stopPropagation();
-  document.getElementById('sbd-cal').classList.remove('open');
   renderResults();
 }
 
-// ─────────────────────────────────────────────
-// SEARCH BAR GUEST COUNTER
-// ─────────────────────────────────────────────
 function sbChangeGuests(delta) {
-  S.guests = Math.max(1, Math.min(4, S.guests + delta));
+  S.guests = Math.max(1, Math.min(8, S.guests + delta));
   document.getElementById('sb-guest-count').textContent = S.guests;
 }
 function sbApplyGuests() {
@@ -650,7 +644,7 @@ function sbApplyGuests() {
     <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Company</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="about.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">About Us</a></li><li style="margin-bottom:10px;"><a href="career.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Career</a></li><li style="margin-bottom:10px;"><a href="magazine.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Magazine</a></li><li style="margin-bottom:10px;"><a href="faq.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">FAQ</a></li></ul></div>
     <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Contact</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="mailto:khangle.forwork@gmail.com" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">khangle.forwork@gmail.com</a></li><li style="margin-bottom:10px;"><a href="tel:+84779488070" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">+84 779 488 070</a></li><li style="margin-bottom:10px;"><a href="#" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-top:28px;margin-bottom:20px;">Social</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Our Facebook</a></li></ul></div>
   </div>
-  <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);"><span>© 2025 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="#" style="color:rgba(255,255,255,0.32);text-decoration:none;">Privacy Policy</a><a href="#" style="color:rgba(255,255,255,0.32);text-decoration:none;">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
+  <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);"><span>&copy; 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy" style="color:rgba(255,255,255,0.32);text-decoration:none;">Privacy Policy</a><a href="legal.html#terms" style="color:rgba(255,255,255,0.32);text-decoration:none;">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
 </footer>
 </body>
 </html>
