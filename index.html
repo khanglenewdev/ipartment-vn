@@ -215,7 +215,7 @@
     .mini-day:hover:not(.md-disabled):not(.md-empty) { background: #f0f0f0; }
     .mini-day.md-empty { cursor: default; }
     .mini-day.md-disabled { color: #ccc; cursor: not-allowed; }
-    .mini-day.md-today { font-weight: 800; border: 1.5px solid var(--black); }
+    .mini-day.md-today { font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
     .mini-day.md-checkin { background: var(--black); color: var(--yellow); font-weight: 700; border-radius: 2px 0 0 2px; }
     .mini-day.md-checkout { background: var(--black); color: var(--yellow); font-weight: 700; border-radius: 0 2px 2px 0; }
     .mini-day.md-checkin.md-checkout { border-radius: 2px; }
@@ -535,12 +535,42 @@
 
   // ── APARTMENT SELECTOR ─────────────────────────────────────
   function selectApt(el) {
-    document.querySelectorAll('.apt-opt').forEach(o => o.classList.remove('selected'));
-    el.classList.add('selected');
     BB.room = el.dataset.room;
     const name = el.querySelector('.apt-opt-name').textContent;
     document.getElementById('bv-apt').textContent = `${BB.room} – ${name}`;
-    setTimeout(() => document.getElementById('dd-apt').classList.remove('open'), 200);
+    rebuildAptList();
+    setTimeout(() => document.getElementById('dd-apt').classList.remove('open'), 240);
+  }
+
+  const APT_DATA = [
+    { id:'XS', name:'Compact Studio',     size:'25–30 m²', price:'From 1,200,000 ₫' },
+    { id:'S',  name:'Standard Studio',    size:'35–40 m²', price:'From 1,650,000 ₫' },
+    { id:'M',  name:'Spacious Apartment', size:'45–55 m²', price:'From 2,100,000 ₫' },
+    { id:'L',  name:'Long-Stay Suite',    size:'65–75 m²', price:'From 2,800,000 ₫' },
+  ];
+
+  function rebuildAptList() {
+    const container = document.querySelector('.apt-options');
+    const selected = APT_DATA.find(a => a.id === BB.room);
+    const others   = APT_DATA.filter(a => a.id !== BB.room);
+    container.innerHTML =
+      // Selected item at top
+      renderAptOpt(selected, true) +
+      // Separator
+      `<div style="height:1px;background:#e5e5e5;margin:4px 0;"></div>` +
+      // Rest
+      others.map(a => renderAptOpt(a, false)).join('');
+  }
+
+  function renderAptOpt(a, isSelected) {
+    return `<div class="apt-opt${isSelected ? ' selected' : ''}" data-room="${a.id}" onclick="selectApt(this)">
+      <div class="apt-opt-cat">${a.id}</div>
+      <div class="apt-opt-info">
+        <div class="apt-opt-name">${a.name}</div>
+        <div class="apt-opt-size">${a.size}</div>
+      </div>
+      <div class="apt-opt-price">${a.price}</div>
+    </div>`;
   }
 
   // ── GUEST COUNTER ──────────────────────────────────────────

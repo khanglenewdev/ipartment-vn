@@ -19,9 +19,12 @@
     nav a:hover{color:var(--yellow);}
     .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
 
+    /* PAGE TOP OFFSET — header 72px + search bar 72px */
+    body{padding-top:144px;}
+
     /* SEARCH BAR (sticky, inherits dates from URL) */
     .search-bar{
-      position:sticky;top:72px;z-index:100;background:var(--white);
+      position:fixed;top:72px;z-index:100;left:0;right:0;background:var(--white);
       border-bottom:3px solid var(--yellow);padding:0 56px;
       display:flex;align-items:center;height:72px;gap:0;
       box-shadow:0 4px 20px rgba(0,0,0,0.07);
@@ -50,7 +53,7 @@
     .mini-day:hover:not(.md-disabled):not(.md-empty){background:#f0f0f0;}
     .mini-day.md-empty{cursor:default;}
     .mini-day.md-disabled{color:#ccc;cursor:not-allowed;}
-    .mini-day.md-today{font-weight:800;border:1.5px solid var(--black);}
+    .mini-day.md-today{font-weight:800;text-decoration:underline;text-underline-offset:2px;}
     .mini-day.md-checkin{background:var(--black);color:var(--yellow);font-weight:700;border-radius:2px 0 0 2px;}
     .mini-day.md-checkout{background:var(--black);color:var(--yellow);font-weight:700;border-radius:0 2px 2px 0;}
     .mini-day.md-checkin.md-checkout{border-radius:2px;}
@@ -87,7 +90,7 @@
     .no-dates-banner a{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--black);text-decoration:underline;white-space:nowrap;}
 
     /* ROOM CARD */
-    .room-card{background:var(--white);display:grid;grid-template-columns:340px 1fr;margin-bottom:20px;transition:box-shadow 0.2s;}
+    .room-card{background:var(--white);display:grid;grid-template-columns:340px 1fr;margin-bottom:20px;transition:box-shadow 0.2s;overflow:hidden;}
     .room-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.1);}
     .room-img{position:relative;overflow:hidden;min-height:260px;}
     .room-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
@@ -114,8 +117,8 @@
     .btn-details{display:block;text-align:center;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);text-decoration:none;margin-top:10px;transition:color 0.2s;}
     .btn-details:hover{color:var(--black);}
 
-    /* PROMO STRIP on card */
-    .card-promo-strip{background:var(--black);color:var(--yellow);font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;padding:8px 28px;display:flex;align-items:center;gap:8px;}
+    /* PROMO LINE under room name */
+    .room-promo-line{font-size:12px;font-weight:800;color:var(--green);letter-spacing:0.04em;margin-bottom:10px;}
 
     /* TIER INFO BOX */
     .tier-info{background:#fffde7;border:1px solid #ffe082;padding:16px 20px;margin-bottom:28px;display:flex;gap:24px;flex-wrap:wrap;}
@@ -411,16 +414,14 @@ function renderResults() {
     const total = hasDates ? rate * n : null;
     const bookUrl = buildBookUrl(room.id);
 
-    const promoStrip = (rKey === 'monthly')
-      ? `<div class="card-promo-strip">🎉 38% Long-Stay Rate Applied</div>`
+    const promoLine = (rKey === 'monthly')
+      ? `<div class="room-promo-line">🎉 38% long-stay rate applied — best price</div>`
       : (rKey === 'weekly')
-      ? `<div class="card-promo-strip">✅ 18% Weekly Rate Applied</div>`
+      ? `<div class="room-promo-line">✅ 18% weekly rate applied</div>`
       : '';
 
     return `
     <div class="room-card" data-price="${rate}" data-size="${parseInt(room.size)}">
-      ${promoStrip}
-      <div style="display:grid;grid-template-columns:340px 1fr;">
         <div class="room-img">
           ${room.badge ? `<div class="room-img-badge">${room.badge}</div>` : ''}
           <img src="${room.img}" alt="${room.name}" loading="lazy" />
@@ -429,6 +430,7 @@ function renderResults() {
         <div class="room-body">
           <div class="room-cat">${room.id}</div>
           <div class="room-name">${room.name}</div>
+          ${promoLine}
           <div class="room-desc">${room.desc}</div>
           <div class="room-amenities">
             ${room.amenities.map(a => `<span class="amenity-tag">${a}</span>`).join('')}
@@ -450,7 +452,6 @@ function renderResults() {
             </div>
           </div>
         </div>
-      </div>
     </div>`;
   }).join('');
 }
