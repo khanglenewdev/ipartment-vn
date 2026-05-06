@@ -428,10 +428,14 @@
     const isOpen = dd.classList.contains('open');
     dd.classList.toggle('open', !isOpen);
     if(!isOpen && id === 'dd-checkin') renderMiniCal();
+    if(!isOpen && id === 'dd-apt') rebuildAptList();
   }
   document.addEventListener('click', () => {
     document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
   });
+
+  // Run on page load so XS is shown correctly as selected from the start
+  document.addEventListener('DOMContentLoaded', () => rebuildAptList());
 
   // ── MINI CALENDAR ──────────────────────────────────────────
   function shiftCal(dir) {
@@ -515,55 +519,44 @@
     const msg = document.getElementById('promo-msg');
     if(!BB.checkin || !BB.checkout) { msg.style.display='none'; return; }
     const nights = Math.round((BB.checkout - BB.checkin) / 86400000);
-    if(nights <= 0) { msg.style.display='none'; return; }
-
-    msg.style.display = 'block';
     if(nights >= 28) {
+      msg.style.display = 'block';
       msg.className = 'promo-msg unlocked';
-      msg.innerHTML = '🎉 You\'ve unlocked the <strong>38% long-stay rate</strong>! Best price guaranteed.';
+      msg.innerHTML = '🎉 You've unlocked the 38% long-stay rate!';
     } else if(nights >= 7) {
       const left = 28 - nights;
+      msg.style.display = 'block';
       msg.className = 'promo-msg unlocked';
-      msg.innerHTML = `✅ <strong>18% weekly rate unlocked!</strong> Stay ${left} more night${left>1?'s':''} to get the 38% long-stay rate.`;
+      msg.innerHTML = `✅ 18% weekly rate unlocked! ${left} more night${left===1?'':'s'} → 38% off.`;
     } else {
       const toWeekly = 7 - nights;
-      const toMonthly = 28 - nights;
+      msg.style.display = 'block';
       msg.className = 'promo-msg nudge';
-      msg.innerHTML = `💡 Add <strong>${toWeekly} more night${toWeekly>1?'s':''}</strong> to unlock 18% off — or <strong>${toMonthly} nights</strong> for 38% off.`;
+      msg.innerHTML = `💡 Add ${toWeekly} more night${toWeekly===1?'':'s'} to unlock 18% off.`;
     }
   }
 
-  // ── APARTMENT SELECTOR ─────────────────────────────────────
-  function selectApt(el) {
-    BB.room = el.dataset.room;
-    const name = el.querySelector('.apt-opt-name').textContent;
-    document.getElementById('bv-apt').textContent = `${BB.room} – ${name}`;
-    rebuildAptList();
-    setTimeout(() => document.getElementById('dd-apt').classList.remove('open'), 240);
-  }
-
+  // APT DROPDOWN
   const APT_DATA = [
-    { id:'XS', name:'Compact Studio',     size:'25–30 m²', price:'From 1,200,000 ₫' },
-    { id:'S',  name:'Standard Studio',    size:'35–40 m²', price:'From 1,650,000 ₫' },
-    { id:'M',  name:'Spacious Apartment', size:'45–55 m²', price:'From 2,100,000 ₫' },
-    { id:'L',  name:'Long-Stay Suite',    size:'65–75 m²', price:'From 2,800,000 ₫' },
+    {id:'XS', name:'Compact Studio',   size:'25–30 m²', price:'From 1,200,000 ₫'},
+    {id:'S',  name:'Studio S',          size:'35–40 m²', price:'From 1,650,000 ₫'},
+    {id:'M',  name:'Apartment M',       size:'45–55 m²', price:'From 2,100,000 ₫'},
+    {id:'L',  name:'Long-Stay Suite L', size:'65–75 m²', price:'From 2,800,000 ₫'},
   ];
 
   function rebuildAptList() {
-    const container = document.querySelector('.apt-options');
+    const container = document.querySelector('#dd-apt .apt-options');
+    if(!container) return;
     const selected = APT_DATA.find(a => a.id === BB.room);
     const others   = APT_DATA.filter(a => a.id !== BB.room);
-    container.innerHTML =
-      // Selected item at top
-      renderAptOpt(selected, true) +
-      // Separator
-      `<div style="height:1px;background:#e5e5e5;margin:4px 0;"></div>` +
-      // Rest
-      others.map(a => renderAptOpt(a, false)).join('');
+    let html = buildAptOpt(selected, true);
+    html += '<div style="height:1px;background:#e5e5e5;margin:4px 0;"></div>';
+    others.forEach(a => { html += buildAptOpt(a, false); });
+    container.innerHTML = html;
   }
 
-  function renderAptOpt(a, isSelected) {
-    return `<div class="apt-opt${isSelected ? ' selected' : ''}" data-room="${a.id}" onclick="selectApt(this)">
+  function buildAptOpt(a, sel) {
+    return `<div class="apt-opt${sel?' selected':''}" data-room="${a.id}" onclick="selectApt(this)">
       <div class="apt-opt-cat">${a.id}</div>
       <div class="apt-opt-info">
         <div class="apt-opt-name">${a.name}</div>
@@ -573,237 +566,56 @@
     </div>`;
   }
 
-  // ── GUEST COUNTER ──────────────────────────────────────────
+  function selectApt(el) {
+    BB.room = el.dataset.room;
+    document.getElementById('bv-apt').textContent = BB.room + ' – ' + APT_DATA.find(a=>a.id===BB.room).name;
+    rebuildAptList();
+    document.getElementById('dd-apt').classList.remove('open');
+  }
+
+  function toggleDrop(id, e) {
+    e && e.stopPropagation();
+    const target = document.getElementById(id);
+    const isOpen = target.classList.contains('open');
+    document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
+    if(!isOpen) {
+      target.classList.add('open');
+      if(id === 'dd-checkin') renderMiniCal();
+      if(id === 'dd-apt') rebuildAptList();
+    }
+  }
+
   function changeGuests(delta) {
     BB.guests = Math.max(1, Math.min(4, BB.guests + delta));
     document.getElementById('guest-count').textContent = BB.guests;
   }
+
   function applyGuests() {
-    document.getElementById('bv-guests').textContent = BB.guests + (BB.guests === 1 ? ' guest' : ' guests');
+    document.getElementById('bv-guests').textContent = BB.guests + (BB.guests === 1 ? ' Guest' : ' Guests');
     document.getElementById('dd-guests').classList.remove('open');
   }
 
-  // ── GO TO RESULTS ──────────────────────────────────────────
   function goToBooking() {
-    let url = 'results.html?guests=' + BB.guests;
-    if(BB.checkin) url += '&ci=' + bbDateKey(BB.checkin);
-    if(BB.checkout) url += '&co=' + bbDateKey(BB.checkout);
-    window.location.href = url;
+    const params = new URLSearchParams();
+    params.set('room', BB.room);
+    params.set('guests', BB.guests);
+    if(BB.checkin)  params.set('ci', BB.checkin.toISOString().slice(0,10));
+    if(BB.checkout) params.set('co', BB.checkout.toISOString().slice(0,10));
+    window.location.href = 'results.html?' + params.toString();
   }
+
+  // Close dropdowns on outside click
+  document.addEventListener('click', () => {
+    document.querySelectorAll('.bb-dropdown').forEach(d => d.classList.remove('open'));
+  });
+
+  // Init
+  document.addEventListener('DOMContentLoaded', () => {
+    rebuildAptList();
+    renderMiniCal();
+  });
+
   </script>
-
-  <!-- HERO -->
-  <section class="hero" style="padding:0;">
-    <div class="hero-bg"></div>
-    <div class="hero-content">
-      <span class="hero-eyebrow">🇻🇳 Now Open · Thao Dien, Ho Chi Minh City</span>
-      <h1>Your Premium<br/><em>Second Home</em><br/>in Saigon</h1>
-      <p class="hero-sub">Experience the perfect blend of hotel luxury and the comfort of your own home. Located in the vibrant heart of Thao Dien, ipartment offers fully equipped, design-focused serviced apartments for short and long-term stays.</p>
-      <div class="hero-buttons">
-        <a href="booking.html" class="btn-primary">Book Your Stay</a>
-        <a href="accommodation.html" class="btn-outline">Explore Apartments</a>
-      </div>
-    </div>
-    <div class="hero-stats">
-      <div class="hero-stat">
-        <div class="hero-stat-num">1,200+</div>
-        <div class="hero-stat-label">Apartments Globally</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">15+</div>
-        <div class="hero-stat-label">Years of Experience</div>
-      </div>
-      <div class="hero-stat">
-        <div class="hero-stat-num">4.8★</div>
-        <div class="hero-stat-label">Average Rating</div>
-      </div>
-    </div>
-  </section>
-
-  <!-- WHY IPARTMENT -->
-  <div class="usp-section">
-    <div class="usp-left">
-      <span class="section-eyebrow">Why ipartment?</span>
-      <h2 class="section-title">More than a room.<br/>A new way of living.</h2>
-      <p class="section-body">Originating from Europe with over 1,200 apartments across Germany and Switzerland, ipartment is now bringing its successful "second home" concept to Vietnam. We understand the needs of relocating professionals, corporate travelers, and expats looking for a place to truly call home.</p>
-      <a href="about.html" class="btn-primary" style="align-self:flex-start;margin-top:8px;">Learn More About Us</a>
-    </div>
-    <div class="usp-right">
-      <ul class="usp-list">
-        <li class="usp-item">
-          <div class="usp-icon">📍</div>
-          <div class="usp-item-text">
-            <h4>Prime Location</h4>
-            <p>Situated on Xuan Thuy Street, Thao Dien — just 15 minutes from District 1 and steps from Metro Line 1.</p>
-          </div>
-        </li>
-        <li class="usp-item">
-          <div class="usp-icon">💰</div>
-          <div class="usp-item-text">
-            <h4>All-Inclusive Pricing</h4>
-            <p>No hidden costs. High-speed Wi-Fi, housekeeping, and premium amenities — all wrapped in one transparent rate.</p>
-          </div>
-        </li>
-        <li class="usp-item">
-          <div class="usp-icon">🗓️</div>
-          <div class="usp-item-text">
-            <h4>Maximum Flexibility</h4>
-            <p>Whether you need a place for a night or up to 6 months, we offer flexible lease terms tailored to your schedule.</p>
-          </div>
-        </li>
-        <li class="usp-item">
-          <div class="usp-icon">💼</div>
-          <div class="usp-item-text">
-            <h4>Work-Life Balance</h4>
-            <p>Smart living spaces with custom-built workspaces, fully equipped kitchens, and digital 24/7 self check-in.</p>
-          </div>
-        </li>
-      </ul>
-    </div>
-  </div>
-
-  <!-- ROOMS -->
-  <section class="rooms-section">
-    <div class="rooms-header">
-      <div class="rooms-header-left">
-        <span class="section-eyebrow">Find Your Perfect Fit</span>
-        <h2 class="section-title">Four categories.<br/>One standard.</h2>
-        <p class="section-body">From compact efficiency to expansive living — discover our four distinct apartment categories designed for your specific needs.</p>
-      </div>
-      <a href="accommodation.html" class="btn-primary" style="align-self:flex-end;">View All Apartments</a>
-    </div>
-    <div class="rooms-grid">
-      <div class="room-card">
-        <img class="room-img" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=600&q=80" alt="Category XS" />
-        <div class="room-label">XS</div>
-        <div class="room-info">
-          <div class="room-size">25–30 m²</div>
-          <div class="room-name">Compact Studio</div>
-          <p class="room-desc">Compact and highly functional, perfect for short-term stays with a custom workspace and kitchenette.</p>
-          <a href="accommodation.html#xs" class="room-cta">View Details →</a>
-        </div>
-      </div>
-      <div class="room-card">
-        <img class="room-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=600&q=80" alt="Category S" />
-        <div class="room-label">S</div>
-        <div class="room-info">
-          <div class="room-size">35–40 m²</div>
-          <div class="room-name">Standard Studio</div>
-          <p class="room-desc">Ideal for mid-term stays, featuring a comfortable seating area and comprehensive dining setup.</p>
-          <a href="accommodation.html#s" class="room-cta">View Details →</a>
-        </div>
-      </div>
-      <div class="room-card">
-        <img class="room-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=600&q=80" alt="Category M" />
-        <div class="room-label">M</div>
-        <div class="room-info">
-          <div class="room-size">45–55 m²</div>
-          <div class="room-name">Spacious Apartment</div>
-          <p class="room-desc">A spacious temporary home with designated zones for living, dining, resting, and a dedicated home office.</p>
-          <a href="accommodation.html#m" class="room-cta">View Details →</a>
-        </div>
-      </div>
-      <div class="room-card">
-        <img class="room-img" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=600&q=80" alt="Category L" />
-        <div class="room-label">L</div>
-        <div class="room-info">
-          <div class="room-size">65–75 m²</div>
-          <div class="room-name">Long-Stay Suite</div>
-          <p class="room-desc">Our most generous offering for long-term residencies — separate bedroom, large living room, and family-sized kitchen.</p>
-          <a href="accommodation.html#l" class="room-cta">View Details →</a>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- CORPORATE -->
-  <div class="corporate-section">
-    <img class="corporate-img" src="https://images.unsplash.com/photo-1600607687920-4e2a09cf159d?w=900&q=80" alt="Corporate stays Ho Chi Minh City" />
-    <div class="corporate-content">
-      <span class="section-eyebrow">For Corporate & Long-Stay Guests</span>
-      <h2 class="section-title">Relocating to<br/>Ho Chi Minh City?</h2>
-      <p class="section-body">We specialize in extended stays for corporate clients and expatriates. Enjoy exclusive monthly rates (for stays over 28 nights), dedicated account management, and an environment that integrates you straight into the local Thao Dien community — complete with international schools, specialty cafés, and a riverside lifestyle.</p>
-      <div class="corporate-perks">
-        <div class="perk">
-          <h5>Corporate Rates</h5>
-          <p>Exclusive pricing for contracts of 28+ nights</p>
-        </div>
-        <div class="perk">
-          <h5>Account Manager</h5>
-          <p>Dedicated support for your team 24/7</p>
-        </div>
-        <div class="perk">
-          <h5>Expat Community</h5>
-          <p>Thao Dien — HCMC's most vibrant international district</p>
-        </div>
-        <div class="perk">
-          <h5>Group Bookings</h5>
-          <p>Reserve multiple apartments for your entire team</p>
-        </div>
-      </div>
-      <a href="about.html#corporate" class="btn-primary" style="align-self:flex-start;">View Corporate Benefits</a>
-    </div>
-  </div>
-
-  <!-- LOCATION STRIP -->
-  <div class="location-strip">
-    <h3>Xuan Thuy Street, Thao Dien — the heart of Ho Chi Minh City's international community. Step outside and the world is at your door.</h3>
-    <a href="about.html#location" class="btn-black">View Location &amp; Map</a>
-  </div>
-
-  <!-- MAGAZINE -->
-  <section class="magazine-section">
-    <div class="magazine-header">
-      <div>
-        <span class="section-eyebrow">ipartment Magazine</span>
-        <h2 class="section-title" style="margin-bottom:0;">Live better in Saigon.</h2>
-      </div>
-      <a href="magazine.html" class="btn-primary">View All Articles</a>
-    </div>
-    <div class="magazine-grid">
-      <div class="mag-card">
-        <img class="mag-img" src="https://images.unsplash.com/photo-1565967511849-76a60a516170?w=800&q=80" alt="Thao Dien local guide" style="aspect-ratio:16/10;" />
-        <div class="mag-body">
-          <span class="mag-tag">Local Guide</span>
-          <h3 class="mag-title">The Complete Thao Dien Guide: Where to Eat, Explore & Unwind When You First Arrive in Saigon</h3>
-          <p class="mag-excerpt">From egg coffee mornings to riverside cocktails at sunset — the unmissable spots around ipartment, curated by people who actually live here.</p>
-          <p class="mag-date">May 2025</p>
-        </div>
-      </div>
-      <div class="mag-card">
-        <img class="mag-img" src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=400&q=80" alt="Upcoming events" />
-        <div class="mag-body">
-          <span class="mag-tag">Upcoming Event</span>
-          <h3 class="mag-title">Grand Opening: ipartment Vietnam Official Launch — June 2025</h3>
-          <p class="mag-excerpt">Join us for our official opening with exclusive offers for our very first guests.</p>
-          <p class="mag-date">May 2025</p>
-        </div>
-      </div>
-      <div class="mag-card">
-        <img class="mag-img" src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=400&q=80" alt="Business article" />
-        <div class="mag-body">
-          <span class="mag-tag">Business</span>
-          <h3 class="mag-title">5 Reasons Thao Dien is the Top Choice for Expats Working in Ho Chi Minh City</h3>
-          <p class="mag-excerpt">Connectivity, community, co-working — all within walking distance of your ipartment front door.</p>
-          <p class="mag-date">April 2025</p>
-        </div>
-      </div>
-    </div>
-  </section>
-
-  <!-- REVIEW -->
-  <section class="review-section">
-    <div class="review-stars">★★★★★</div>
-    <blockquote class="review-quote">
-      "I spent three months at ipartment Berlin before relocating to Saigon — and I was thrilled to discover they were opening in Thao Dien. Same standard, same feeling of home. This is the first place I recommend to every expat colleague moving to the city."
-    </blockquote>
-    <p class="review-author">— Lars M., Senior Manager · Long-Stay Guest</p>
-    <div class="review-dots">
-      <div class="dot active"></div>
-      <div class="dot"></div>
-      <div class="dot"></div>
-    </div>
-  </section>
 
   <!-- FOOTER -->
   <footer>
@@ -811,11 +623,6 @@
       <div class="footer-brand">
         <a href="index.html" class="logo">i<span>partment</span></a>
         <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p>
-        <div style="margin-top:24px;display:flex;gap:14px;">
-          <a href="#" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;font-weight:600;">Instagram</a>
-          <a href="#" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;font-weight:600;">Facebook</a>
-          <a href="#" style="color:rgba(255,255,255,0.5);font-size:13px;text-decoration:none;font-weight:600;">LinkedIn</a>
-        </div>
       </div>
       <div class="footer-col">
         <h5>Accommodation</h5>
@@ -824,16 +631,12 @@
           <li><a href="accommodation.html#s">Studio S</a></li>
           <li><a href="accommodation.html#m">Apartment M</a></li>
           <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
-          <li><a href="accommodation.html#corporate">Corporate Rates</a></li>
-          <li><a href="accommodation.html#reviews">Guest Reviews</a></li>
         </ul>
       </div>
       <div class="footer-col">
         <h5>Company</h5>
         <ul>
           <li><a href="about.html">About Us</a></li>
-          <li><a href="about.html#story">Brand Story</a></li>
-          <li><a href="about.html#location">Location &amp; Map</a></li>
           <li><a href="career.html">Career</a></li>
           <li><a href="magazine.html">Magazine</a></li>
           <li><a href="faq.html">FAQ</a></li>
@@ -841,23 +644,18 @@
       </div>
       <div class="footer-col">
         <h5>Contact</h5>
-        <address class="footer-address">
-          <strong>ipartment Vietnam</strong>
-          Xuan Thuy Street<br/>
-          Thao Dien, District 2<br/>
-          Ho Chi Minh City, Vietnam<br/><br/>
-          <a href="mailto:hello@ipartment.vn" style="color:var(--yellow);text-decoration:none;">hello@ipartment.vn</a><br/>
-          <a href="tel:+84901234567" style="color:rgba(255,255,255,0.58);text-decoration:none;">+84 90 123 4567</a>
-        </address>
+        <ul>
+          <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
+          <li><a href="tel:+84779488070">+84 779 488 070</a></li>
+          <li><a href="#">Xuan Thuy St, Thao Dien</a></li>
+          <li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li>
+        </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2025 ipartment Vietnam. All rights reserved.</span>
-      <div style="display:flex;gap:24px;">
-        <a href="#">Privacy Policy</a>
-        <a href="#">Terms of Use</a>
-        <a href="faq.html">FAQ</a>
-      </div>
+      <div style="display:flex;gap:24px;"><a href="#">Privacy Policy</a><a href="#">Terms</a></div>
+      <span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span>
     </div>
   </footer>
 
