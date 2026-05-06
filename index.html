@@ -350,7 +350,7 @@
           <div class="guest-row">
             <div>
               <div class="guest-label">Guests</div>
-              <div class="guest-sub">Max 4 per apartment</div>
+              <div class="guest-sub">Max guests for this apartment</div>
             </div>
             <div class="guest-controls">
               <button class="guest-btn" onclick="changeGuests(-1)">−</button>
@@ -359,6 +359,7 @@
             </div>
           </div>
           <button class="guest-apply" onclick="applyGuests()">Apply</button>
+          <div id="guest-upsell" style="display:none;margin-top:10px;padding:8px 10px;background:#fff8e1;border-left:3px solid #FFED00;font-size:11px;font-weight:600;color:#7a5c00;line-height:1.5;"></div>
         </div>
       </div>
     </div>
@@ -682,10 +683,10 @@
 
   // APT DROPDOWN
   const APT_DATA = [
-    {id:'XS', name:'Compact Studio',   size:'25–30 m²', price:'From 1,200,000 ₫'},
-    {id:'S',  name:'Studio S',          size:'35–40 m²', price:'From 1,650,000 ₫'},
-    {id:'M',  name:'Apartment M',       size:'45–55 m²', price:'From 2,100,000 ₫'},
-    {id:'L',  name:'Long-Stay Suite L', size:'65–75 m²', price:'From 2,800,000 ₫'},
+    {id:'XS', name:'Compact Studio',   size:'25–30 m²', price:'From 1,200,000 ₫', maxGuests:4},
+    {id:'S',  name:'Studio S',          size:'35–40 m²', price:'From 1,650,000 ₫', maxGuests:4},
+    {id:'M',  name:'Apartment M',       size:'45–55 m²', price:'From 2,100,000 ₫', maxGuests:6},
+    {id:'L',  name:'Long-Stay Suite L', size:'65–75 m²', price:'From 2,800,000 ₫', maxGuests:8},
   ];
 
   function rebuildAptList() {
@@ -697,17 +698,25 @@
     html += '<div style="height:1px;background:#e5e5e5;margin:4px 0;"></div>';
     others.forEach(a => { html += buildAptOpt(a, false); });
     container.innerHTML = html;
+    // Clamp guests to new room max
+    const maxG = selected.maxGuests;
+    if(BB.guests > maxG) {
+      BB.guests = maxG;
+      document.getElementById('guest-count').textContent = BB.guests;
+      document.getElementById('bv-guests').textContent = BB.guests + (BB.guests === 1 ? ' Guest' : ' Guests');
+    }
+    updateGuestSub();
   }
 
   function buildAptOpt(a, sel) {
-    return `<div class="apt-opt${sel?' selected':''}" data-room="${a.id}" onclick="selectApt(this)">
-      <div class="apt-opt-cat">${a.id}</div>
-      <div class="apt-opt-info">
-        <div class="apt-opt-name">${a.name}</div>
-        <div class="apt-opt-size">${a.size}</div>
-      </div>
-      <div class="apt-opt-price">${a.price}</div>
-    </div>`;
+    return '<div class="apt-opt' + (sel?' selected':'') + '" data-room="' + a.id + '" onclick="selectApt(this)">'
+      + '<div class="apt-opt-cat">' + a.id + '</div>'
+      + '<div class="apt-opt-info">'
+      + '<div class="apt-opt-name">' + a.name + '</div>'
+      + '<div class="apt-opt-size">' + a.size + ' &middot; up to ' + a.maxGuests + ' guests</div>'
+      + '</div>'
+      + '<div class="apt-opt-price">' + a.price + '</div>'
+      + '</div>';
   }
 
   function selectApt(el) {
@@ -729,9 +738,28 @@
     }
   }
 
+  function updateGuestSub() {
+    const apt = APT_DATA.find(a => a.id === BB.room);
+    const maxG = apt ? apt.maxGuests : 4;
+    document.querySelector('.guest-sub').textContent = 'Max ' + maxG + ' for this apartment';
+    // Show upsell hint if at max and not already largest
+    const hint = document.getElementById('guest-upsell');
+    if(BB.guests >= maxG && BB.room !== 'L') {
+      const larger = (BB.room === 'XS' || BB.room === 'S') ? 'Apartment M or larger' : 'Suite L';
+      const nextMax = (BB.room === 'XS' || BB.room === 'S') ? 6 : 8;
+      hint.textContent = 'Need more space? Consider ' + larger + ' (up to ' + nextMax + ' guests).';
+      hint.style.display = 'block';
+    } else {
+      hint.style.display = 'none';
+    }
+  }
+
   function changeGuests(delta) {
-    BB.guests = Math.max(1, Math.min(4, BB.guests + delta));
+    const apt = APT_DATA.find(a => a.id === BB.room);
+    const maxG = apt ? apt.maxGuests : 4;
+    BB.guests = Math.max(1, Math.min(maxG, BB.guests + delta));
     document.getElementById('guest-count').textContent = BB.guests;
+    updateGuestSub();
   }
 
   function applyGuests() {
@@ -759,6 +787,7 @@
   document.addEventListener('DOMContentLoaded', () => {
     rebuildAptList();
     renderMiniCal();
+    updateGuestSub();
   });
 
   </script>
@@ -796,14 +825,13 @@
           <li><a href="#">Xuan Thuy St, Thao Dien</a></li>
           <li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li>
         </ul>
+        <h5 style="margin-top:28px;">Social</h5>
+        <ul>
+          <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
+        </ul>
       </div>
     </div>
     <div class="footer-bottom">
       <span>© 2025 ipartment Vietnam. All rights reserved.</span>
       <div style="display:flex;gap:24px;"><a href="#">Privacy Policy</a><a href="#">Terms</a></div>
-      <span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span>
-    </div>
-  </footer>
-
-</body>
-</html>
+      <span style="co
