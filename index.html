@@ -318,6 +318,9 @@
           <div class="mini-grid" id="mc-grid"></div>
         </div>
         <div class="promo-msg" id="promo-msg" style="display:none;"></div>
+        <div style="padding:0 20px 16px;">
+          <button onclick="closeDateDrop(event)" style="width:100%;background:var(--black);color:var(--yellow);border:none;padding:11px;font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-family:var(--font-body);">OK — Confirm Dates</button>
+        </div>
       </div>
     </div>
 
@@ -491,8 +494,7 @@
       } else {
         BB.checkout = d;
         BB.selecting = 'checkin';
-        // close dropdown after checkout selected
-        setTimeout(() => document.getElementById('dd-checkin').classList.remove('open'), 300);
+        // Stay open so guest can read promo message — they close with OK button
       }
     }
     // update field labels
@@ -502,6 +504,11 @@
     document.getElementById('bv-checkout').classList.toggle('placeholder', !BB.checkout);
 
     renderMiniCal();
+  }
+
+  function closeDateDrop(e) {
+    e && e.stopPropagation();
+    document.getElementById('dd-checkin').classList.remove('open');
   }
 
   function renderPromo() {
@@ -546,9 +553,9 @@
     document.getElementById('dd-guests').classList.remove('open');
   }
 
-  // ── GO TO BOOKING ──────────────────────────────────────────
+  // ── GO TO RESULTS ──────────────────────────────────────────
   function goToBooking() {
-    let url = 'booking.html?room=' + BB.room + '&guests=' + BB.guests;
+    let url = 'results.html?guests=' + BB.guests;
     if(BB.checkin) url += '&ci=' + bbDateKey(BB.checkin);
     if(BB.checkout) url += '&co=' + bbDateKey(BB.checkout);
     window.location.href = url;

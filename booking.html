@@ -463,12 +463,18 @@ function formatVND(n) {
 }
 
 // ============================================================
+// READ URL PARAMS — pre-fill from results page
+// ============================================================
+const _p = new URLSearchParams(window.location.search);
+function _parseDate(s) { if(!s) return null; const d = new Date(s); d.setHours(0,0,0,0); return isNaN(d) ? null : d; }
+
+// ============================================================
 // STATE
 // ============================================================
 let state = {
-  room: 'XS',
-  checkin: null,
-  checkout: null,
+  room: ['XS','S','M','L'].includes(_p.get('room')) ? _p.get('room') : 'XS',
+  checkin:  _parseDate(_p.get('ci')),
+  checkout: _parseDate(_p.get('co')),
   selectingCheckin: true,
   nights: 0,
   totalPrice: 0,
@@ -792,11 +798,35 @@ function submitBooking() {
 }
 
 // ============================================================
-// INIT
+// INIT — pre-fill from URL params if coming from results page
 // ============================================================
-buildCalendars();
-updateRateTiers();
-updateSidebar();
+(function init() {
+  // Pre-select room button
+  document.querySelectorAll('.room-btn').forEach(b => {
+    b.classList.toggle('selected', b.dataset.room === state.room);
+  });
+
+  // If dates already set, calculate nights & pricing immediately
+  if(state.checkin && state.checkout && state.checkout > state.checkin) {
+    const n = Math.round((state.checkout - state.checkin) / 86400000);
+    state.nights = n;
+    const r = RATES[state.room];
+    if(n >= 28)      { state.appliedRate = 'monthly'; state.totalPrice = r.monthly * n; }
+    else if(n >= 7)  { state.appliedRate = 'weekly';  state.totalPrice = r.weekly  * n; }
+    else             { state.appliedRate = 'nightly'; state.totalPrice = r.nightly * n; }
+    document.getElementById('btn-step2-next').disabled = false;
+    // Skip to step 2 automatically — dates + room already chosen
+    goToStep(2);
+  }
+
+  buildCalendars();
+  updateRateTiers();
+  updateSidebar();
+  if(state.checkin && state.checkout) {
+    recalcPricing();
+    document.getElementById('date-pricing-panel').style.display = 'block';
+  }
+})();
 </script>
 
 </body>
