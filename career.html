@@ -1,140 +1,219 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Career – ipartment Vietnam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
-  <style>
-    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:var(--font-body);color:var(--black);background:var(--white);}
-    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
-    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
-    .logo span{color:var(--yellow);}
-    nav{display:flex;align-items:center;gap:32px;}
-    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
-    nav a:hover,nav a.active{color:var(--yellow);}
-    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
-    footer{background:var(--black);color:var(--white);padding:80px 80px 40px;}
-    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;}
-    .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;}
-    .footer-col h5{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;}
-    .footer-col ul{list-style:none;}
-    .footer-col ul li{margin-bottom:10px;}
-    .footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;}
-    .footer-col ul li a:hover{color:var(--white);}
-    .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);}
-    .footer-bottom a{color:rgba(255,255,255,0.32);text-decoration:none;}
-    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}.footer-grid{grid-template-columns:1fr;}}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Career - ipartment Vietnam</title>
+  <meta name="description" content="Join the ipartment Vietnam team. Open positions in hospitality, sales, operations and marketing in Thao Dien, HCMC." />
+  <link rel="canonical" href="https://ipartment.vn/career.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ipartment Vietnam" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Career - ipartment Vietnam" />
+  <meta property="og:description" content="Join the ipartment Vietnam team. Open positions in hospitality, sales, operations and marketing in Thao Dien, HCMC." />
+  <meta property="og:url" content="https://ipartment.vn/career.html" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=630&fit=crop&q=80" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Work at ipartment Vietnam in Thao Dien" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Career - ipartment Vietnam" />
+  <meta name="twitter:description" content="Open positions in hospitality, sales, operations and marketing in Thao Dien, HCMC." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=1200&h=630&fit=crop&q=80" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ipartment.vn/" },
+      { "@type": "ListItem", "position": 2, "name": "Career", "item": "https://ipartment.vn/career.html" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/advanced.css" />
+  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
+  <link rel="stylesheet" href="assets/css/pages/career.css" />
 </head>
-<body>
-<header>
-  <a href="index.html" class="logo">i<span>partment</span></a>
-  <nav>
-    <a href="about.html">About</a>
-    <a href="accommodation.html">Accommodation</a>
-    <a href="magazine.html">Magazine</a>
-    <a href="career.html" class="active">Career</a>
-    <a href="faq.html">FAQ</a>
-    <a href="my-account.html">My Account</a>
-    <a href="booking.html" class="nav-cta">Book a Stay</a>
-  </nav>
+<body class="has-header lg">
+
+<header class="site-header">
+  <div class="site-header-main">
+    <a href="index.html" class="logo">i<span>partment</span></a>
+    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+    <nav class="site-nav">
+      <a href="about.html">About</a>
+      <a href="accommodation.html">Accommodation</a>
+      <a href="magazine.html">Magazine</a>
+      <a href="career.html" class="active">Career</a>
+      <a href="faq.html">FAQ</a>
+      <a href="my-account.html">My Account</a>
+      <a href="admin.html">Admin</a>
+      <a href="booking.html" class="nav-cta">Book a Stay</a>
+    </nav>
+  </div>
+  <div class="site-header-edu">For educational purposes only</div>
 </header>
 
-<div style="margin-top:72px;background:var(--black);min-height:480px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;">
-  <div style="padding:96px 80px 80px;display:flex;flex-direction:column;justify-content:center;">
-    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.8);margin-bottom:16px;">Career at ipartment</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,68px);font-weight:900;color:var(--white);line-height:1.1;max-width:700px;">Help us redefine<br/><span style="color:var(--yellow);">how Saigon lives.</span></h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.68);max-width:560px;margin-top:20px;line-height:1.75;">We're building Vietnam's first European-standard serviced apartment brand — and we're looking for people who care about the details as much as we do.</p>
+<section class="page-hero" style="padding:0;">
+  <div class="page-hero-text">
+    <span class="page-hero-eyebrow reveal">Career at ipartment</span>
+    <h1 class="reveal reveal-delay-1">Help us redefine<br/><span class="accent">how Saigon lives.</span></h1>
+    <p class="reveal reveal-delay-2">We are building Vietnam's first European-standard serviced apartment brand. Looking for people who care about the details as much as we do.</p>
   </div>
-  <div style="background:url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=900&q=80') center/cover no-repeat;position:relative;">
-    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.45),transparent);"></div>
+  <div class="page-hero-img page-hero-img-zoom" style="background-image:url('https://images.unsplash.com/photo-1497366216548-37526070297c?w=1200&q=80');"></div>
+</section>
+
+<section class="career-values">
+  <span class="section-eyebrow reveal">Why Join Us</span>
+  <h2 class="section-title reveal reveal-delay-1" style="margin-bottom:48px;">A team that takes<br/>hospitality <em>seriously.</em></h2>
+  <div class="values-grid">
+    <div class="value-card reveal">
+      <div class="value-icon">&#x1F3C6;</div>
+      <h3>European Standards</h3>
+      <p>Work with processes, training, and quality benchmarks from one of Europe's top serviced apartment operators. Real standards. Real mentorship.</p>
+    </div>
+    <div class="value-card reveal reveal-delay-1">
+      <div class="value-icon">&#x1F30D;</div>
+      <h3>International Environment</h3>
+      <p>Work alongside an international team and serve guests from across the globe. In the most cosmopolitan district of Ho Chi Minh City.</p>
+    </div>
+    <div class="value-card reveal reveal-delay-2">
+      <div class="value-icon">&#x1F680;</div>
+      <h3>Ground Floor Opportunity</h3>
+      <p>We are newly opened. The people who join now will shape how this brand grows in Vietnam. Your impact here is real and visible.</p>
+    </div>
+  </div>
+</section>
+
+<section class="career-culture">
+  <div class="career-culture-grid">
+    <img loading="lazy" src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=900&q=80" alt="Team culture" class="career-culture-img reveal reveal-left" />
+    <div class="reveal reveal-right">
+      <span class="section-eyebrow">Our Culture</span>
+      <h2 class="section-title">We sweat the small stuff.<br/>On <em>purpose.</em></h2>
+      <p class="section-body">Hospitality done right is not about grand gestures. It is about the coffee machine that is always clean, the Wi-Fi that just works, the welcome message that feels personal. We hire people who notice these things without being told.</p>
+      <p class="section-body" style="margin-top:20px;">Our culture is direct, warm, and high-trust. We give autonomy early. We expect ownership in return. If you like working in a place where your ideas get heard and tested quickly, welcome home.</p>
+    </div>
+  </div>
+</section>
+
+<section id="positions" class="career-positions">
+  <span class="section-eyebrow reveal">Open Positions</span>
+  <h2 class="section-title reveal reveal-delay-1" style="margin-bottom:48px;">Join the <em>team.</em></h2>
+  <div class="positions-list">
+    <div class="position reveal">
+      <div><h3>Guest Experience Manager</h3><p>Full-time. Thao Dien, HCMC. Hospitality / Operations</p></div>
+      <button class="btn btn-primary btn-sm" onclick="openApplication('Guest Experience Manager')">Apply Now</button>
+    </div>
+    <div class="position reveal reveal-delay-1">
+      <div><h3>Sales and Corporate Account Executive</h3><p>Full-time. Thao Dien, HCMC. Sales / B2B</p></div>
+      <button class="btn btn-primary btn-sm" onclick="openApplication('Sales and Corporate Account Executive')">Apply Now</button>
+    </div>
+    <div class="position reveal reveal-delay-2">
+      <div><h3>Housekeeping and Property Supervisor</h3><p>Full-time. Thao Dien, HCMC. Operations</p></div>
+      <button class="btn btn-primary btn-sm" onclick="openApplication('Housekeeping and Property Supervisor')">Apply Now</button>
+    </div>
+    <div class="position reveal reveal-delay-3">
+      <div><h3>Digital Marketing and Content Coordinator</h3><p>Full-time. Thao Dien, HCMC. Marketing</p></div>
+      <button class="btn btn-primary btn-sm" onclick="openApplication('Digital Marketing and Content Coordinator')">Apply Now</button>
+    </div>
+    <div class="position reveal reveal-delay-4">
+      <div><h3>Front-End Web Developer (Part-time / Contract)</h3><p>Part-time. Hybrid. Web / Product</p></div>
+      <button class="btn btn-primary btn-sm" onclick="openApplication('Front-End Web Developer')">Apply Now</button>
+    </div>
+  </div>
+  <div class="career-open-note reveal">
+    <p>Don't see your role? We are always interested in exceptional people. <a href="#" onclick="openApplication('Open Application'); return false;">Send your application</a> with a short note about what you would like to build here.</p>
+  </div>
+</section>
+
+<div class="app-modal" id="app-modal">
+  <div class="app-modal-content">
+    <button class="app-close" id="app-close">&times;</button>
+    <div class="role-name" id="app-role-name">Position</div>
+    <h2 id="app-title">Apply to ipartment Vietnam</h2>
+    <p class="app-intro">Tell us about yourself. We will respond within 5 business days.</p>
+    <form id="app-form">
+      <div class="app-grid">
+        <div><label class="form-label">First Name *</label><input class="form-input" type="text" id="app-first" required /></div>
+        <div><label class="form-label">Last Name *</label><input class="form-input" type="text" id="app-last" required /></div>
+        <div><label class="form-label">Email *</label><input class="form-input" type="email" id="app-email" required /></div>
+        <div><label class="form-label">Phone</label><input class="form-input" type="tel" id="app-phone" /></div>
+        <div class="full">
+          <label class="form-label">Years of relevant experience</label>
+          <select class="form-select" id="app-years">
+            <option>0 - 1 year</option><option>1 - 3 years</option><option>3 - 5 years</option><option>5+ years</option>
+          </select>
+        </div>
+        <div class="full"><label class="form-label">LinkedIn / Portfolio URL</label><input class="form-input" type="url" id="app-link" placeholder="https://" /></div>
+        <div class="full"><label class="form-label">Why do you want to join us? *</label><textarea class="form-textarea" id="app-message" rows="5" placeholder="Tell us briefly what excites you about this role and what you would bring." required></textarea></div>
+      </div>
+      <button type="submit" class="btn btn-primary" style="width:100%;margin-top:8px;">Submit Application</button>
+    </form>
   </div>
 </div>
 
-<!-- WHY CHOOSE US -->
-<div style="background:var(--gray-light);padding:80px 80px;">
-  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;">Why Choose Us?</span>
-  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;line-height:1.15;margin-bottom:48px;">A team that takes<br/>hospitality seriously.</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-    <div style="background:var(--white);padding:36px 32px;border-top:4px solid var(--yellow);">
-      <div style="font-size:32px;margin-bottom:16px;">🏆</div>
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">European Standards</h3>
-      <p style="font-size:14px;color:#555;line-height:1.7;">Work with processes, training, and quality benchmarks from one of Europe's top serviced apartment operators. Real standards. Real mentorship.</p>
-    </div>
-    <div style="background:var(--white);padding:36px 32px;border-top:4px solid var(--yellow);">
-      <div style="font-size:32px;margin-bottom:16px;">🌍</div>
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">International Environment</h3>
-      <p style="font-size:14px;color:#555;line-height:1.7;">Work alongside an international team and serve guests from across the globe — in the most cosmopolitan district of Ho Chi Minh City.</p>
-    </div>
-    <div style="background:var(--white);padding:36px 32px;border-top:4px solid var(--yellow);">
-      <div style="font-size:32px;margin-bottom:16px;">🚀</div>
-      <h3 style="font-size:16px;font-weight:700;margin-bottom:12px;">Ground Floor Opportunity</h3>
-      <p style="font-size:14px;color:#555;line-height:1.7;">We're newly opened. The people who join now will shape how this brand grows in Vietnam. Your impact here is real and visible.</p>
-    </div>
-  </div>
-</div>
-
-<!-- CULTURE -->
-<div style="background:var(--white);padding:80px 80px;display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
-  <img src="https://images.unsplash.com/photo-1522202176988-66273c2fd55f?w=700&q=80" alt="Team culture" style="width:100%;aspect-ratio:4/3;object-fit:cover;" />
-  <div>
-    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;">Our Culture</span>
-    <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3vw,44px);font-weight:900;line-height:1.2;margin-bottom:20px;">We sweat the small stuff.<br/>On purpose.</h2>
-    <p style="font-size:16px;line-height:1.85;color:#444;margin-bottom:20px;">Hospitality done right isn't about grand gestures. It's about the coffee machine that's always clean, the Wi-Fi that just works, the welcome message that feels personal. We hire people who notice these things without being told.</p>
-    <p style="font-size:16px;line-height:1.85;color:#444;">Our culture is direct, warm, and high-trust. We give autonomy early. We expect ownership in return. If you like working in a place where your ideas get heard and tested quickly — welcome home.</p>
-  </div>
-</div>
-
-<!-- OPEN POSITIONS -->
-<div id="positions" style="background:var(--black);padding:80px 80px;">
-  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.7);margin-bottom:16px;">Open Positions</span>
-  <h2 style="font-family:'Playfair Display',serif;font-size:clamp(28px,3.5vw,48px);font-weight:900;color:var(--white);line-height:1.15;margin-bottom:48px;">Join the team.</h2>
-  <div style="display:flex;flex-direction:column;gap:2px;">
-    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Guest Experience Manager</h3>
-        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Hospitality / Operations</p>
-      </div>
-      <a href="mailto:careers@ipartment.vn?subject=Guest Experience Manager" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
-    </div>
-    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Sales & Corporate Account Executive</h3>
-        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Sales / B2B</p>
-      </div>
-      <a href="mailto:careers@ipartment.vn?subject=Sales Executive" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
-    </div>
-    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Housekeeping & Property Supervisor</h3>
-        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Operations</p>
-      </div>
-      <a href="mailto:careers@ipartment.vn?subject=Housekeeping Supervisor" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
-    </div>
-    <div style="background:rgba(255,255,255,0.06);padding:28px 32px;display:flex;justify-content:space-between;align-items:center;">
-      <div>
-        <h3 style="font-size:17px;font-weight:700;color:var(--white);margin-bottom:6px;">Digital Marketing & Content Coordinator</h3>
-        <p style="font-size:13px;color:rgba(255,255,255,0.55);">Full-time · Thao Dien, HCMC · Marketing</p>
-      </div>
-      <a href="mailto:careers@ipartment.vn?subject=Marketing Coordinator" style="background:var(--yellow);color:var(--black);font-weight:700;font-size:11px;letter-spacing:0.12em;text-transform:uppercase;padding:12px 24px;text-decoration:none;white-space:nowrap;">Apply Now</a>
-    </div>
-  </div>
-  <div style="margin-top:40px;padding:32px;background:rgba(255,237,0,0.08);border-left:4px solid var(--yellow);">
-    <p style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.7;">Don't see your role? We're always interested in exceptional people. Send your CV to <a href="mailto:careers@ipartment.vn" style="color:var(--yellow);">careers@ipartment.vn</a> with a short note about what you'd like to build here.</p>
-  </div>
-</div>
-
-<footer>
+<footer class="site-footer">
   <div class="footer-grid">
-    <div class="footer-brand"><a href="index.html" class="logo">i<span>partment</span></a><p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
-    <div class="footer-col"><h5>Accommodation</h5><ul><li><a href="accommodation.html#xs">Studio XS</a></li><li><a href="accommodation.html#s">Studio S</a></li><li><a href="accommodation.html#m">Apartment M</a></li><li><a href="accommodation.html#l">Long-Stay Suite L</a></li></ul></div>
-    <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="career.html">Career</a></li><li><a href="magazine.html">Magazine</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
-    <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li><li><a href="tel:+84779488070">+84 779 488 070</a></li><li><a href="#">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="margin-top:28px;">Social</h5><ul><li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li></ul></div>
+    <div class="footer-brand">
+      <a href="index.html" class="logo">i<span>partment</span></a>
+      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Accommodation</h5>
+      <ul>
+        <li><a href="accommodation.html#xs">Studio XS</a></li>
+        <li><a href="accommodation.html#s">Studio S</a></li>
+        <li><a href="accommodation.html#m">Apartment M</a></li>
+        <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="career.html">Career</a></li>
+        <li><a href="magazine.html">Magazine</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
+        <li><a href="tel:+84779488070">+84 779 488 070</a></li>
+        <li><a href="about.html#location">Xuan Thuy St, Thao Dien</a></li>
+      </ul>
+      <h5 style="margin-top:28px;">Social</h5>
+      <ul>
+        <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy">Privacy Policy</a><a href="legal.html#terms">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 ipartment Vietnam. All rights reserved.</span>
+    <span class="footer-byline">Penguin &amp; Mun Business Digital Presence</span>
+    <div style="display:flex;gap:24px;">
+      <a href="legal.html#privacy">Privacy Policy</a>
+      <a href="legal.html#terms">Terms</a>
+    </div>
+  </div>
 </footer>
+
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/advanced.js"></script>
+<script src="assets/js/pages/career.js"></script>
 </body>
 </html>

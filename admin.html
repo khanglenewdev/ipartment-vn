@@ -1,0 +1,268 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="robots" content="noindex, nofollow" />
+  <title>Admin - ipartment CRM</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/advanced.css" />
+  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
+  <link rel="stylesheet" href="assets/css/pages/admin.css" />
+</head>
+<body class="lg" data-marquee-off>
+<div class="admin-shell">
+  <div class="admin-top">
+    <a href="index.html" class="brand">
+      <span class="logo">i<span>partment</span></span>
+      <span class="badge">CRM Admin</span>
+    </a>
+    <nav class="nav">
+      <a href="index.html">View Site</a>
+      <a href="#" id="link-logout" style="display:none;">Logout</a>
+    </nav>
+  </div>
+
+  <div class="login-shell" id="login-shell">
+    <div class="login-card">
+      <h1>Admin access</h1>
+      <p class="sub">Log in with an ipartment admin account to manage live customer data.</p>
+      <form id="login-form" autocomplete="off">
+        <input type="email" id="admin-email" placeholder="Admin email" autocomplete="username" />
+        <input type="password" id="admin-pass" placeholder="Password" autocomplete="current-password" class="login-pass" />
+        <button type="submit">Log in</button>
+      </form>
+      <div id="admin-login-msg" class="login-msg"></div>
+      <div class="login-hint">
+        Only accounts with the admin role can open this dashboard. Anyone can sign up and log in from the main site, but managing data here requires admin access.
+      </div>
+    </div>
+  </div>
+
+  <div class="dash" id="dash" style="display:none;">
+    <div class="dash-header">
+      <div>
+        <h1>CRM Dashboard</h1>
+        <p>Live accounts, bookings and vouchers from Supabase, plus marketing leads captured across the site.</p>
+      </div>
+      <div class="dash-actions">
+        <button class="dash-btn" onclick="downloadJSON()">Export JSON</button>
+        <button class="dash-btn" onclick="downloadCSV()">Export CSV</button>
+        <button class="dash-btn primary" onclick="loadAll()">Refresh</button>
+        <button class="dash-btn danger" onclick="if(confirm('Clear this browser cache of captured data? The Supabase database (the real store) is not affected.')) clearAll()">Clear local cache</button>
+      </div>
+    </div>
+
+    <div class="kpi-grid">
+      <div class="kpi"><div class="lbl">Visitors</div><div class="val" id="kpi-visitors">0</div><div class="sub" id="kpi-visitors-sub">Unique sessions</div></div>
+      <div class="kpi"><div class="lbl">Total Leads</div><div class="val" id="kpi-leads">0</div><div class="sub" id="kpi-leads-sub">All sources</div></div>
+      <div class="kpi"><div class="lbl">Bookings</div><div class="val" id="kpi-bookings">0</div><div class="sub">Pending confirmation</div></div>
+      <div class="kpi"><div class="lbl">Users</div><div class="val" id="kpi-users">0</div><div class="sub">Signed up accounts</div></div>
+      <div class="kpi"><div class="lbl">Applications</div><div class="val" id="kpi-applications">0</div><div class="sub">Career page submissions</div></div>
+    </div>
+
+    <div class="tabs">
+      <button class="tab-btn-admin active" data-tab="leads">Leads</button>
+      <button class="tab-btn-admin" data-tab="users">Accounts</button>
+      <button class="tab-btn-admin" data-tab="bookings">Bookings</button>
+      <button class="tab-btn-admin" data-tab="vouchers">Vouchers</button>
+      <button class="tab-btn-admin" data-tab="applications">Applications</button>
+      <button class="tab-btn-admin" data-tab="sessions">Page Views</button>
+      <button class="tab-btn-admin" data-tab="quiz">Password Quiz</button>
+      <button class="tab-btn-admin" data-tab="feedback">Feedback</button>
+      <button class="tab-btn-admin" data-tab="funnel">Funnel</button>
+      <button class="tab-btn-admin" data-tab="magazine">Magazine</button>
+      <button class="tab-btn-admin" data-tab="integration">Airtable + Make</button>
+    </div>
+
+    <div class="tab-content">
+      <div class="tab-pane active" id="tab-leads"><table id="tbl-leads"></table></div>
+      <div class="tab-pane" id="tab-users"><table id="tbl-users"></table></div>
+      <div class="tab-pane" id="tab-bookings"><table id="tbl-bookings"></table></div>
+      <div class="tab-pane" id="tab-vouchers"><table id="tbl-vouchers"></table></div>
+      <div class="tab-pane" id="tab-applications"><table id="tbl-applications"></table></div>
+      <div class="tab-pane" id="tab-sessions"><div id="sessions-summary"></div><table id="tbl-sessions"></table></div>
+      <div class="tab-pane" id="tab-quiz"><table id="tbl-quiz"></table></div>
+      <div class="tab-pane" id="tab-feedback"><div class="panel-intro"><h3>Website feedback</h3><p>What visitors said when they clicked "Rate our website" in the footer, plus any emails left by people interested in our services.</p></div><table id="tbl-feedback"></table></div>
+      <div class="tab-pane" id="tab-funnel">
+        <div class="panel-intro">
+          <h3>Booking funnel</h3>
+          <p>Where visitors drop off between landing on the booking page and confirming. This is your "why don't they book" view.</p>
+        </div>
+        <div id="funnel-view"></div>
+      </div>
+
+      <div class="tab-pane" id="tab-magazine">
+        <div class="panel-intro panel-intro-split">
+          <div>
+            <h3>Magazine CMS</h3>
+            <p>Add, edit or hide articles. Changes show up live on the magazine page (no reload needed).</p>
+          </div>
+          <button class="dash-btn primary" onclick="openArticleEditor()">+ Add new article</button>
+        </div>
+
+        <div id="mag-list"></div>
+      </div>
+
+      <div class="tab-pane" id="tab-integration">
+        <div class="int-wrap">
+          <h3 class="int-h3">Connect to Airtable via Make.com</h3>
+          <p class="int-lead">Right now this CRM lives in your browser's localStorage. To send leads to a real Airtable base + trigger automatic confirmation/voucher emails, paste a Make webhook URL below. Every new lead, booking, signup, and application will POST to it as JSON.</p>
+
+          <div class="int-status-box">
+            <div class="int-status-label">Status</div>
+            <div id="webhook-status">Loading...</div>
+          </div>
+
+          <div class="form-group">
+            <label class="form-label">Make.com webhook URL</label>
+            <input class="form-input mono-input" type="url" id="webhook-url-input" placeholder="https://hook.eu2.make.com/abc123..." />
+          </div>
+          <div class="int-btn-row int-btn-row-lg">
+            <button class="dash-btn primary" onclick="saveWebhook()">Save webhook</button>
+            <button class="dash-btn" onclick="testWebhook()">Test ping</button>
+            <button class="dash-btn danger" onclick="clearWebhook()">Disconnect</button>
+          </div>
+
+          <div class="int-block">
+            <h4 class="int-h4">Session replay and heatmaps (Microsoft Clarity)</h4>
+            <p class="int-body">Clarity is free. It records anonymized sessions and heatmaps so you can watch where visitors hesitate or drop off, the "why" behind the funnel numbers. Create a free project at <strong>clarity.microsoft.com</strong>, copy the Project ID, and paste it below.</p>
+            <div id="clarity-status" class="int-clarity-status"></div>
+            <div class="form-group form-group-sm"><label class="form-label">Clarity Project ID</label><input class="form-input mono-input" type="text" id="clarity-id-input" placeholder="e.g. abcde12345" /></div>
+            <div class="int-btn-row">
+              <button class="dash-btn primary" onclick="saveClarity()">Save Clarity ID</button>
+              <button class="dash-btn danger" onclick="clearClarity()">Remove</button>
+            </div>
+            <p class="int-note">Saved in this browser for testing. To enable Clarity for every visitor on the live site, send the Project ID to your developer to bake into the site.</p>
+          </div>
+
+          <h4 class="int-h4 int-h4-divider">Step-by-step setup</h4>
+          <ol class="int-list">
+            <li><strong>Create your Airtable base.</strong> Recommended tables: <code>Leads</code>, <code>Bookings</code>, <code>Users</code>, <code>Applications</code>. Fields can mirror the JSON shape (see "Payload format" below).</li>
+            <li><strong>In Make.com, create a new scenario.</strong> Add a <em>Webhooks &gt; Custom webhook</em> trigger. Copy the URL it generates and paste it into the field above.</li>
+            <li><strong>Add a Router after the webhook.</strong> Route by the <code>type</code> field. Each route handles one record type (lead, booking, application, user).</li>
+            <li><strong>For each route, add an Airtable "Create a Record" module</strong> pointing at the matching table. Map JSON fields from <code>record.*</code>. For bookings the guest is nested at <code>record.guest.*</code>.</li>
+            <li><strong>Add email modules to specific routes.</strong> Examples: on the welcome-popup route, send the <code>WELCOME15</code> voucher via Gmail or SendGrid. On the booking-request route, send a confirmation email to <code>record.guest.email</code>.</li>
+            <li><strong>Turn the scenario on.</strong> Submit a test booking or signup and verify the data lands in Airtable and the email goes out. The "Test ping" button above sends a small fake payload to verify connectivity.</li>
+          </ol>
+
+          <h4 class="int-h4 int-h4-gap">Payload format</h4>
+          <p class="int-body int-body-tight">Every webhook fires with the following JSON shape:</p>
+          <pre class="int-pre">{
+  "type": "leads",        // or "bookings", "users", "applications"
+  "source": "ipartment-website",
+  "record": {
+    "id": "IPT-MA12B3C-XYZ",
+    "createdAt": "2026-05-22T11:00:00.000Z",
+    "source": "index.html",
+    "email": "guest@example.com",
+    "phone": "+84 123 456",
+    "type": "welcome_popup_voucher",
+    "voucher": "WELCOME15",
+    "promoValue": "15% off first stay"
+    // ... booking records also have: room, checkin, checkout, nights,
+    //     total, guest:{first,last,email,phone}, etc.
+  }
+}</pre>
+
+          <h4 class="int-h4 int-h4-gap">Things to know</h4>
+          <ul class="int-list">
+            <li><strong>Data still saves locally too.</strong> The webhook is fire-and-forget. If Make is down or unreachable, the record is still kept in this admin dashboard.</li>
+            <li><strong>CORS:</strong> Make webhooks accept POSTs without preflight, so no special setup is needed.</li>
+            <li><strong>Webhook URL is per-browser.</strong> If you open admin.html on a different device, you need to paste the URL there too (or share access via the Make scenario itself).</li>
+            <li><strong>Right now this CRM is a simulator.</strong> When the webhook is set, it becomes real, persistent, and ties into your Airtable + email automation.</li>
+          </ul>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
+
+<!-- Article editor modal -->
+<div class="art-modal" id="art-modal">
+  <div class="art-modal-content">
+    <button class="art-close" id="art-close" type="button">&times;</button>
+    <h3 id="art-modal-title" class="art-modal-h3">Add new article</h3>
+    <p id="art-modal-sub" class="art-modal-sub">Fill in the article details. The image URL can be any public image (Unsplash, your CDN, social media preview, etc).</p>
+
+    <form id="art-form">
+      <input type="hidden" id="art-id" />
+
+      <div class="form-group">
+        <label class="form-label">Title *</label>
+        <input class="form-input" type="text" id="art-title" required maxlength="200" />
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Excerpt / short summary *</label>
+        <textarea class="form-input art-textarea" id="art-excerpt" rows="3" required maxlength="500"></textarea>
+      </div>
+
+      <div class="art-grid art-grid-2">
+        <div class="form-group">
+          <label class="form-label">Category *</label>
+          <select class="form-select" id="art-category" required>
+            <option value="local">Local Guide</option>
+            <option value="regional">Regional</option>
+            <option value="business">Business</option>
+            <option value="news">News</option>
+            <option value="featured">Featured</option>
+          </select>
+        </div>
+        <div class="form-group">
+          <label class="form-label">Date label</label>
+          <input class="form-input" type="text" id="art-date" placeholder="May 2026" maxlength="40" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Article link (URL to social media post / news article)</label>
+        <input class="form-input" type="url" id="art-url" placeholder="https://..." />
+      </div>
+
+      <div class="art-grid art-grid-21">
+        <div class="form-group">
+          <label class="form-label">Source label</label>
+          <input class="form-input" type="text" id="art-source" placeholder="e.g. VnExpress, Facebook, our team" maxlength="80" />
+        </div>
+        <div class="form-group">
+          <label class="form-label">Tag label (shown on card)</label>
+          <input class="form-input" type="text" id="art-tag" placeholder="auto: based on category" maxlength="40" />
+        </div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Image URL *</label>
+        <input class="form-input" type="url" id="art-image" placeholder="https://images.unsplash.com/..." required />
+        <div id="art-image-preview"></div>
+      </div>
+
+      <div class="form-group">
+        <label class="form-label">Keywords (helps the search bar find this article)</label>
+        <input class="form-input" type="text" id="art-keywords" placeholder="thao dien metro food expat..." maxlength="200" />
+      </div>
+
+      <label class="art-check">
+        <input type="checkbox" id="art-featured" />
+        Set as featured article (replaces the current featured card)
+      </label>
+
+      <div class="art-actions">
+        <button type="submit" class="dash-btn primary">Save article</button>
+        <button type="button" class="dash-btn" onclick="closeArticleEditor()">Cancel</button>
+      </div>
+    </form>
+  </div>
+</div>
+
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/data/articles.js"></script>
+<script src="assets/js/pages/admin.js"></script>
+</body>
+</html>
