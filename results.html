@@ -1,121 +1,643 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Available Apartments - ipartment Vietnam</title>
-  <meta name="description" content="Search results. Available serviced apartments in Thao Dien for your selected dates." />
-  <link rel="canonical" href="https://ipartment.vn/results.html" />
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/main.css" />
-  <link rel="stylesheet" href="assets/css/components.css" />
-  <link rel="stylesheet" href="assets/css/advanced.css" />
-  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
-  <link rel="stylesheet" href="assets/css/pages/results.css" />
-</head>
-<body class="has-header lg" data-marquee-off>
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Available Apartments – ipartment Vietnam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--green:#22c55e;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);color:var(--black);background:var(--gray-light);font-size:15px;line-height:1.6;}
 
-<header class="site-header">
-  <div class="site-header-main">
-    <a href="index.html" class="logo">i<span>partment</span></a>
-    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
-    <nav class="site-nav">
-      <a href="about.html">About</a>
-      <a href="accommodation.html">Accommodation</a>
-      <a href="magazine.html">Magazine</a>
-      <a href="career.html">Career</a>
-      <a href="faq.html">FAQ</a>
-      <a href="my-account.html">My Account</a>
-      <a href="admin.html">Admin</a>
-      <a href="booking.html" class="nav-cta">Book a Stay</a>
-    </nav>
-  </div>
-  <div class="site-header-edu">For educational purposes only</div>
+    /* HEADER */
+    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
+    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
+    .logo span{color:var(--yellow);}
+    nav{display:flex;align-items:center;gap:32px;}
+    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
+    nav a:hover{color:var(--yellow);}
+    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
+
+    /* PAGE TOP OFFSET — header 72px + search bar 72px */
+    body{padding-top:144px;}
+
+    /* SEARCH BAR (sticky, inherits dates from URL) */
+    .search-bar{
+      position:fixed;top:72px;z-index:100;left:0;right:0;background:var(--white);
+      border-bottom:3px solid var(--yellow);padding:0 56px;
+      display:flex;align-items:center;height:72px;gap:0;
+      box-shadow:0 4px 20px rgba(0,0,0,0.07);
+    }
+    .sb-field{flex:1;padding:0 20px;border-right:1px solid #e5e5e5;height:100%;display:flex;flex-direction:column;justify-content:center;position:relative;}
+    .sb-field:first-child{padding-left:0;}
+    .sb-field label{font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:2px;}
+    .sb-field .sb-val{font-size:13px;font-weight:600;color:var(--black);}
+    .sb-field .sb-val.ph{color:#aaa;font-weight:400;}
+    .sb-field button.sb-edit{position:absolute;right:12px;top:50%;transform:translateY(-50%);background:none;border:none;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);cursor:pointer;text-decoration:underline;}
+    .sb-field button.sb-edit:hover{color:var(--black);}
+    .sb-nights{background:var(--yellow);color:var(--black);font-size:12px;font-weight:800;padding:6px 18px;white-space:nowrap;letter-spacing:0.06em;margin-left:auto;margin-right:24px;flex-shrink:0;}
+
+    /* DROPDOWN inside search bar */
+    .sb-dropdown{position:absolute;top:calc(100% + 4px);left:0;background:var(--white);box-shadow:0 12px 40px rgba(0,0,0,0.15);z-index:200;display:none;min-width:300px;}
+    .sb-dropdown.open{display:block;}
+
+    /* MINI CALENDAR (reused from index) */
+    .mini-cal-wrap{padding:20px 20px 0;}
+    .mini-cal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:14px;}
+    .mini-cal-title{font-family:var(--font-heading);font-size:15px;font-weight:900;}
+    .mini-cal-nav{background:none;border:none;cursor:pointer;font-size:16px;padding:4px 8px;color:var(--black);}
+    .mini-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:2px;}
+    .mini-day-lbl{font-size:9px;font-weight:700;letter-spacing:0.06em;text-transform:uppercase;color:var(--gray-mid);text-align:center;padding:3px 0 6px;}
+    .mini-day{aspect-ratio:1;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:500;cursor:pointer;border-radius:2px;transition:all 0.12s;}
+    .mini-day:hover:not(.md-disabled):not(.md-empty){background:#f0f0f0;}
+    .mini-day.md-empty{cursor:default;}
+    .mini-day.md-disabled{color:#ccc;cursor:not-allowed;}
+    .mini-day.md-today{font-weight:800;text-decoration:underline;text-underline-offset:2px;}
+    .mini-day.md-checkin{background:var(--black);color:var(--yellow);font-weight:700;border-radius:2px 0 0 2px;}
+    .mini-day.md-checkout{background:var(--black);color:var(--yellow);font-weight:700;border-radius:0 2px 2px 0;}
+    .mini-day.md-checkin.md-checkout{border-radius:2px;}
+    .mini-day.md-inrange{background:rgba(0,0,0,0.07);}
+    .promo-msg{margin:12px 20px 0;padding:9px 12px;font-size:11px;font-weight:600;line-height:1.4;border-radius:2px;}
+    .promo-msg.nudge{background:#fff8e1;color:#7a5c00;border-left:3px solid var(--yellow);}
+    .promo-msg.unlocked{background:#f0fdf4;color:#166534;border-left:3px solid var(--green);}
+    .dd-ok-btn{margin:12px 20px 16px;width:calc(100% - 40px);background:var(--black);color:var(--yellow);border:none;padding:11px;font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-family:var(--font-body);display:block;}
+
+    /* GUEST DROPDOWN */
+    .guest-wrap{padding:20px;}
+    .guest-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px;}
+    .guest-label-t{font-size:14px;font-weight:600;}
+    .guest-sub{font-size:11px;color:var(--gray-mid);margin-top:2px;}
+    .guest-controls{display:flex;align-items:center;gap:12px;}
+    .guest-btn{width:32px;height:32px;border:1.5px solid #ddd;background:none;cursor:pointer;font-size:18px;display:flex;align-items:center;justify-content:center;transition:border-color 0.15s;}
+    .guest-btn:hover{border-color:var(--black);}
+    .guest-num{font-size:16px;font-weight:700;min-width:24px;text-align:center;}
+    .guest-apply{width:100%;background:var(--yellow);color:var(--black);border:none;padding:12px;font-weight:700;font-size:12px;letter-spacing:0.1em;text-transform:uppercase;cursor:pointer;font-family:var(--font-body);}
+
+    /* MAIN LAYOUT */
+    .results-wrap{max-width:1200px;margin:0 auto;padding:36px 40px 80px;}
+    .results-header{display:flex;justify-content:space-between;align-items:flex-end;margin-bottom:28px;}
+    .results-title{font-family:var(--font-heading);font-size:26px;font-weight:900;}
+    .results-sub{font-size:13px;color:#666;margin-top:4px;}
+    .sort-wrap{display:flex;align-items:center;gap:10px;font-size:12px;}
+    .sort-label{font-weight:600;color:var(--gray-mid);letter-spacing:0.08em;text-transform:uppercase;}
+    .sort-btn{padding:7px 14px;border:1.5px solid #ddd;background:none;cursor:pointer;font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;transition:all 0.15s;font-family:var(--font-body);}
+    .sort-btn.active{background:var(--black);color:var(--white);border-color:var(--black);}
+
+    /* NO DATES BANNER */
+    .no-dates-banner{background:var(--yellow);padding:20px 28px;margin-bottom:28px;display:flex;align-items:center;gap:16px;}
+    .no-dates-banner p{font-size:13px;font-weight:600;color:var(--black);}
+    .no-dates-banner a{font-size:12px;font-weight:800;text-transform:uppercase;letter-spacing:0.1em;color:var(--black);text-decoration:underline;white-space:nowrap;}
+
+    /* ROOM CARD */
+    .room-card{background:var(--white);display:grid;grid-template-columns:340px 1fr;margin-bottom:20px;transition:box-shadow 0.2s;overflow:hidden;}
+    .room-card:hover{box-shadow:0 8px 32px rgba(0,0,0,0.1);}
+    .room-img{position:relative;overflow:hidden;min-height:260px;}
+    .room-img img{width:100%;height:100%;object-fit:cover;display:block;transition:transform 0.4s;}
+    .room-card:hover .room-img img{transform:scale(1.04);}
+    .room-img-badge{position:absolute;top:0;left:0;background:var(--yellow);color:var(--black);font-size:9px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:5px 10px;}
+    .room-img-size{position:absolute;bottom:0;left:0;right:0;background:linear-gradient(to top,rgba(0,0,0,0.7),transparent);padding:16px 14px 10px;color:var(--white);font-size:12px;font-weight:600;}
+    .room-body{padding:28px 32px;display:flex;flex-direction:column;}
+    .room-cat{font-family:var(--font-heading);font-size:42px;font-weight:900;color:var(--yellow);line-height:1;margin-bottom:4px;-webkit-text-stroke:1.5px var(--black);paint-order:stroke fill;}
+    .room-name{font-size:17px;font-weight:800;margin-bottom:6px;}
+    .room-desc{font-size:13px;color:#555;line-height:1.65;margin-bottom:16px;flex:1;}
+    .room-amenities{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:18px;}
+    .amenity-tag{font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:4px 10px;background:#f3f3f3;color:#444;}
+    .room-footer{display:flex;align-items:flex-end;justify-content:space-between;padding-top:16px;border-top:1px solid #f0f0f0;gap:16px;}
+    .room-pricing{}
+    .rate-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:4px;}
+    .rate-main{font-family:var(--font-heading);font-size:26px;font-weight:900;line-height:1;}
+    .rate-unit{font-size:12px;color:var(--gray-mid);margin-top:2px;}
+    .rate-total{font-size:13px;font-weight:700;color:var(--black);margin-top:4px;}
+    .rate-discount{display:inline-block;background:#f0fdf4;color:#166534;font-size:10px;font-weight:800;letter-spacing:0.08em;text-transform:uppercase;padding:2px 8px;margin-top:4px;}
+    .rate-original{font-size:12px;color:var(--gray-mid);text-decoration:line-through;margin-top:2px;}
+    .room-cta{}
+    .btn-book{background:var(--yellow);color:var(--black);font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:15px 28px;border:none;cursor:pointer;font-family:var(--font-body);white-space:nowrap;transition:background 0.2s;}
+    .btn-book:hover{background:#e0d500;}
+    .btn-details{display:block;text-align:center;font-size:11px;font-weight:600;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);text-decoration:none;margin-top:10px;transition:color 0.2s;}
+    .btn-details:hover{color:var(--black);}
+
+    /* PROMO LINE under room name */
+    .room-promo-line{font-size:12px;font-weight:800;color:var(--green);letter-spacing:0.04em;margin-bottom:10px;}
+
+    /* TIER INFO BOX */
+    .tier-info{background:#fffde7;border:1px solid #ffe082;padding:16px 20px;margin-bottom:28px;display:flex;gap:24px;flex-wrap:wrap;}
+    .tier-info-item{flex:1;min-width:180px;}
+    .tier-info-label{font-size:10px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);margin-bottom:4px;}
+    .tier-info-val{font-size:14px;font-weight:700;color:var(--black);}
+    .tier-info-discount{font-size:13px;font-weight:800;color:var(--green);}
+
+    /* SORT DROPDOWN OPTIONS */
+    .sort-drop-opt{padding:10px 16px;font-size:12px;font-weight:600;cursor:pointer;white-space:nowrap;color:var(--black);transition:background 0.12s;}
+    .sort-drop-opt:hover{background:#f5f5f5;}
+    .sort-drop-opt.selected{background:var(--yellow);}
+
+    /* MAX GUESTS BADGE on card */
+    .room-guests-badge{display:inline-block;font-size:10px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;padding:3px 9px;background:#f3f3f3;color:#444;margin-bottom:14px;}
+
+    /* EMPTY STATE */
+    .empty-state{text-align:center;padding:80px 40px;}
+    .empty-state h3{font-family:var(--font-heading);font-size:24px;margin-bottom:12px;}
+    .empty-state p{color:#666;font-size:14px;}
+
+    @media(max-width:900px){
+      header{padding:0 24px;}nav a:not(.nav-cta){display:none;}
+      .search-bar{padding:0 24px;height:auto;flex-wrap:wrap;padding-top:12px;padding-bottom:12px;gap:8px;}
+      .sb-field{border-right:none;padding:8px 0;flex:none;width:calc(50% - 4px);}
+      .sb-nights{margin-left:0;}
+      .results-wrap{padding:24px 16px 60px;}
+      .room-card{grid-template-columns:1fr;}
+      .room-img{min-height:200px;}
+      .results-header{flex-direction:column;align-items:flex-start;gap:12px;}
+    }
+  </style>
+</head>
+<body>
+
+<header>
+  <a href="index.html" class="logo">i<span>partment</span></a>
+  <nav>
+    <a href="about.html">About</a>
+    <a href="accommodation.html">Accommodation</a>
+    <a href="magazine.html">Magazine</a>
+    <a href="career.html">Career</a>
+    <a href="faq.html">FAQ</a>
+    <a href="my-account.html">My Account</a>
+    <a href="booking.html" class="nav-cta">Book a Stay</a>
+  </nav>
 </header>
 
-<div class="summary-strip">
-  <div class="summary-item"><span class="lbl">Check-in</span><span class="val" id="sum-checkin">-</span></div>
-  <div class="summary-item"><span class="lbl">Check-out</span><span class="val" id="sum-checkout">-</span></div>
-  <div class="summary-item"><span class="lbl">Guests</span><span class="val" id="sum-guests">1</span></div>
-  <span class="summary-nights" id="sum-nights">No dates selected</span>
-  <a href="index.html" class="summary-edit">Edit Search</a>
+<!-- STICKY SEARCH BAR -->
+<div class="search-bar" id="search-bar">
+
+  <!-- DATES FIELD -->
+  <div class="sb-field" id="sbf-dates" onclick="toggleSbDrop('sbd-cal', event)" style="cursor:pointer;flex:2;">
+    <label>Dates</label>
+    <span class="sb-val" id="sbv-dates">Select dates</span>
+    <div class="sb-dropdown" id="sbd-cal" onclick="event.stopPropagation()">
+      <div class="mini-cal-wrap">
+        <div class="mini-cal-header">
+          <button class="mini-cal-nav" onclick="sbShiftCal(-1)">&#8249;</button>
+          <span class="mini-cal-title" id="sb-mc-title"></span>
+          <button class="mini-cal-nav" onclick="sbShiftCal(1)">&#8250;</button>
+        </div>
+        <div class="mini-grid" id="sb-mc-grid"></div>
+      </div>
+      <div class="promo-msg" id="sb-promo" style="display:none;"></div>
+      <button class="dd-ok-btn" onclick="sbCloseCal(event)">OK — Confirm Dates</button>
+    </div>
+  </div>
+
+  <!-- GUESTS FIELD -->
+  <div class="sb-field" id="sbf-guests" onclick="toggleSbDrop('sbd-guests', event)" style="cursor:pointer;">
+    <label>Guests</label>
+    <span class="sb-val" id="sbv-guests">1 guest</span>
+    <div class="sb-dropdown" id="sbd-guests" onclick="event.stopPropagation()">
+      <div class="guest-wrap">
+        <div class="guest-row">
+          <div><div class="guest-label-t">Guests</div><div class="guest-sub">Max 4 per apartment</div></div>
+          <div class="guest-controls">
+            <button class="guest-btn" onclick="sbChangeGuests(-1)">−</button>
+            <span class="guest-num" id="sb-guest-count">1</span>
+            <button class="guest-btn" onclick="sbChangeGuests(1)">+</button>
+          </div>
+        </div>
+        <button class="guest-apply" onclick="sbApplyGuests()">Apply</button>
+      </div>
+    </div>
+  </div>
+
+  <div class="sb-nights" id="sb-nights-badge" style="display:none;"></div>
+  <button onclick="reRunSearch()" style="background:var(--yellow);color:var(--black);border:none;padding:0 28px;height:48px;font-weight:800;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;cursor:pointer;font-family:var(--font-body);flex-shrink:0;">Update Search</button>
 </div>
 
+<!-- RESULTS -->
 <div class="results-wrap">
-  <div id="no-dates-section"></div>
+  <div id="no-dates-banner" class="no-dates-banner" style="display:none;">
+    <p>📅 No dates selected — showing starting rates. <strong>Select dates above</strong> to see your exact price and total.</p>
+    <a href="index.html">← Back to Home</a>
+  </div>
+  <div id="tier-info-box" class="tier-info" style="display:none;"></div>
   <div class="results-header">
     <div>
-      <h1 class="results-title">Available Apartments in Thao Dien</h1>
-      <p class="results-sub" id="results-sub">Choose your apartment to continue booking</p>
-    </div>
-    <div class="sort-wrap">
-      <span class="sort-label">Sort:</span>
-      <button class="sort-btn active" data-sort="recommended" onclick="sortResults('recommended')">Recommended</button>
-      <button class="sort-btn" data-sort="price-asc" onclick="sortResults('price-asc')">Price low to high</button>
-      <button class="sort-btn" data-sort="price-desc" onclick="sortResults('price-desc')">Price high to low</button>
-      <button class="sort-btn" data-sort="size" onclick="sortResults('size')">Size</button>
+      <div class="results-title" id="results-title">Available Apartments</div>
+      <div class="results-sub" id="results-sub">ipartment Vietnam · Thao Dien, Ho Chi Minh City</div>
     </div>
   </div>
-
-  <div id="tier-info-section"></div>
-  <div id="results-list"></div>
+  <!-- PINNED CHOICE -->
+  <div id="pinned-card"></div>
+  <!-- SORT BAR + REST OF RESULTS -->
+  <div id="sort-and-rest" style="display:none;">
+    <div style="height:1px;background:#ddd;margin:0 0 20px;"></div>
+    <div style="display:flex;align-items:center;gap:10px;margin-bottom:20px;">
+      <span style="font-size:11px;font-weight:700;letter-spacing:0.08em;text-transform:uppercase;color:var(--gray-mid);">Sort:</span>
+      <!-- PRICE dropdown -->
+      <div style="position:relative;">
+        <button id="sort-price-btn" class="sort-btn active" onclick="toggleSortDrop('sort-price-drop', event)">Price &#9660;</button>
+        <div id="sort-price-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:300;min-width:170px;">
+          <div class="sort-drop-opt" data-mode="price-asc" onclick="pickSort('price-asc',this)">From cheapest</div>
+          <div class="sort-drop-opt" data-mode="price-desc" onclick="pickSort('price-desc',this)">From most expensive</div>
+        </div>
+      </div>
+      <!-- SIZE dropdown -->
+      <div style="position:relative;">
+        <button id="sort-size-btn" class="sort-btn" onclick="toggleSortDrop('sort-size-drop', event)">Size &#9660;</button>
+        <div id="sort-size-drop" style="display:none;position:absolute;top:calc(100% + 4px);left:0;background:var(--white);box-shadow:0 8px 24px rgba(0,0,0,0.12);z-index:300;min-width:140px;">
+          <div class="sort-drop-opt" data-mode="size-asc" onclick="pickSort('size-asc',this)">Smallest first</div>
+          <div class="sort-drop-opt" data-mode="size-desc" onclick="pickSort('size-desc',this)">Largest first</div>
+        </div>
+      </div>
+    </div>
+    <div id="results-list"></div>
+  </div>
+  <!-- FALLBACK list when no room chosen -->
+  <div id="results-list-all"></div>
 </div>
 
-<footer class="site-footer">
-  <div class="footer-grid">
-    <div class="footer-brand">
-      <a href="index.html" class="logo">i<span>partment</span></a>
-      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Accommodation</h5>
-      <ul>
-        <li><a href="accommodation.html#xs">Studio XS</a></li>
-        <li><a href="accommodation.html#s">Studio S</a></li>
-        <li><a href="accommodation.html#m">Apartment M</a></li>
-        <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <ul>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="career.html">Career</a></li>
-        <li><a href="magazine.html">Magazine</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <ul>
-        <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
-        <li><a href="tel:+84779488070">+84 779 488 070</a></li>
-        <li><a href="about.html#location">Xuan Thuy St, Thao Dien</a></li>
-      </ul>
-      <h5 style="margin-top:28px;">Social</h5>
-      <ul>
-        <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
-      </ul>
-    </div>
+<script>
+// ─────────────────────────────────────────────
+// ROOM DATA
+// ─────────────────────────────────────────────
+const ROOMS = [
+  {
+    id: 'XS',
+    name: 'Compact Studio',
+    size: '25–30 m²',
+    maxGuests: 4,
+    desc: 'A cleverly designed compact studio with everything you need for a comfortable solo stay. Floor-to-ceiling windows, a full kitchenette, and smart storage maximise every square metre.',
+    amenities: ['High-speed Wi-Fi','Kitchenette','Smart TV','Air conditioning','Daily housekeeping','24/7 check-in'],
+    nightly: 1200000, weekly: 980000, monthly: 750000,
+    badge: null,
+    img: 'https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&q=80',
+  },
+  {
+    id: 'S',
+    name: 'Standard Studio',
+    size: '35–40 m²',
+    maxGuests: 4,
+    desc: 'Our most popular option — a spacious studio with a dedicated workspace, full kitchen, and a comfortable lounge area. Perfect for professionals on extended assignments.',
+    amenities: ['High-speed Wi-Fi','Full kitchen','Workspace','Smart TV','Air conditioning','Daily housekeeping','24/7 check-in'],
+    nightly: 1650000, weekly: 1350000, monthly: 1050000,
+    badge: 'Most Popular',
+    img: 'https://images.unsplash.com/photo-1555854877-bab0e564b8d5?w=700&q=80',
+  },
+  {
+    id: 'M',
+    name: 'Spacious Apartment',
+    size: '45–55 m²',
+    maxGuests: 6,
+    desc: 'A full one-bedroom apartment with a separate living room, dining area, and fully equipped kitchen. Ideal for couples or professionals who need room to breathe and work.',
+    amenities: ['High-speed Wi-Fi','Full kitchen','Dining area','Living room','Smart TV','Washer/dryer','Daily housekeeping','24/7 check-in'],
+    nightly: 2100000, weekly: 1750000, monthly: 1350000,
+    badge: null,
+    img: 'https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&q=80',
+  },
+  {
+    id: 'L',
+    name: 'Long-Stay Suite',
+    size: '65–75 m²',
+    maxGuests: 8,
+    desc: 'Our largest and most premium offering — a full two-room suite with a master bedroom, generous living and dining space, premium furnishings, and panoramic city views.',
+    amenities: ['High-speed Wi-Fi','Full gourmet kitchen','Master bedroom','Living & dining room','Smart TV','Washer/dryer','Bathtub','Daily housekeeping','24/7 check-in'],
+    nightly: 2800000, weekly: 2300000, monthly: 1800000,
+    badge: 'Best Value',
+    img: 'https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=700&q=80',
+  },
+];
+
+// ─────────────────────────────────────────────
+// STATE — parsed from URL
+// ─────────────────────────────────────────────
+const TODAY = new Date(); TODAY.setHours(0,0,0,0);
+
+const params = new URLSearchParams(window.location.search);
+let S = {
+  checkin:  params.get('ci')  ? parseDate(params.get('ci'))  : null,
+  checkout: params.get('co')  ? parseDate(params.get('co'))  : null,
+  guests:   parseInt(params.get('guests') || '1'),
+  room:     params.get('room') || null,
+  calOffset: 0,
+  selecting: 'checkin',
+};
+
+function parseDate(str) {
+  const d = new Date(str); d.setHours(0,0,0,0); return isNaN(d) ? null : d;
+}
+function dateKey(d) {
+  return `${d.getFullYear()}-${String(d.getMonth()+1).padStart(2,'0')}-${String(d.getDate()).padStart(2,'0')}`;
+}
+function fmt(d) {
+  const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d ? `${d.getDate()} ${M[d.getMonth()]} ${d.getFullYear()}` : '—';
+}
+function fmtShort(d) {
+  const M=['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+  return d ? `${d.getDate()} ${M[d.getMonth()]}` : '—';
+}
+function fmtVND(n) { return n.toLocaleString('vi-VN') + ' ₫'; }
+
+function nights() {
+  if(!S.checkin || !S.checkout) return 0;
+  return Math.round((S.checkout - S.checkin) / 86400000);
+}
+function rateKey(n) {
+  if(n >= 28) return 'monthly';
+  if(n >= 7)  return 'weekly';
+  return 'nightly';
+}
+function discountPct(room, key) {
+  if(key === 'monthly') return Math.round((1 - room.monthly / room.nightly) * 100);
+  if(key === 'weekly')  return Math.round((1 - room.weekly  / room.nightly) * 100);
+  return 0;
+}
+
+// ─────────────────────────────────────────────
+// INIT
+// ─────────────────────────────────────────────
+window.addEventListener('DOMContentLoaded', () => {
+  syncSearchBar();
+  renderResults();
+  renderSbCal();
+  document.addEventListener('click', function() {
+    document.querySelectorAll('.sb-dropdown').forEach(function(d){ d.classList.remove('open'); });
+    document.querySelectorAll('#sort-price-drop, #sort-size-drop').forEach(function(d){ d.style.display='none'; });
+  });
+});
+
+// ─────────────────────────────────────────────
+// SEARCH BAR SYNC
+// ─────────────────────────────────────────────
+function syncSearchBar() {
+  const n = nights();
+  if(S.checkin && S.checkout) {
+    document.getElementById('sbv-dates').textContent = `${fmtShort(S.checkin)} → ${fmtShort(S.checkout)}`;
+    document.getElementById('sbv-dates').classList.remove('ph');
+    document.getElementById('sb-nights-badge').textContent = n + (n === 1 ? ' night' : ' nights');
+    document.getElementById('sb-nights-badge').style.display = 'block';
+  } else {
+    document.getElementById('sbv-dates').textContent = 'Select dates';
+    document.getElementById('sbv-dates').classList.add('ph');
+    document.getElementById('sb-nights-badge').style.display = 'none';
+  }
+  document.getElementById('sbv-guests').textContent = S.guests + (S.guests === 1 ? ' guest' : ' guests');
+  document.getElementById('sb-guest-count').textContent = S.guests;
+}
+
+// ─────────────────────────────────────────────
+// RESULTS RENDER
+// ─────────────────────────────────────────────
+let sortMode = 'price-asc';
+
+function buildCardHTML(room, n, key, hasDates, isPinned) {
+  const rKey = hasDates ? key : 'nightly';
+  const rate = room[rKey];
+  const disc = discountPct(room, rKey);
+  const total = hasDates ? rate * n : null;
+  const bookUrl = buildBookUrl(room.id);
+
+  const promoLine = (rKey === 'monthly')
+    ? '<div class="room-promo-line">38% long-stay rate applied — best price</div>'
+    : (rKey === 'weekly')
+    ? '<div class="room-promo-line">18% weekly rate applied</div>'
+    : '';
+
+  const pinnedLabel = isPinned
+    ? '<div style="display:inline-block;background:var(--yellow);color:var(--black);font-size:10px;font-weight:800;letter-spacing:0.12em;text-transform:uppercase;padding:4px 10px;margin-bottom:12px;">Your Choice</div>'
+    : '';
+
+  return '<div class="room-card" data-price="' + rate + '" data-size="' + parseInt(room.size) + '">'
+    + '<div class="room-img">'
+    + (room.badge ? '<div class="room-img-badge">' + room.badge + '</div>' : '')
+    + '<img src="' + room.img + '" alt="' + room.name + '" loading="lazy" />'
+    + '<div class="room-img-size">' + room.size + '</div>'
+    + '</div>'
+    + '<div class="room-body">'
+    + pinnedLabel
+    + '<div class="room-cat">' + room.id + '</div>'
+    + '<div class="room-name">' + room.name + '</div>'
+    + '<div class="room-guests-badge">Up to ' + room.maxGuests + ' guests</div>'
+    + promoLine
+    + '<div class="room-desc">' + room.desc + '</div>'
+    + '<div class="room-amenities">' + room.amenities.map(function(a){return '<span class="amenity-tag">' + a + '</span>';}).join('') + '</div>'
+    + '<div class="room-footer">'
+    + '<div class="room-pricing">'
+    + '<div class="rate-label">' + (hasDates ? 'Your rate' : 'Starting from') + '</div>'
+    + '<div class="rate-main">' + fmtVND(rate) + '</div>'
+    + '<div class="rate-unit">per night' + (hasDates && n > 1 ? ' &middot; ' + n + ' nights' : '') + '</div>'
+    + (disc > 0 ? '<div class="rate-original">' + fmtVND(room.nightly) + ' /night standard</div><div class="rate-discount">-' + disc + '% off</div>' : '')
+    + (total ? '<div class="rate-total" style="margin-top:8px;font-size:15px;">Total: <strong>' + fmtVND(total) + '</strong></div>' : '')
+    + '</div>'
+    + '<div class="room-cta">'
+    + '<button class="btn-book" onclick="window.location.href=\'' + bookUrl + '\'">Book This Room &#8594;</button>'
+    + '<a href="accommodation.html" class="btn-details">View Details</a>'
+    + '</div>'
+    + '</div>'
+    + '</div>'
+    + '</div>';
+}
+
+function renderResults() {
+  const n = nights();
+  const key = rateKey(n);
+  const hasDates = S.checkin && S.checkout && n > 0;
+
+  // No-dates banner
+  document.getElementById('no-dates-banner').style.display = hasDates ? 'none' : 'flex';
+
+  // Title & sub
+  if(hasDates) {
+    document.getElementById('results-title').textContent = '4 Apartments Available';
+    document.getElementById('results-sub').textContent =
+      fmt(S.checkin) + ' → ' + fmt(S.checkout) + ' · ' + n + ' night' + (n>1?'s':'') + ' · ' + S.guests + ' guest' + (S.guests>1?'s':'') + ' · Thao Dien, HCMC';
+  } else {
+    document.getElementById('results-title').textContent = 'All Apartments';
+    document.getElementById('results-sub').textContent = 'ipartment Vietnam · Thao Dien, Ho Chi Minh City · Select dates to see your price';
+  }
+
+  // Tier info box
+  const tierBox = document.getElementById('tier-info-box');
+  if(hasDates) {
+    tierBox.style.display = 'flex';
+    var tierLabel, tierNote;
+    if(key === 'monthly') {
+      tierLabel = '38% Long-Stay Rate'; tierNote = 'Best rate — 28+ nights';
+    } else if(key === 'weekly') {
+      const left = 28 - n;
+      tierLabel = '18% Weekly Rate'; tierNote = 'Stay ' + left + ' more night' + (left>1?'s':'') + ' for 38% off';
+    } else {
+      const toW = 7 - n; const toM = 28 - n;
+      tierLabel = 'Standard Nightly Rate'; tierNote = '+' + toW + ' nights → 18% off · +' + toM + ' nights → 38% off';
+    }
+    tierBox.innerHTML = '<div class="tier-info-item"><div class="tier-info-label">Current Rate Tier</div><div class="tier-info-discount">' + tierLabel + '</div></div>'
+      + '<div class="tier-info-item"><div class="tier-info-label">Tip</div><div class="tier-info-val" style="font-size:12px;font-weight:600;color:#555;">' + tierNote + '</div></div>'
+      + '<div class="tier-info-item"><div class="tier-info-label">Check-in</div><div class="tier-info-val">' + fmt(S.checkin) + '</div></div>'
+      + '<div class="tier-info-item"><div class="tier-info-label">Check-out</div><div class="tier-info-val">' + fmt(S.checkout) + '</div></div>';
+  } else {
+    tierBox.style.display = 'none';
+  }
+
+  const pinnedRoom = S.room ? ROOMS.find(function(r){return r.id === S.room;}) : null;
+  const otherRooms = pinnedRoom ? ROOMS.filter(function(r){return r.id !== S.room;}) : [...ROOMS];
+
+  // Sort others
+  if(sortMode === 'price-asc')  otherRooms.sort(function(a,b){ return a[hasDates ? key : 'nightly'] - b[hasDates ? key : 'nightly']; });
+  if(sortMode === 'price-desc') otherRooms.sort(function(a,b){ return b[hasDates ? key : 'nightly'] - a[hasDates ? key : 'nightly']; });
+  if(sortMode === 'size-asc')   otherRooms.sort(function(a,b){ return parseInt(a.size) - parseInt(b.size); });
+  if(sortMode === 'size-desc')  otherRooms.sort(function(a,b){ return parseInt(b.size) - parseInt(a.size); });
+
+  const pinnedEl = document.getElementById('pinned-card');
+  const sortAndRest = document.getElementById('sort-and-rest');
+  const listAll = document.getElementById('results-list-all');
+
+  if(pinnedRoom) {
+    // Show pinned card, then separator + sort bar + others
+    pinnedEl.innerHTML = buildCardHTML(pinnedRoom, n, key, hasDates, true);
+    sortAndRest.style.display = 'block';
+    document.getElementById('results-list').innerHTML = otherRooms.map(function(r){return buildCardHTML(r, n, key, hasDates, false);}).join('');
+    listAll.innerHTML = '';
+  } else {
+    // No room chosen — show all sorted, no separator
+    pinnedEl.innerHTML = '';
+    sortAndRest.style.display = 'none';
+    listAll.innerHTML = otherRooms.map(function(r){return buildCardHTML(r, n, key, hasDates, false);}).join('');
+  }
+}
+
+function buildBookUrl(roomId) {
+  var url = 'booking.html?room=' + roomId + '&guests=' + S.guests;
+  if(S.checkin)  url += '&ci=' + dateKey(S.checkin);
+  if(S.checkout) url += '&co=' + dateKey(S.checkout);
+  return url;
+}
+
+function toggleSortDrop(id, e) {
+  e && e.stopPropagation();
+  var drops = ['sort-price-drop','sort-size-drop'];
+  drops.forEach(function(d){
+    var el = document.getElementById(d);
+    if(el) el.style.display = (d === id && el.style.display === 'none') ? 'block' : 'none';
+  });
+}
+
+function pickSort(mode, el) {
+  sortMode = mode;
+  // Update button labels
+  var isPrice = mode.startsWith('price');
+  document.getElementById('sort-price-btn').classList.toggle('active', isPrice);
+  document.getElementById('sort-size-btn').classList.toggle('active', !isPrice);
+  // Mark selected option
+  document.querySelectorAll('.sort-drop-opt').forEach(function(o){ o.classList.remove('selected'); });
+  el.classList.add('selected');
+  // Close dropdowns
+  document.querySelectorAll('#sort-price-drop, #sort-size-drop').forEach(function(d){ d.style.display='none'; });
+  renderResults();
+}
+
+function reRunSearch() {
+  syncSearchBar();
+  renderResults();
+}
+
+// ─────────────────────────────────────────────
+// SEARCH BAR MINI CALENDAR
+// ─────────────────────────────────────────────
+function toggleSbDrop(id, e) {
+  e && e.stopPropagation();
+  document.querySelectorAll('.sb-dropdown').forEach(d => { if(d.id !== id) d.classList.remove('open'); });
+  const dd = document.getElementById(id);
+  dd.classList.toggle('open');
+  if(dd.classList.contains('open') && id === 'sbd-cal') renderSbCal();
+}
+
+function sbShiftCal(dir) {
+  S.calOffset = Math.max(0, Math.min(2, S.calOffset + dir));
+  renderSbCal();
+}
+
+function renderSbCal() {
+  const base = new Date(TODAY.getFullYear(), TODAY.getMonth() + S.calOffset, 1);
+  const mNames = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+  const dNames = ['Mo','Tu','We','Th','Fr','Sa','Su'];
+  document.getElementById('sb-mc-title').textContent = `${mNames[base.getMonth()]} ${base.getFullYear()}`;
+
+  const grid = document.getElementById('sb-mc-grid');
+  let html = dNames.map(d => `<div class="mini-day-lbl">${d}</div>`).join('');
+  let startDay = base.getDay(); startDay = startDay === 0 ? 6 : startDay - 1;
+  for(let i = 0; i < startDay; i++) html += `<div class="mini-day md-empty"></div>`;
+  const dim = new Date(base.getFullYear(), base.getMonth()+1, 0).getDate();
+  for(let day = 1; day <= dim; day++) {
+    const d = new Date(base.getFullYear(), base.getMonth(), day); d.setHours(0,0,0,0);
+    const isPast = d < TODAY;
+    const isToday = d.getTime() === TODAY.getTime();
+    const isCI = S.checkin  && d.getTime() === S.checkin.getTime();
+    const isCO = S.checkout && d.getTime() === S.checkout.getTime();
+    const inRange = S.checkin && S.checkout && d > S.checkin && d < S.checkout;
+    let cls = 'mini-day';
+    if(isToday) cls += ' md-today';
+    if(isPast) cls += ' md-disabled';
+    else {
+      if(isCI && isCO) cls += ' md-checkin md-checkout';
+      else if(isCI)   cls += ' md-checkin';
+      else if(isCO)   cls += ' md-checkout';
+      else if(inRange) cls += ' md-inrange';
+    }
+    const click = isPast ? '' : `onclick="sbOnDay('${dateKey(d)}')"`;
+    html += `<div class="${cls}" ${click}>${day}</div>`;
+  }
+  grid.innerHTML = html;
+  renderSbPromo();
+}
+
+function sbOnDay(key) {
+  const d = new Date(key); d.setHours(0,0,0,0);
+  if(S.selecting === 'checkin' || !S.checkin) {
+    S.checkin = d; S.checkout = null; S.selecting = 'checkout';
+  } else {
+    if(d <= S.checkin) { S.checkin = d; S.checkout = null; S.selecting = 'checkout'; }
+    else { S.checkout = d; S.selecting = 'checkin'; }
+  }
+  renderSbCal();
+  syncSearchBar();
+}
+
+function renderSbPromo() {
+  const msg = document.getElementById('sb-promo');
+  const n = nights();
+  if(!S.checkin || !S.checkout || n <= 0) { msg.style.display='none'; return; }
+  msg.style.display = 'block';
+  if(n >= 28) {
+    msg.className = 'promo-msg unlocked';
+    msg.innerHTML = '🎉 You\'ve unlocked the <strong>38% long-stay rate</strong>!';
+  } else if(n >= 7) {
+    const left = 28 - n;
+    msg.className = 'promo-msg unlocked';
+    msg.innerHTML = `✅ <strong>18% weekly rate unlocked!</strong> ${left} more night${left>1?'s':''} → 38% off.`;
+  } else {
+    const toW = 7 - n, toM = 28 - n;
+    msg.className = 'promo-msg nudge';
+    msg.innerHTML = `💡 <strong>${toW} more night${toW>1?'s':''}</strong> → 18% off · <strong>${toM} nights</strong> → 38% off`;
+  }
+}
+
+function sbChangeGuests(delta) {
+  S.guests = Math.max(1, Math.min(8, S.guests + delta));
+  document.getElementById('sb-guest-count').textContent = S.guests;
+}
+function sbApplyGuests() {
+  syncSearchBar();
+  document.getElementById('sbd-guests').classList.remove('open');
+  renderResults();
+}
+</script>
+
+<footer style="background:var(--black);color:var(--white);padding:80px 80px 40px;">
+  <div style="display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;">
+    <div><a href="index.html" style="font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;">i<span style="color:var(--yellow);">partment</span></a><p style="font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;">Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
+    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Accommodation</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="accommodation.html#xs" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Studio XS</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#s" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Studio S</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#m" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Apartment M</a></li><li style="margin-bottom:10px;"><a href="accommodation.html#l" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Long-Stay Suite L</a></li></ul></div>
+    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Company</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="about.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">About Us</a></li><li style="margin-bottom:10px;"><a href="career.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Career</a></li><li style="margin-bottom:10px;"><a href="magazine.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Magazine</a></li><li style="margin-bottom:10px;"><a href="faq.html" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">FAQ</a></li></ul></div>
+    <div><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;">Contact</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="mailto:khangle.forwork@gmail.com" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">khangle.forwork@gmail.com</a></li><li style="margin-bottom:10px;"><a href="tel:+84779488070" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">+84 779 488 070</a></li><li style="margin-bottom:10px;"><a href="#" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-top:28px;margin-bottom:20px;">Social</h5><ul style="list-style:none;"><li style="margin-bottom:10px;"><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener" style="font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;">Our Facebook</a></li></ul></div>
   </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 ipartment Vietnam. All rights reserved.</span>
-    <span class="footer-byline">Penguin &amp; Mun Business Digital Presence</span>
-    <div style="display:flex;gap:24px;">
-      <a href="legal.html#privacy">Privacy Policy</a>
-      <a href="legal.html#terms">Terms</a>
-    </div>
-  </div>
+  <div style="border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);"><span>&copy; 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy" style="color:rgba(255,255,255,0.32);text-decoration:none;">Privacy Policy</a><a href="legal.html#terms" style="color:rgba(255,255,255,0.32);text-decoration:none;">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
 </footer>
-
-<button class="back-to-top" aria-label="Back to top">&uarr;</button>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-client.js"></script>
-<script src="assets/js/main.js"></script>
-<script src="assets/js/advanced.js"></script>
-<script src="assets/js/pages/results.js"></script>
 </body>
 </html>

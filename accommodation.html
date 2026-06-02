@@ -1,425 +1,215 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Serviced Apartments in Thao Dien (XS to L) - ipartment Vietnam</title>
-  <meta name="description" content="Four serviced apartment sizes (XS, S, M, L) in Thao Dien. Full kitchen, 500 Mbps Wi-Fi, 24/7 self check-in." />
-  <link rel="canonical" href="https://ipartment.vn/accommodation.html" />
-
-  <meta property="og:type" content="website" />
-  <meta property="og:site_name" content="ipartment Vietnam" />
-  <meta property="og:locale" content="en_US" />
-  <meta property="og:title" content="Serviced Apartments in Thao Dien (XS to L) - ipartment Vietnam" />
-  <meta property="og:description" content="Four serviced apartment sizes in Thao Dien. Full kitchen, 500 Mbps Wi-Fi, 24/7 self check-in." />
-  <meta property="og:url" content="https://ipartment.vn/accommodation.html" />
-  <meta property="og:image" content="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=630&fit=crop&q=80" />
-  <meta property="og:image:width" content="1200" />
-  <meta property="og:image:height" content="630" />
-  <meta property="og:image:alt" content="ipartment serviced apartment interior in Thao Dien" />
-  <meta name="twitter:card" content="summary_large_image" />
-  <meta name="twitter:title" content="Serviced Apartments in Thao Dien (XS to L) - ipartment" />
-  <meta name="twitter:description" content="Four serviced apartment sizes in Thao Dien. Full kitchen, 500 Mbps Wi-Fi, 24/7 self check-in." />
-  <meta name="twitter:image" content="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&h=630&fit=crop&q=80" />
-
-  <!-- Room types as Offers under the Hotel entity. minPrice (evergreen) over fixed nightly rates. -->
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "Hotel",
-    "@id": "https://ipartment.vn/#hotel",
-    "name": "ipartment Vietnam",
-    "url": "https://ipartment.vn/accommodation.html",
-    "makesOffer": [
-      {
-        "@type": "Offer",
-        "name": "Studio XS - Compact Studio",
-        "description": "Compact studio, 25-30 m2, up to 4 guests. Kitchenette, 500 Mbps Wi-Fi, self check-in.",
-        "url": "https://ipartment.vn/booking.html?room=XS",
-        "priceSpecification": { "@type": "PriceSpecification", "minPrice": "1200000", "priceCurrency": "VND" }
-      },
-      {
-        "@type": "Offer",
-        "name": "Studio S - Standard Studio",
-        "description": "Standard studio, 35-40 m2, up to 4 guests. Seating and dining area, full kitchen, dishwasher.",
-        "url": "https://ipartment.vn/booking.html?room=S",
-        "priceSpecification": { "@type": "PriceSpecification", "minPrice": "1650000", "priceCurrency": "VND" }
-      },
-      {
-        "@type": "Offer",
-        "name": "Apartment M - Spacious Apartment",
-        "description": "Spacious apartment, 45-55 m2, up to 6 guests. Separate living, dining and office zones, full kitchen with oven.",
-        "url": "https://ipartment.vn/booking.html?room=M",
-        "priceSpecification": { "@type": "PriceSpecification", "minPrice": "2100000", "priceCurrency": "VND" }
-      },
-      {
-        "@type": "Offer",
-        "name": "Long-Stay Suite L",
-        "description": "Long-stay suite, 65-75 m2, up to 8 guests. Separate bedroom, large living room, family-sized kitchen.",
-        "url": "https://ipartment.vn/booking.html?room=L",
-        "priceSpecification": { "@type": "PriceSpecification", "minPrice": "2800000", "priceCurrency": "VND" }
-      }
-    ]
-  }
-  </script>
-  <script type="application/ld+json">
-  {
-    "@context": "https://schema.org",
-    "@type": "BreadcrumbList",
-    "itemListElement": [
-      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ipartment.vn/" },
-      { "@type": "ListItem", "position": 2, "name": "Accommodation", "item": "https://ipartment.vn/accommodation.html" }
-    ]
-  }
-  </script>
-
-  <link rel="preconnect" href="https://fonts.googleapis.com" />
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
-  <link rel="stylesheet" href="assets/css/main.css" />
-  <link rel="stylesheet" href="assets/css/components.css" />
-  <link rel="stylesheet" href="assets/css/advanced.css" />
-  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
-  <link rel="stylesheet" href="assets/css/pages/accommodation.css" />
+  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Accommodation – ipartment Vietnam</title>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
+  <style>
+    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
+    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
+    html{scroll-behavior:smooth;}
+    body{font-family:var(--font-body);color:var(--black);background:var(--white);font-size:16px;line-height:1.6;}
+    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
+    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
+    .logo span{color:var(--yellow);}
+    nav{display:flex;align-items:center;gap:32px;}
+    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
+    nav a:hover,nav a.active{color:var(--yellow);}
+    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
+    .section-eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;}
+    .section-title{font-family:var(--font-heading);font-size:clamp(28px,3.5vw,52px);font-weight:900;line-height:1.15;margin-bottom:20px;}
+    .btn-primary{background:var(--yellow);color:var(--black);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;display:inline-block;transition:background 0.2s;}
+    .btn-primary:hover{background:#e0d500;}
+    footer{background:var(--black);color:var(--white);padding:80px 80px 40px;}
+    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;}
+    .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;}
+    .footer-col h5{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;}
+    .footer-col ul{list-style:none;}
+    .footer-col ul li{margin-bottom:10px;}
+    .footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;}
+    .footer-col ul li a:hover{color:var(--white);}
+    .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);}
+    .footer-bottom a{color:rgba(255,255,255,0.32);text-decoration:none;}
+    .apt-section{display:grid;grid-template-columns:1fr 1fr;gap:0;min-height:520px;}
+    .apt-section.reverse{direction:rtl;}
+    .apt-section.reverse>*{direction:ltr;}
+    .apt-img{width:100%;height:100%;min-height:480px;object-fit:cover;display:block;}
+    .apt-content{padding:72px 64px;display:flex;flex-direction:column;justify-content:center;}
+    .apt-content.dark{background:var(--black);}
+    .apt-content.light{background:var(--gray-light);}
+    .apt-size{font-family:var(--font-heading);font-size:56px;font-weight:900;color:var(--yellow);line-height:1;}
+    .apt-category{font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,255,255,0.5);margin:8px 0 20px;}
+    .apt-category.dark-label{color:var(--gray-mid);}
+    .apt-title{font-family:var(--font-heading);font-size:32px;font-weight:900;line-height:1.2;margin-bottom:16px;}
+    .apt-desc{font-size:15px;line-height:1.8;margin-bottom:28px;}
+    .apt-features{list-style:none;display:flex;flex-direction:column;gap:10px;margin-bottom:32px;}
+    .apt-features li{font-size:13px;display:flex;gap:10px;align-items:center;}
+    .apt-features li::before{content:'';display:block;width:8px;height:8px;background:var(--yellow);flex-shrink:0;}
+    @media(max-width:900px){.apt-section,.apt-section.reverse{grid-template-columns:1fr;direction:ltr;}.apt-img{min-height:300px;}}
+    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}.apt-content{padding:48px 24px;}.footer-grid{grid-template-columns:1fr;}}
+  </style>
 </head>
-<body class="has-header lg">
-
-<header class="site-header">
-  <div class="site-header-main">
-    <a href="index.html" class="logo">i<span>partment</span></a>
-    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
-    <nav class="site-nav">
-      <a href="about.html">About</a>
-      <a href="accommodation.html" class="active">Accommodation</a>
-      <a href="magazine.html">Magazine</a>
-      <a href="career.html">Career</a>
-      <a href="faq.html">FAQ</a>
-      <a href="my-account.html">My Account</a>
-      <a href="admin.html">Admin</a>
-      <a href="booking.html" class="nav-cta">Book a Stay</a>
-    </nav>
-  </div>
-  <div class="site-header-edu">For educational purposes only</div>
+<body>
+<header>
+  <a href="index.html" class="logo">i<span>partment</span></a>
+  <nav>
+    <a href="about.html">About</a>
+    <a href="accommodation.html" class="active">Accommodation</a>
+    <a href="magazine.html">Magazine</a>
+    <a href="career.html">Career</a>
+    <a href="faq.html">FAQ</a>
+    <a href="my-account.html">My Account</a>
+    <a href="booking.html" class="nav-cta">Book a Stay</a>
+  </nav>
 </header>
 
-<section class="page-hero" style="padding:0;">
-  <div class="page-hero-text">
-    <span class="page-hero-eyebrow reveal">Accommodation</span>
-    <h1 class="reveal reveal-delay-1">Find Your<br/><span class="accent">Perfect Fit.</span></h1>
-    <p class="reveal reveal-delay-2">From compact efficiency to expansive living. Four distinct apartment categories designed for your specific needs, all in the heart of Thao Dien.</p>
+<!-- PAGE HERO -->
+<div style="margin-top:72px;background:var(--black);min-height:480px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;">
+  <div style="padding:96px 80px 80px;display:flex;flex-direction:column;justify-content:center;">
+    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.8);margin-bottom:16px;">Accommodation</span>
+    <h1 style="font-family:var(--font-heading);font-size:clamp(38px,5vw,68px);font-weight:900;color:var(--white);line-height:1.1;max-width:700px;">Find Your<br/><span style="color:var(--yellow);">Perfect Fit.</span></h1>
+    <p style="font-size:17px;color:rgba(255,255,255,0.68);max-width:560px;margin-top:20px;line-height:1.75;">From compact efficiency to expansive living — four distinct apartment categories designed for your specific needs, all in the heart of Thao Dien.</p>
   </div>
-  <div class="page-hero-img page-hero-img-zoom" style="background-image:url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1200&q=80');"></div>
-</section>
+  <div style="background:url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=900&q=80') center/cover no-repeat;position:relative;">
+    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.5),transparent);"></div>
+  </div>
+</div>
 
-<section class="info-strip">
-  <p>All apartments include 500 Mbps Wi-Fi, housekeeping, fully equipped kitchen, 24/7 digital check-in, and all utilities. <strong>No hidden fees.</strong></p>
-  <a href="booking.html" class="btn btn-black magnetic">Book now</a>
-</section>
+<!-- BOOKING CTA STRIP -->
+<div style="background:var(--yellow);padding:32px 80px;display:flex;align-items:center;justify-content:space-between;gap:32px;">
+  <p style="font-size:14px;font-weight:600;color:var(--black);">All apartments include Wi-Fi, housekeeping, fully equipped kitchen, 24/7 digital check-in, and all utilities. <strong>No hidden fees.</strong></p>
+  <a href="booking.html" style="background:var(--black);color:var(--white);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:14px 32px;text-decoration:none;white-space:nowrap;">Book Now</a>
+</div>
 
-<section class="filter-section">
-  <div style="text-align:center;">
-    <span class="section-eyebrow">Filter By Size</span>
-    <h2 class="section-title">Four sizes. One standard.</h2>
-  </div>
-  <div class="filter-chips">
-    <button class="filter-chip active" data-filter="all">Show All</button>
-    <button class="filter-chip" data-filter="xs">XS, Compact</button>
-    <button class="filter-chip" data-filter="s">S, Standard</button>
-    <button class="filter-chip" data-filter="m">M, Spacious</button>
-    <button class="filter-chip" data-filter="l">L, Long-Stay</button>
-  </div>
-</section>
-
-<div id="xs" class="apt-section" data-cat="xs">
-  <div class="apt-gallery">
-    <div class="apt-gallery-track" data-gallery="xs">
-      <div class="apt-gallery-slide active" style="background-image:url('https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1556909114-f6e7ad7d3136?w=1000&q=80');"></div>
-    </div>
-    <button class="apt-gallery-arrow prev" data-gallery-prev="xs" aria-label="Previous">&lsaquo;</button>
-    <button class="apt-gallery-arrow next" data-gallery-next="xs" aria-label="Next">&rsaquo;</button>
-    <div class="apt-gallery-nav">
-      <button class="apt-gallery-dot active" data-gallery-go="xs" data-idx="0"></button>
-      <button class="apt-gallery-dot" data-gallery-go="xs" data-idx="1"></button>
-      <button class="apt-gallery-dot" data-gallery-go="xs" data-idx="2"></button>
-    </div>
-  </div>
-  <div class="apt-content">
+<!-- XS -->
+<div id="xs" class="apt-section">
+  <img class="apt-img" src="https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=800&q=80" alt="Studio XS" />
+  <div class="apt-content dark">
     <div class="apt-size">XS</div>
-    <div class="apt-category">25 - 30 m&sup2;. Up to 4 guests</div>
-    <h2 class="apt-title">Compact Studio</h2>
-    <p class="apt-desc">Compact and highly functional. The XS is engineered for the traveller who needs everything, just not too much of it. A smart layout maximises every square metre without ever feeling cramped.</p>
-    <ul class="apt-features">
-      <li>Custom-built workspace</li>
-      <li>Kitchenette: hob, fridge, microwave</li>
-      <li>Premium bedding</li>
-      <li>Blackout curtains</li>
-      <li>500 Mbps Wi-Fi</li>
-      <li>Weekly housekeeping</li>
+    <div class="apt-category">25 – 30 m²</div>
+    <h2 class="apt-title" style="color:var(--white);">Compact Studio</h2>
+    <p class="apt-desc" style="color:rgba(255,255,255,0.7);">Compact and highly functional, the XS is engineered for the traveller who needs everything — just not too much of it. A smart layout maximises every square metre without ever feeling cramped.</p>
+    <ul class="apt-features" style="color:rgba(255,255,255,0.75);">
+      <li>Custom-built workspace with ergonomic chair</li>
+      <li>Kitchenette with hob, fridge, and microwave</li>
+      <li>Premium bedding and blackout curtains</li>
+      <li>High-speed Wi-Fi (300 Mbps+)</li>
+      <li>Weekly housekeeping included</li>
     </ul>
-    <div class="apt-price-row">
-      <span class="apt-price-from">From</span>
-      <span class="apt-price">1,200,000 VND</span>
-      <span class="apt-price-unit">/ night</span>
-    </div>
-    <div class="apt-week">&#8776; 6,860,000 VND / week &middot; all fees included, no hidden costs</div>
-    <a href="booking.html?room=XS" class="btn btn-primary magnetic" style="align-self:flex-start;">Check Availability</a>
+    <a href="booking.html" class="btn-primary" style="align-self:flex-start;">Check Availability</a>
   </div>
 </div>
 
-<div id="s" class="apt-section reverse" data-cat="s">
-  <div class="apt-gallery">
-    <div class="apt-gallery-track" data-gallery="s">
-      <div class="apt-gallery-slide active" style="background-image:url('https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1554995207-c18c203602cb?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1540518614846-7eded433c457?w=1000&q=80');"></div>
-    </div>
-    <button class="apt-gallery-arrow prev" data-gallery-prev="s" aria-label="Previous">&lsaquo;</button>
-    <button class="apt-gallery-arrow next" data-gallery-next="s" aria-label="Next">&rsaquo;</button>
-    <div class="apt-gallery-nav">
-      <button class="apt-gallery-dot active" data-gallery-go="s" data-idx="0"></button>
-      <button class="apt-gallery-dot" data-gallery-go="s" data-idx="1"></button>
-      <button class="apt-gallery-dot" data-gallery-go="s" data-idx="2"></button>
-    </div>
-  </div>
-  <div class="apt-content">
-    <div class="apt-size">S</div>
-    <div class="apt-category">35 - 40 m&sup2;. Up to 4 guests</div>
-    <h2 class="apt-title">Standard Studio</h2>
-    <p class="apt-desc">Ideal for mid-term stays, the S gives you real room to breathe. A comfortable seating area, a full dining setup, and a workspace that does not make you feel like you are working in a hallway.</p>
-    <ul class="apt-features">
-      <li>Seating and dining area</li>
-      <li>Full kitchen: hob, fridge, dishwasher (no oven)</li>
-      <li>Separate workspace alcove</li>
-      <li>Smart TV with streaming</li>
-      <li>Bi-weekly housekeeping</li>
-      <li>Balcony or window seat</li>
-    </ul>
-    <div class="apt-price-row">
-      <span class="apt-price-from">From</span>
-      <span class="apt-price">1,650,000 VND</span>
-      <span class="apt-price-unit">/ night</span>
-    </div>
-    <div class="apt-week">&#8776; 9,450,000 VND / week &middot; all fees included, no hidden costs</div>
-    <a href="booking.html?room=S" class="btn btn-primary magnetic" style="align-self:flex-start;">Check Availability</a>
-  </div>
-</div>
-
-<div id="m" class="apt-section" data-cat="m">
-  <div class="apt-gallery">
-    <div class="apt-gallery-track" data-gallery="m">
-      <div class="apt-gallery-slide active" style="background-image:url('https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1484154218962-a197022b5858?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1521783988139-89397d761dce?w=1000&q=80');"></div>
-    </div>
-    <button class="apt-gallery-arrow prev" data-gallery-prev="m" aria-label="Previous">&lsaquo;</button>
-    <button class="apt-gallery-arrow next" data-gallery-next="m" aria-label="Next">&rsaquo;</button>
-    <div class="apt-gallery-nav">
-      <button class="apt-gallery-dot active" data-gallery-go="m" data-idx="0"></button>
-      <button class="apt-gallery-dot" data-gallery-go="m" data-idx="1"></button>
-      <button class="apt-gallery-dot" data-gallery-go="m" data-idx="2"></button>
-    </div>
-  </div>
-  <div class="apt-content">
-    <div class="apt-size">M</div>
-    <div class="apt-category">45 - 55 m&sup2;. Up to 6 guests. Most Popular</div>
-    <h2 class="apt-title">Spacious Apartment</h2>
-    <p class="apt-desc">The M is a proper temporary home. Designated zones for every part of your life. Work, cook, eat, rest. Perfect for stays of one to three months where settling in genuinely matters.</p>
-    <ul class="apt-features">
-      <li>Separate living and sleeping zones</li>
-      <li>Home office with storage</li>
+<!-- S -->
+<div id="s" class="apt-section reverse">
+  <img class="apt-img" src="https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=800&q=80" alt="Studio S" />
+  <div class="apt-content light">
+    <div class="apt-size" style="color:var(--black);">S</div>
+    <div class="apt-category dark-label">35 – 40 m²</div>
+    <h2 class="apt-title" style="color:var(--black);">Standard Studio</h2>
+    <p class="apt-desc" style="color:#555;">Ideal for mid-term stays, the S gives you real room to breathe. A comfortable seating area, a full dining setup, and a workspace that doesn't make you feel like you're working in a hallway.</p>
+    <ul class="apt-features" style="color:#444;">
+      <li>Dedicated seating and dining area</li>
       <li>Full kitchen with oven and dishwasher</li>
-      <li>Bathtub + walk-in rainfall shower</li>
-      <li>Weekly housekeeping + linen</li>
-      <li>Smart home controls</li>
+      <li>Separate workspace alcove</li>
+      <li>Smart TV and streaming-ready setup</li>
+      <li>Bi-weekly housekeeping included</li>
     </ul>
-    <div class="apt-price-row">
-      <span class="apt-price-from">From</span>
-      <span class="apt-price">2,100,000 VND</span>
-      <span class="apt-price-unit">/ night</span>
-    </div>
-    <div class="apt-week">&#8776; 12,250,000 VND / week &middot; all fees included, no hidden costs</div>
-    <a href="booking.html?room=M" class="btn btn-primary magnetic" style="align-self:flex-start;">Check Availability</a>
+    <a href="booking.html" class="btn-primary" style="align-self:flex-start;">Check Availability</a>
   </div>
 </div>
 
-<div id="l" class="apt-section reverse" data-cat="l">
-  <div class="apt-gallery">
-    <div class="apt-gallery-track" data-gallery="l">
-      <div class="apt-gallery-slide active" style="background-image:url('https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=1000&q=80');"></div>
-      <div class="apt-gallery-slide" style="background-image:url('https://images.unsplash.com/photo-1505691938895-1758d7feb511?w=1000&q=80');"></div>
-    </div>
-    <button class="apt-gallery-arrow prev" data-gallery-prev="l" aria-label="Previous">&lsaquo;</button>
-    <button class="apt-gallery-arrow next" data-gallery-next="l" aria-label="Next">&rsaquo;</button>
-    <div class="apt-gallery-nav">
-      <button class="apt-gallery-dot active" data-gallery-go="l" data-idx="0"></button>
-      <button class="apt-gallery-dot" data-gallery-go="l" data-idx="1"></button>
-      <button class="apt-gallery-dot" data-gallery-go="l" data-idx="2"></button>
-    </div>
+<!-- M -->
+<div id="m" class="apt-section">
+  <img class="apt-img" src="https://images.unsplash.com/photo-1502672260266-1c1ef2d93688?w=800&q=80" alt="Apartment M" />
+  <div class="apt-content dark">
+    <div class="apt-size">M</div>
+    <div class="apt-category">45 – 55 m²</div>
+    <h2 class="apt-title" style="color:var(--white);">Spacious Apartment</h2>
+    <p class="apt-desc" style="color:rgba(255,255,255,0.7);">The M is a proper temporary home. Designated zones for every part of your life — work, cook, eat, rest. Perfect for stays of one to three months where settling in genuinely matters.</p>
+    <ul class="apt-features" style="color:rgba(255,255,255,0.75);">
+      <li>Separate living, dining, and sleeping zones</li>
+      <li>Dedicated home office with storage</li>
+      <li>Full-size kitchen, all appliances included</li>
+      <li>Bathtub and walk-in rainfall shower</li>
+      <li>Weekly housekeeping + linen change</li>
+    </ul>
+    <a href="booking.html" class="btn-primary" style="align-self:flex-start;">Check Availability</a>
   </div>
-  <div class="apt-content">
-    <div class="apt-size">L</div>
-    <div class="apt-category">65 - 75 m&sup2;. Up to 8 guests. Best For Long-Stay</div>
-    <h2 class="apt-title">Long-Stay Suite</h2>
-    <p class="apt-desc">Our most generous offering, built for those making Ho Chi Minh City their home. A separate bedroom, expansive living room, and a kitchen big enough for Sunday cooking. This is not a hotel room. It is your apartment.</p>
-    <ul class="apt-features">
-      <li>Separate bedroom + walk-in wardrobe</li>
-      <li>Large living and dining area</li>
-      <li>Family-sized kitchen</li>
+</div>
+
+<!-- L -->
+<div id="l" class="apt-section reverse">
+  <img class="apt-img" src="https://images.unsplash.com/photo-1493809842364-78817add7ffb?w=800&q=80" alt="Long-Stay Suite L" />
+  <div class="apt-content light">
+    <div class="apt-size" style="color:var(--black);">L</div>
+    <div class="apt-category dark-label">65 – 75 m²</div>
+    <h2 class="apt-title" style="color:var(--black);">Long-Stay Suite</h2>
+    <p class="apt-desc" style="color:#555;">Our most generous offering — built for those making Ho Chi Minh City their home. A separate bedroom, expansive living room, and a kitchen big enough for Sunday cooking. This is not a hotel room. It's your apartment.</p>
+    <ul class="apt-features" style="color:#444;">
+      <li>Fully separate bedroom with walk-in wardrobe</li>
+      <li>Large living room and dedicated dining area</li>
+      <li>Family-sized kitchen with full appliances</li>
       <li>Double bathroom (main + en-suite)</li>
-      <li>Twice-weekly housekeeping</li>
-      <li>Priority guest services</li>
+      <li>Twice-weekly housekeeping + priority service</li>
     </ul>
-    <div class="apt-price-row">
-      <span class="apt-price-from">From</span>
-      <span class="apt-price">2,800,000 VND</span>
-      <span class="apt-price-unit">/ night</span>
-    </div>
-    <div class="apt-week">&#8776; 16,100,000 VND / week &middot; all fees included, no hidden costs</div>
-    <a href="booking.html?room=L" class="btn btn-primary magnetic" style="align-self:flex-start;">Check Availability</a>
+    <a href="booking.html" class="btn-primary" style="align-self:flex-start;">Check Availability</a>
   </div>
 </div>
 
-<section class="compare-section">
-  <div style="text-align:center;max-width:720px;margin:0 auto 24px;">
-    <span class="section-eyebrow reveal">Compare</span>
-    <h2 class="section-title reveal reveal-delay-1">Side by <em>side.</em></h2>
-    <p class="section-body reveal reveal-delay-2" style="margin:0 auto;">Quick view of what comes with each apartment. All four include Wi-Fi, kitchen, and 24/7 self check-in by default.</p>
-  </div>
-  <div>
-    <table class="compare-table reveal reveal-delay-3">
-      <thead>
-        <tr><th>Feature</th><th>XS</th><th>S</th><th>M</th><th>L</th></tr>
-      </thead>
-      <tbody>
-        <tr><td>Size</td><td>25-30 m&sup2;</td><td>35-40 m&sup2;</td><td>45-55 m&sup2;</td><td>65-75 m&sup2;</td></tr>
-        <tr><td>Max Guests</td><td>4</td><td>4</td><td>6</td><td>8</td></tr>
-        <tr><td>Dedicated Workspace</td><td class="compare-yes">&#10003;</td><td class="compare-yes">&#10003;</td><td class="compare-yes">&#10003;</td><td class="compare-yes">&#10003;</td></tr>
-        <tr><td>Kitchen Type</td><td>Kitchenette<span class="tip" data-tip="2-burner hob, fridge, microwave. No oven or dishwasher." tabindex="0">i</span></td><td>Full<span class="tip" data-tip="4-burner hob, full fridge, microwave and dishwasher. No oven." tabindex="0">i</span></td><td>Full + Oven<span class="tip" data-tip="Everything in Full, plus a built-in oven." tabindex="0">i</span></td><td>Full Family<span class="tip" data-tip="Full kitchen with oven, scaled for family cooking. Large fridge, dishwasher and generous prep space." tabindex="0">i</span></td></tr>
-        <tr><td>Dishwasher</td><td>-</td><td class="compare-yes">&#10003;</td><td class="compare-yes">&#10003;</td><td class="compare-yes">&#10003;</td></tr>
-        <tr><td>Separate Bedroom</td><td>-</td><td>-</td><td>-</td><td class="compare-yes">&#10003;</td></tr>
-        <tr><td>Bathtub</td><td>-</td><td>-</td><td class="compare-yes">&#10003;</td><td class="compare-yes">&#10003;</td></tr>
-        <tr><td>Housekeeping</td><td>Weekly</td><td>Bi-Weekly<span class="tip" data-tip="Cleaned every 2 weeks." tabindex="0">i</span></td><td>Weekly +<span class="tip" data-tip="Weekly cleaning + linen and towel change every week." tabindex="0">i</span></td><td>Twice/Week<span class="tip" data-tip="Cleaned twice a week with priority service for any requests." tabindex="0">i</span></td></tr>
-        <tr><td>Best For</td><td>Short stay</td><td>Mid-term</td><td>1-3 months</td><td>3+ months</td></tr>
-        <tr><td>From</td><td><strong>1.2M</strong></td><td><strong>1.65M</strong></td><td><strong>2.1M</strong></td><td><strong>2.8M</strong></td></tr>
-      </tbody>
-    </table>
-  </div>
-</section>
-
-<section id="corporate" class="corp-section">
-  <div class="corp-grid">
-    <div class="reveal reveal-left">
-      <span class="section-eyebrow">Corporate rates</span>
-      <h2 class="section-title">Staying 28+ nights?<br/>You should be <em>paying less.</em></h2>
-      <p class="section-body">Corporate and extended-stay guests receive exclusive monthly rates, a dedicated account manager, and flexible billing arrangements. Get in touch, we will build a package around your needs.</p>
-      <a href="mailto:khangle.forwork@gmail.com" class="btn btn-primary magnetic" style="margin-top:28px;">Request corporate rates</a>
+<!-- CORPORATE RATES -->
+<div id="corporate" style="background:var(--yellow);padding:80px 80px;">
+  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
+    <div>
+      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(0,0,0,0.5);margin-bottom:16px;">Corporate Rates – CTA</span>
+      <h2 style="font-family:var(--font-heading);font-size:clamp(28px,3.5vw,48px);font-weight:900;line-height:1.15;margin-bottom:20px;">Staying 28+ nights?<br/>You should be paying less.</h2>
+      <p style="font-size:16px;line-height:1.8;color:rgba(0,0,0,0.7);max-width:480px;margin-bottom:32px;">Corporate and extended-stay guests receive exclusive monthly rates, a dedicated account manager, and flexible billing arrangements. Get in touch — we'll build a package around your needs.</p>
+      <a href="mailto:corporate@ipartment.vn" style="background:var(--black);color:var(--white);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;display:inline-block;">Request Corporate Rates</a>
     </div>
-    <div class="corp-panel reveal reveal-right">
-      <h3>What's included</h3>
-      <ul>
-        <li><span>&#10003;</span> Monthly pricing, significantly below nightly</li>
-        <li><span>&#10003;</span> Centralized invoicing for finance teams</li>
-        <li><span>&#10003;</span> Flexible check-in and check-out scheduling</li>
-        <li><span>&#10003;</span> Priority apartment upgrades when available</li>
-        <li><span>&#10003;</span> Dedicated 24/7 account manager</li>
+    <div style="background:var(--black);padding:48px 44px;">
+      <h3 style="font-family:var(--font-heading);font-size:24px;font-weight:900;color:var(--white);margin-bottom:28px;">What's included:</h3>
+      <ul style="list-style:none;display:flex;flex-direction:column;gap:14px;">
+        <li style="font-size:14px;color:rgba(255,255,255,0.75);display:flex;gap:12px;"><span style="color:var(--yellow);font-weight:700;">✓</span> Monthly pricing (significantly below nightly rate)</li>
+        <li style="font-size:14px;color:rgba(255,255,255,0.75);display:flex;gap:12px;"><span style="color:var(--yellow);font-weight:700;">✓</span> Centralized invoicing for finance teams</li>
+        <li style="font-size:14px;color:rgba(255,255,255,0.75);display:flex;gap:12px;"><span style="color:var(--yellow);font-weight:700;">✓</span> Flexible check-in / check-out scheduling</li>
+        <li style="font-size:14px;color:rgba(255,255,255,0.75);display:flex;gap:12px;"><span style="color:var(--yellow);font-weight:700;">✓</span> Priority apartment upgrades when available</li>
+        <li style="font-size:14px;color:rgba(255,255,255,0.75);display:flex;gap:12px;"><span style="color:var(--yellow);font-weight:700;">✓</span> Dedicated 24/7 account manager</li>
       </ul>
     </div>
   </div>
-</section>
+</div>
 
-<section id="reviews" class="reviews-section">
-  <div class="section-head">
-    <span class="section-eyebrow reveal">Guest reviews</span>
-    <h2 class="section-title reveal reveal-delay-1">4.8 out of 5 stars.<br/><em>Across 300+ stays.</em></h2>
-  </div>
-  <div class="review-grid">
-    <div class="review-card reveal">
-      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <p class="review-quote">"The apartment felt brand new and spotlessly clean. The workspace setup is genuinely one of the best I have worked from."</p>
-      <p class="review-author">David T. &middot; Category M &middot; 6 weeks</p>
-      <p class="review-source">via Booking.com</p>
+<!-- GUEST REVIEWS -->
+<div id="reviews" style="background:var(--gray-light);padding:80px 80px;">
+  <span class="section-eyebrow">Guest Reviews</span>
+  <h2 class="section-title">4.8 out of 5 stars.<br/>Across 300+ stays.</h2>
+  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:20px;margin-top:8px;">
+    <div style="background:var(--white);padding:32px 28px;border-top:3px solid var(--yellow);">
+      <div style="font-size:18px;color:var(--yellow);margin-bottom:14px;">★★★★★</div>
+      <p style="font-size:15px;line-height:1.65;color:var(--black);margin-bottom:16px;">"The apartment felt brand new and spotlessly clean. The workspace setup is genuinely one of the best I've worked from — better than most hotels."</p>
+      <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);">— David T. · Category M · 6 weeks</p>
     </div>
-    <div class="review-card reveal reveal-delay-1">
-      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
-      <p class="review-quote">"I was nervous about long-term serviced apartments but this completely changed my mind. The L category is more comfortable than my flat back home."</p>
-      <p class="review-author">Sophie R. &middot; Category L &middot; 4 months</p>
-      <p class="review-source">via Traveloka</p>
+    <div style="background:var(--white);padding:32px 28px;border-top:3px solid var(--yellow);">
+      <div style="font-size:18px;color:var(--yellow);margin-bottom:14px;">★★★★★</div>
+      <p style="font-size:15px;line-height:1.65;color:var(--black);margin-bottom:16px;">"I was nervous about long-term serviced apartments but this completely changed my mind. The L category is genuinely more comfortable than my flat back home."</p>
+      <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);">— Sophie R. · Category L · 4 months</p>
     </div>
-    <div class="review-card reveal reveal-delay-2">
-      <div class="review-stars">&#9733;&#9733;&#9733;&#9733;&#9734;</div>
-      <p class="review-quote">"Location is absolutely perfect, quiet street but everything at your fingertips. Self check-in worked flawlessly at midnight."</p>
-      <p class="review-author">James K. &middot; Category S &middot; 2 weeks</p>
-      <p class="review-source">via Google Reviews</p>
+    <div style="background:var(--white);padding:32px 28px;border-top:3px solid var(--yellow);">
+      <div style="font-size:18px;color:var(--yellow);margin-bottom:14px;">★★★★☆</div>
+      <p style="font-size:15px;line-height:1.65;color:var(--black);margin-bottom:16px;">"Location is absolutely perfect — quiet street but everything at your fingertips. Self check-in worked flawlessly at midnight after a long flight."</p>
+      <p style="font-size:11px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);">— James K. · Category S · 2 weeks</p>
     </div>
   </div>
-</section>
+</div>
 
-<footer class="site-footer">
+<footer>
   <div class="footer-grid">
-    <div class="footer-brand">
-      <a href="index.html" class="logo">i<span>partment</span></a>
-      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.</p>
-    </div>
-    <div class="footer-col">
-      <h5>Accommodation</h5>
-      <ul>
-        <li><a href="#xs">Studio XS</a></li>
-        <li><a href="#s">Studio S</a></li>
-        <li><a href="#m">Apartment M</a></li>
-        <li><a href="#l">Long-Stay Suite L</a></li>
-        <li><a href="#corporate">Corporate Rates</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Company</h5>
-      <ul>
-        <li><a href="about.html">About Us</a></li>
-        <li><a href="career.html">Career</a></li>
-        <li><a href="magazine.html">Magazine</a></li>
-        <li><a href="faq.html">FAQ</a></li>
-      </ul>
-    </div>
-    <div class="footer-col">
-      <h5>Contact</h5>
-      <ul>
-        <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
-        <li><a href="tel:+84779488070">+84 779 488 070</a></li>
-        <li><a href="about.html#location">Xuan Thuy St, Thao Dien</a></li>
-      </ul>
-      <h5 style="margin-top:28px;">Social</h5>
-      <ul>
-        <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
-      </ul>
-    </div>
+    <div class="footer-brand"><a href="index.html" class="logo">i<span>partment</span></a><p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
+    <div class="footer-col"><h5>Accommodation</h5><ul><li><a href="#xs">Studio XS</a></li><li><a href="#s">Studio S</a></li><li><a href="#m">Apartment M</a></li><li><a href="#l">Long-Stay Suite L</a></li><li><a href="#corporate">Corporate Rates</a></li></ul></div>
+    <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#story">Brand Story</a></li><li><a href="career.html">Career</a></li><li><a href="magazine.html">Magazine</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
+    <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li><li><a href="tel:+84779488070">+84 779 488 070</a></li><li><a href="#">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="margin-top:28px;">Social</h5><ul><li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li></ul></div>
   </div>
-  <div class="footer-bottom">
-    <span>&copy; 2026 ipartment Vietnam. All rights reserved.</span>
-    <span class="footer-byline">Penguin &amp; Mun Business Digital Presence</span>
-    <div style="display:flex;gap:24px;">
-      <a href="legal.html#privacy">Privacy Policy</a>
-      <a href="legal.html#terms">Terms</a>
-    </div>
-  </div>
+  <div class="footer-bottom"><span>© 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy">Privacy Policy</a><a href="legal.html#terms">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
 </footer>
-
-<!-- Sticky mobile booking bar (browse mode) -->
-<div class="sticky-book-bar" id="stickyBookBar" data-sticky-mode="browse" aria-hidden="true">
-  <div class="sticky-book-price">
-    <span class="sticky-book-from">From</span>
-    <strong id="stickyBookAmount">1,200,000 VND / night</strong>
-  </div>
-  <a href="booking.html" class="btn btn-primary sticky-book-cta">Check Availability</a>
-</div>
-
-<button class="back-to-top" aria-label="Back to top">&uarr;</button>
-
-<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
-<script src="assets/js/supabase-client.js"></script>
-<script src="assets/js/main.js"></script>
-<script src="assets/js/advanced.js"></script>
-<script src="assets/js/pages/accommodation.js"></script>
 </body>
 </html>
