@@ -66,6 +66,25 @@
   var state = 'WELCOME';
   var openedOnce = false;
   var greetedLangs = {}; // which languages have already seen the full greeting
+
+  // ---- cat personality lives ONLY in the proactive nudge bubble (the mascot is
+  // a cat). The chat itself stays straight and helpful. A random line is picked
+  // each time the nudge pops. ----
+  var CAT_NUDGES = {
+    en: [
+      'Meow~ questions about a stay? Tap me, I am happy to help. 🐾',
+      'Psst, house cat here. 🐱 Need a paw with booking or the apartments? Tap to ask.',
+      'Mrrp! I batted a question loose just for you. Tap if you need a hand with your stay.',
+      'Nya~ I am awake (mostly). Tap me for anything about ipartment.'
+    ],
+    vi: [
+      'Meo~ có thắc mắc về kỳ nghỉ? Chạm vào tôi nhé, tôi sẵn lòng giúp. 🐾',
+      'Suỵt, mèo nhà đây. 🐱 Cần giúp đặt phòng hay tìm căn hộ? Chạm để hỏi.',
+      'Mrrp! Tôi vừa hất một câu hỏi ra cho bạn. Chạm nếu cần giúp về kỳ nghỉ.',
+      'Nya~ Tôi đang thức (gần như vậy). Chạm vào tôi để hỏi bất cứ điều gì về ipartment.'
+    ]
+  };
+  function catNudge() { var p = CAT_NUDGES[lang] || CAT_NUDGES.en; return p[Math.floor(Math.random() * p.length)]; }
   var launcher, panel, scrollEl, input, sendBtn, langWrap, nudgeEl, dotEl;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -283,8 +302,9 @@
       if (openedOnce || sessionStorage.getItem('ipc_nudged')) return;
       sessionStorage.setItem('ipc_nudged', '1');
       launcher.classList.add('ipc-has-nudge');
-      nudgeEl = el('div', 'ipc-nudge', '<button class="ipc-nudge-x" aria-label="Dismiss">&times;</button>' + esc(t().nudge));
+      nudgeEl = el('div', 'ipc-nudge', '<button class="ipc-nudge-x" aria-label="Dismiss">&times;</button>' + esc(catNudge()));
       document.body.appendChild(nudgeEl);
+      clearBottomBars();   // line the bubble up with the launcher's current (possibly lifted) position
       requestAnimationFrame(function () { nudgeEl.classList.add('show'); });
       nudgeEl.addEventListener('click', function (e) { if (e.target.classList.contains('ipc-nudge-x')) { hideNudge(); launcher.classList.remove('ipc-has-nudge'); return; } open(); });
     }, 24000);

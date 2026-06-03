@@ -216,3 +216,15 @@ body .back-to-top { bottom: 90px; }
 .ipc-launcher:focus-visible, .ipc-chip:focus-visible, .ipc-close:focus-visible, .ipc-send:focus-visible, .ipc-cta:focus-visible, .ipc-lang button:focus-visible {
   outline: 2px solid var(--yellow, #ffed00); outline-offset: 2px;
 }
+
+/* The booking page carries the live receipt on the right, so move the chat to
+   the left edge so the launcher and nudge never cover the running total. */
+body:has(#receipt) .ipc-launcher,
+body:has(#receipt) .ipc-nudge { right: auto; left: 22px; }
+@media (min-width: 561px) {
+  body:has(#receipt) .ipc-panel { right: auto; left: 22px; }
+}
+@media (max-width: 560px) {
+  body:has(#receipt) .ipc-launcher,
+  body:has(#receipt) .ipc-nudge { left: 16px; }
+}

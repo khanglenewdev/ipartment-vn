@@ -35,14 +35,20 @@
 
   // The voucher wallet shown in the picker (showcase: every guest "has" these).
   // Each code MUST exist in WELCOME_CODES above so it actually redeems.
+  // Order matters (this is the on-screen order). The two percent "Member"
+  // vouchers require a logged-in account and are mutually exclusive (group
+  // "discount"); the rest stack freely. Every badge reads "01 available" (the
+  // quantity the guest holds), the discount itself is in the title/description.
   const WALLET = [
-    { code: 'WELCOME15',   icon: '🎁', title: 'Welcome 15',     desc: '15% off your first stay',       badge: '15%',   tag: 'Member' },
-    { code: 'STAY20',      icon: '🏷️', title: 'Long-stay 20', desc: '20% off your room total',    badge: '20%' },
-    { code: 'WELCOMERIDE', icon: '✈️', title: 'Airport pickup', desc: 'Free pickup from Tan Son Nhat',  badge: 'FREE' },
-    { code: 'WELCOMEPACK', icon: '🎉', title: 'Welcome pack',   desc: 'Local snacks and a SIM, on us',  badge: 'FREE' },
-    { code: 'EARLYBIRD',   icon: '🌅', title: 'Early check-in', desc: 'Free early check-in from 09:00', badge: 'FREE' },
-    { code: 'SAVE500',     icon: '💸', title: '500K off',       desc: '500,000 VND off your stay',      badge: '-500K' }
+    { code: 'WELCOME15',   icon: '🎁', title: 'Welcome 15',     desc: '15% off your first stay',       badge: '01 available', tag: 'Member', requiresLogin: true, group: 'discount' },
+    { code: 'STAY20',      icon: '🏷️', title: 'Long-stay 20', desc: '20% off your room total',   badge: '01 available', tag: 'Member', requiresLogin: true, group: 'discount' },
+    { code: 'SAVE500',     icon: '💸', title: '500K off',       desc: '500,000 VND off your stay',      badge: '01 available' },
+    { code: 'WELCOMERIDE', icon: '✈️', title: 'Airport pickup', desc: 'Free pickup from Tan Son Nhat',  badge: '01 available' },
+    { code: 'WELCOMEPACK', icon: '🎉', title: 'Welcome pack',   desc: 'Local snacks and a SIM, on us',  badge: '01 available' },
+    { code: 'EARLYBIRD',   icon: '🌅', title: 'Early check-in', desc: 'Free early check-in from 09:00', badge: '01 available' }
   ];
+  function walletItem(code) { return WALLET.find(function (w) { return w.code === code; }); }
+  var _walletLoggedIn = false;   // resolved when the wallet opens, used by the toggle
 
   // Single source of truth for how much a voucher takes off. Used by the glass
   // receipt, the legacy sidebar and the saved booking so they never disagree.
@@ -72,9 +78,14 @@
     return { code: code, percent: wc.percent, label: wc.label };
   }
   // Replace the applied set with these codes (the wallet "Apply selected").
+  // Enforces group exclusivity: at most one voucher per group (e.g. one percent
+  // discount), so two discounts can never both land.
   function setVoucherCodes(codes) {
     state.vouchers = [];
+    const groupsUsed = {};
     (codes || []).forEach(code => {
+      const w = walletItem(code);
+      if (w && w.group) { if (groupsUsed[w.group]) return; groupsUsed[w.group] = true; }
       const v = voucherObjFromCode(code);
       if (!v) return;
       if (v.freeExtra) ensureExtraSelected(v.freeExtra);
@@ -84,9 +95,14 @@
     updateSidebar();
   }
   // Add one voucher to the applied set (dedup by code). Used by the typed input
-  // and account chips so they stack alongside wallet picks.
+  // and account chips so they stack alongside wallet picks. Honors group
+  // exclusivity: adding a discount-group voucher drops any other in that group.
   function addVoucher(v) {
     if (!v || state.vouchers.some(x => x.code === v.code)) return;
+    const w = walletItem(v.code);
+    if (w && w.group) {
+      state.vouchers = state.vouchers.filter(function (x) { const xw = walletItem(x.code); return !(xw && xw.group === w.group); });
+    }
     if (v.freeExtra) ensureExtraSelected(v.freeExtra);
     state.vouchers.push(v);
     updateSidebar();
@@ -541,6 +557,11 @@
     // as a public welcome code when it is NOT coming from an account chip.
     if (!voucherId && WELCOME_CODES[code]) {
       if (state.vouchers.some(v => v.code === code)) { showPromoMsg(code + ' is already applied.', true); return; }
+      const wm = walletItem(code);
+      if (wm && wm.requiresLogin) {
+        const u = window.ipartmentAuth ? await window.ipartmentAuth.getUser() : null;
+        if (!u) { showPromoMsg('Please log in or create an account to use this voucher.', false); return; }
+      }
       const wc = WELCOME_CODES[code];
       addVoucher(voucherObjFromCode(code));   // also selects the free add-on and refreshes the receipt
       if (input) input.value = '';
@@ -604,7 +625,21 @@
     var btn = document.querySelector('#voucher-overlay .voucher-apply-btn');
     if (btn) btn.textContent = n ? ('Apply ' + n + ' voucher' + (n > 1 ? 's' : '')) : 'Apply';
   }
-  window.toggleWalletCard = function(btn) { btn.classList.toggle('selected'); updateWalletApplyCount(); };
+  window.toggleWalletCard = function(btn) {
+    var code = btn.getAttribute('data-code');
+    var item = walletItem(code) || {};
+    // Member vouchers need a logged-in account: show the inline red notice and
+    // do not select (so a logged-out guest cannot apply them).
+    if (item.requiresLogin && !_walletLoggedIn) { btn.classList.add('show-notice'); return; }
+    var willSelect = !btn.classList.contains('selected');
+    if (willSelect && item.group) {
+      // mutual exclusivity: only one voucher per group (e.g. one percent discount)
+      [].forEach.call(document.querySelectorAll('#voucher-overlay .voucher-card.selected[data-group="' + item.group + '"]'), function(c) { if (c !== btn) c.classList.remove('selected'); });
+    }
+    btn.classList.remove('show-notice');
+    btn.classList.toggle('selected');
+    updateWalletApplyCount();
+  };
   window.clearWalletSelection = function() {
     [].forEach.call(document.querySelectorAll('#voucher-overlay .voucher-card.selected'), function(c) { c.classList.remove('selected'); });
     updateWalletApplyCount();
@@ -616,23 +651,28 @@
     showPromoMsg(codes.length ? (codes.length + ' voucher' + (codes.length > 1 ? 's' : '') + ' applied.') : 'Vouchers cleared.', true);
     window.closeVoucherWallet();
   };
-  window.openVoucherWallet = function() {
+  window.openVoucherWallet = async function() {
     if (document.getElementById('voucher-overlay')) return;
+    try { _walletLoggedIn = !!(window.ipartmentAuth && await window.ipartmentAuth.getUser()); } catch (e) { _walletLoggedIn = false; }
     var applied = (state.vouchers || []).map(function(v) { return v.code; });
     var cards = WALLET.map(function(v) {
       var on = applied.indexOf(v.code) > -1;
-      return '<button type="button" class="voucher-card' + (on ? ' selected' : '') + '" data-code="' + v.code + '" onclick="toggleWalletCard(this)">'
+      var attrs = 'data-code="' + v.code + '"' + (v.group ? ' data-group="' + v.group + '"' : '');
+      return '<button type="button" class="voucher-card' + (on ? ' selected' : '') + '" ' + attrs + ' onclick="toggleWalletCard(this)">'
+        + '<span class="vc-row">'
         + '<span class="vc-check" aria-hidden="true"></span>'
         + '<span class="vc-icon">' + v.icon + '</span>'
         + '<span class="vc-text"><span class="vc-title">' + v.title + (v.tag ? ' <span class="vc-tag">' + v.tag + '</span>' : '') + '</span>'
         + '<span class="vc-desc">' + v.desc + '</span></span>'
         + '<span class="vc-badge">' + v.badge + '</span>'
+        + '</span>'
+        + (v.requiresLogin ? '<span class="vc-notice">Please log in or create an account to use this voucher.</span>' : '')
         + '</button>';
     }).join('');
     var html = '<div class="voucher-overlay" id="voucher-overlay" role="dialog" aria-modal="true" aria-label="Your vouchers">'
       + '<div class="voucher-modal">'
       + '<button class="voucher-close" type="button" aria-label="Close" onclick="closeVoucherWallet()">&times;</button>'
-      + '<div class="voucher-head"><h3>Your vouchers</h3><p>Select any you want, then apply. You can stack more than one.</p></div>'
+      + '<div class="voucher-head"><h3>Your vouchers</h3><p>Pick the ones you want, then apply. The two member discounts cannot be combined.</p></div>'
       + '<div class="voucher-list">' + cards + '</div>'
       + '<div class="voucher-foot"><button type="button" class="voucher-clear" onclick="clearWalletSelection()">Clear</button><button type="button" class="voucher-apply-btn" onclick="applyWalletSelection()">Apply</button></div>'
       + '</div></div>';

@@ -200,10 +200,10 @@
     // Skip on admin-only pages: no public visitor will land here, and it's annoying for the team
     const path = (window.location.pathname || '').toLowerCase();
     if (path.includes('admin')) return;
-    // Showcase mode: the welcome offer pops on every page load regardless of
-    // whether the visitor is signed in, so it (and the exit survey it chains
-    // into when dismissed) is always demonstrable in a demo. PRODUCTION: gate
-    // this back to logged-out visitors and add frequency capping.
+    // Once per access: show the welcome offer a single time per browser session.
+    // If the visitor closes the site and opens it again (a fresh session), it
+    // shows once more, but it never repeats within the same visit.
+    try { if (sessionStorage.getItem('ipartment_welcome_shown') === '1') return; } catch (e) {}
     setTimeout(showWelcomePopup, 1400);
   }
 
@@ -229,7 +229,9 @@
 
   function buildPopupMarkup() {
     if (document.getElementById('cta-overlay')) return;
-    _offerVariant = getOfferVariant();
+    // Always the 15% member voucher, to match the "Welcome 15" voucher in the
+    // booking wallet (the A/B variants are retired for the showcase).
+    _offerVariant = 'pct15';
     const offer = OFFERS[_offerVariant] || OFFERS.pct15;
     const html = `
       <div class="cta-overlay" id="cta-overlay" role="dialog" aria-modal="true" aria-label="Welcome offer">
@@ -280,11 +282,13 @@
   }
 
   function showWelcomePopup() {
+    try { if (sessionStorage.getItem('ipartment_welcome_shown') === '1') return; } catch (e) {}
     // Never stack on top of another popup (exit survey or auth modal).
     if (document.getElementById('exit-survey') || document.querySelector('.auth-overlay.open')) return;
     buildPopupMarkup();
     const overlay = document.getElementById('cta-overlay');
     if (!overlay) return;
+    try { sessionStorage.setItem('ipartment_welcome_shown', '1'); } catch (e) {}
     // Reveal next frame for the fade; the timeout is a fallback in case rAF is
     // throttled (e.g. the tab is not currently visible). classList.add is idempotent.
     requestAnimationFrame(() => overlay.classList.add('open'));

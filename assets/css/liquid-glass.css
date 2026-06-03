@@ -620,12 +620,16 @@ body.lg .voucher-head h3 { font-family: var(--font-heading); font-size: 24px; fo
 body.lg .voucher-head p { font-size: 13px; color: rgba(255,255,255,0.6); margin: 0; }
 body.lg .voucher-list { flex: 1 1 auto; min-height: 0; padding: 6px 16px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
 body.lg .voucher-card {
-  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  display: flex; flex-direction: column; align-items: stretch; text-align: left; width: 100%;
   padding: 13px 15px; cursor: pointer; font-family: var(--font-body);
   background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
   border-left: 3px solid var(--terracotta, #d8613c); border-radius: 14px;
   transition: background 0.18s, border-color 0.18s, transform 0.18s;
 }
+body.lg .voucher-card .vc-row { display: flex; align-items: center; gap: 12px; width: 100%; }
+body.lg .vc-notice { display: none; margin-top: 9px; font-size: 12px; line-height: 1.4; color: #f87171; }
+body.lg .voucher-card.show-notice .vc-notice { display: block; }
+body.lg .voucher-card.show-notice { border-color: rgba(248,113,113,0.5); border-left-color: #f87171; cursor: default; }
 body.lg .voucher-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,237,0,0.4); transform: translateY(-1px); }
 body.lg .voucher-card.selected { border-color: var(--yellow); border-left-color: var(--yellow); background: rgba(255,237,0,0.08); }
 body.lg .vc-check { flex-shrink: 0; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.3); position: relative; transition: background 0.15s, border-color 0.15s; }
