@@ -174,6 +174,31 @@ tbody tr:last-child td { border-bottom: none; }
 .empty-tbl strong { display: block; font-family: var(--font-heading); font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 6px; }
 .empty-tbl p { color: rgba(255,255,255,0.5); }
 
+/* ===== LOCKED-DATA NOTE (shown in each detail tab to non-admins) ======= */
+.locked-note {
+  display: flex; flex-direction: column; align-items: center; justify-content: center;
+  gap: 12px; text-align: center; padding: 56px 24px; min-height: 200px;
+  color: rgba(255,255,255,0.62); font-size: 15px; line-height: 1.55;
+}
+.locked-note .locked-ico { font-size: 34px; line-height: 1; opacity: 0.85; }
+.locked-note span:last-child { max-width: 440px; }
+/* When the note sits inside a data table, drop the 600px min-width so it fits the
+   box and stays centered (no horizontal scroll). */
+table:has(.locked-note) { min-width: 0; }
+table:has(.locked-note) td { border-bottom: none; padding: 0; }
+
+/* ===== "THIS IS REAL" header proof badge ============================== */
+.dash-proof {
+  display: inline-flex; align-items: center; gap: 9px;
+  margin-top: 12px !important; max-width: 680px !important;
+  background: rgba(255,237,0,0.1); border: 1px solid rgba(255,237,0,0.3);
+  border-radius: 10px; padding: 10px 14px;
+  font-size: 13px !important; color: rgba(255,255,255,0.85) !important; line-height: 1.5;
+}
+.dash-proof strong { color: var(--yellow); }
+.dash-proof-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px #4ade80; flex-shrink: 0; animation: dashProofPulse 1.8s infinite; }
+@keyframes dashProofPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.85); } }
+
 /* ===== STATUS / TYPE PILLS ============================================= */
 .tag-pill {
   display: inline-block; font-family: var(--font-mono); font-size: 9px; font-weight: 700; letter-spacing: 0.1em; text-transform: uppercase;

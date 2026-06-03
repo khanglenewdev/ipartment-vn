@@ -2,6 +2,10 @@
 const Auth = window.ipartmentAuth;
 const sb = window.sb;
 let currentTab = 'leads';
+// Whether the current viewer is an admin. The overview KPIs are public, but the
+// detailed per-tab data is shown only when this is true.
+let _adminView = false;
+const LOCKED_NOTE = '<div class="locked-note"><span class="locked-ico">&#128274;</span><span>For security reasons, only admin accounts can view this data.</span></div>';
 
 function showDash() {
   document.getElementById('login-shell').style.display = 'none';
@@ -9,6 +13,14 @@ function showDash() {
   document.getElementById('link-logout').style.display = 'inline';
   loadAll();
 }
+
+// Owner affordance: open the site's auth modal to sign in as admin and unlock the
+// detailed tabs. Falls back to a hint if the modal is not available on this page.
+window.adminSignIn = function() {
+  if (window.ipartmentOpenAuth) { window.ipartmentOpenAuth('login'); }
+  else if (window.ipartmentToast) { window.ipartmentToast('Sign in from the main site, then come back here.'); }
+  else { window.location.href = 'my-account.html'; }
+};
 
 function showLogin(msg) {
   document.getElementById('login-shell').style.display = 'flex';
@@ -74,8 +86,46 @@ function leadTypeTag(type) {
   return `<span class="tag-pill">${type || '-'}</span>`;
 }
 
+// Overview KPIs come from a public aggregate-counts RPC (totals only, no PII),
+// so the headline shows real numbers to everyone, even logged out. The detailed
+// rows below stay protected by row-level security (admin accounts only).
+async function loadPublicKPIs() {
+  try {
+    const res = await sb.rpc('crm_public_counts');
+    if (res.error || !res.data) return;
+    const d = res.data;
+    const set = (id, v) => { const el = document.getElementById(id); if (el) el.textContent = v; };
+    const n = x => Number(x || 0).toLocaleString('en-US');
+    set('kpi-visitors', n(d.visitors));
+    set('kpi-visitors-sub', n(d.pageviews) + ' page views');
+    set('kpi-leads', n(d.leads));
+    set('kpi-leads-sub', n(d.lead_emails) + ' unique emails');
+    set('kpi-bookings', n(d.bookings));
+    set('kpi-users', n(d.users));
+    set('kpi-applications', n(d.applications));
+  } catch (e) { console.warn('[admin] public counts failed', e); }
+}
+
+// For non-admins, fill every detail container with the security note instead of
+// data. Only sets innerHTML (never removes the elements), so an admin signing in
+// re-renders cleanly.
+function renderLockedTabs() {
+  const note = LOCKED_NOTE;
+  const tableNote = '<tbody><tr><td>' + note + '</td></tr></tbody>';
+  ['tbl-leads','tbl-users','tbl-bookings','tbl-vouchers','tbl-applications','tbl-sessions','tbl-quiz','tbl-feedback','tbl-chatbot-miss','tbl-chatbot-leads'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = tableNote; });
+  ['sessions-summary','chatbot-summary','finder-summary','funnel-view','mag-list'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = note; });
+}
+
 async function loadAll() {
-  // Everything is read from Supabase, the single source of truth.
+  // Headline KPIs are public and always real.
+  await loadPublicKPIs();
+  // The in-depth per-tab data is admin only.
+  let isAdminUser = false;
+  try { isAdminUser = await Auth.isAdmin(); } catch (e) {}
+  _adminView = isAdminUser;
+  if (!isAdminUser) { renderLockedTabs(); return; }
+
+  // Everything below is read from Supabase, the single source of truth.
   let profiles = [], bookings = [], vouchers = [], leads = [], apps = [], pageviews = [], quiz = [], chatEvents = [], finderEvents = [], totalViewsExact = null;
   try {
     const [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe] = await Promise.all([
@@ -99,13 +149,10 @@ async function loadAll() {
     window.__feedback = fb.data || [];
   } catch (e) { console.warn('[admin] supabase load failed', e); }
 
-  document.getElementById('kpi-leads').textContent = leads.length;
-  document.getElementById('kpi-bookings').textContent = bookings.length;
-  document.getElementById('kpi-users').textContent = profiles.length;
-  document.getElementById('kpi-applications').textContent = apps.length;
-  document.getElementById('kpi-leads-sub').textContent = `${new Set(leads.map(l => l.email)).size} unique emails`;
+  // KPI cards are already populated by loadPublicKPIs() above. Below we only
+  // build the detailed per-tab views from the admin-readable rows.
 
-  // VISITORS: unique browser sessions + total page views, from the events table.
+  // VISITORS detail: unique browser sessions + total page views, from the events table.
   // A "visitor" is a unique session_id (one per browser). Total views is an exact
   // server-side count; unique/today figures use the most recent 1000 page views.
   const startToday = new Date(); startToday.setHours(0, 0, 0, 0);
@@ -114,8 +161,6 @@ async function loadAll() {
   const recentToday = pageviews.filter(p => new Date(p.created_at) >= startToday);
   const visitorsToday = new Set(recentToday.map(p => p.session_id).filter(Boolean)).size;
   const viewsToday = recentToday.length;
-  document.getElementById('kpi-visitors').textContent = uniqueVisitors.toLocaleString('en-US');
-  document.getElementById('kpi-visitors-sub').textContent = totalViews.toLocaleString('en-US') + ' page views';
   const sumEl = document.getElementById('sessions-summary');
   if (sumEl) {
     const stat = (v, l) => `<div class="mini-stat"><div class="v">${v.toLocaleString('en-US')}</div><div class="l">${l}</div></div>`;
@@ -380,6 +425,7 @@ document.querySelectorAll('.tab-btn-admin').forEach(b => {
 async function renderFunnel() {
   const wrap = document.getElementById('funnel-view');
   if (!wrap) return;
+  if (!_adminView) { wrap.innerHTML = LOCKED_NOTE; return; }
   wrap.innerHTML = '<p style="color:rgba(255,255,255,0.5);">Loading...</p>';
   const [fres, eres, ares, pres] = await Promise.all([
     sb.from('events').select('name,session_id').eq('type', 'funnel'),
@@ -500,6 +546,7 @@ const escAttr = escHtml;
 function renderMagazineList() {
   const wrap = document.getElementById('mag-list');
   if (!wrap) return;
+  if (!_adminView) { wrap.innerHTML = LOCKED_NOTE; return; }
   if (!window.ipartmentMagazine) {
     wrap.innerHTML = '<p style="color:rgba(255,255,255,0.5);">Article data file not loaded.</p>';
     return;
@@ -660,15 +707,13 @@ document.getElementById('art-form').addEventListener('submit', e => {
 });
 
 (async function initAdmin() {
-  // TEMP (owner request, June 2026): the admin login gate is BYPASSED so the
-  // dashboard can be previewed without an admin account. Note that row-level
-  // security still hides real data from an anonymous session, so the tables read
-  // empty until a real admin logs in; this only exposes the dashboard SHELL/UI.
-  // TO RE-ENABLE THE GATE: delete the two lines below and restore the block:
-  //   showLogin('');
-  //   try { const admin = await Auth.isAdmin();
-  //         if (admin) { showDash(); refreshWebhookStatus(); renderMagazineList(); }
-  //   } catch (e) { /* not logged in - login screen stays */ }
+  // Gate OFF (owner request): the dashboard shell + the public overview KPIs are
+  // shown to everyone (so classmates can see the system works), while loadAll()
+  // keeps the detailed per-tab data admin-only behind a notice. An admin who
+  // signs in (here via "Admin sign in", or on the main site) unlocks the tabs.
+  // TO FULLY RE-GATE THE PAGE: restore the isAdmin() check that calls showLogin().
   showDash();
-  try { refreshWebhookStatus(); renderMagazineList(); } catch (e) {}
+  // Re-render whenever auth state changes, so logging in/out locks or unlocks the
+  // detailed tabs live without a manual refresh.
+  try { Auth.onChange(function () { loadAll(); }); } catch (e) {}
 })();

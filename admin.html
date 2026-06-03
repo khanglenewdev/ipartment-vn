@@ -46,8 +46,10 @@
       <div>
         <h1>CRM Dashboard</h1>
         <p>Live accounts, bookings and vouchers from Supabase, plus marketing leads captured across the site.</p>
+        <p class="dash-proof"><span class="dash-proof-dot"></span><strong>Yes, this is real.</strong> Every number below was captured and stored live by my own custom CRM database, not mocked up for the demo.</p>
       </div>
       <div class="dash-actions">
+        <button class="dash-btn" onclick="adminSignIn()">Admin sign in</button>
         <button class="dash-btn" onclick="downloadJSON()">Export JSON</button>
         <button class="dash-btn" onclick="downloadCSV()">Export CSV</button>
         <button class="dash-btn primary" onclick="loadAll()">Refresh</button>
@@ -78,7 +80,6 @@
       <button class="tab-btn-admin" data-tab="chatbot">Chatbot &amp; Finder</button>
       <button class="tab-btn-admin" data-tab="funnel">Funnel</button>
       <button class="tab-btn-admin" data-tab="magazine">Magazine</button>
-      <button class="tab-btn-admin" data-tab="integration">Airtable + Make</button>
     </div>
 
     <div class="tab-content">
@@ -118,77 +119,6 @@
         </div>
 
         <div id="mag-list"></div>
-      </div>
-
-      <div class="tab-pane" id="tab-integration">
-        <div class="int-wrap">
-          <h3 class="int-h3">Connect to Airtable via Make.com</h3>
-          <p class="int-lead">Right now this CRM lives in your browser's localStorage. To send leads to a real Airtable base + trigger automatic confirmation/voucher emails, paste a Make webhook URL below. Every new lead, booking, signup, and application will POST to it as JSON.</p>
-
-          <div class="int-status-box">
-            <div class="int-status-label">Status</div>
-            <div id="webhook-status">Loading...</div>
-          </div>
-
-          <div class="form-group">
-            <label class="form-label">Make.com webhook URL</label>
-            <input class="form-input mono-input" type="url" id="webhook-url-input" placeholder="https://hook.eu2.make.com/abc123..." />
-          </div>
-          <div class="int-btn-row int-btn-row-lg">
-            <button class="dash-btn primary" onclick="saveWebhook()">Save webhook</button>
-            <button class="dash-btn" onclick="testWebhook()">Test ping</button>
-            <button class="dash-btn danger" onclick="clearWebhook()">Disconnect</button>
-          </div>
-
-          <div class="int-block">
-            <h4 class="int-h4">Session replay and heatmaps (Microsoft Clarity)</h4>
-            <p class="int-body">Clarity is free. It records anonymized sessions and heatmaps so you can watch where visitors hesitate or drop off, the "why" behind the funnel numbers. Create a free project at <strong>clarity.microsoft.com</strong>, copy the Project ID, and paste it below.</p>
-            <div id="clarity-status" class="int-clarity-status"></div>
-            <div class="form-group form-group-sm"><label class="form-label">Clarity Project ID</label><input class="form-input mono-input" type="text" id="clarity-id-input" placeholder="e.g. abcde12345" /></div>
-            <div class="int-btn-row">
-              <button class="dash-btn primary" onclick="saveClarity()">Save Clarity ID</button>
-              <button class="dash-btn danger" onclick="clearClarity()">Remove</button>
-            </div>
-            <p class="int-note">Saved in this browser for testing. To enable Clarity for every visitor on the live site, send the Project ID to your developer to bake into the site.</p>
-          </div>
-
-          <h4 class="int-h4 int-h4-divider">Step-by-step setup</h4>
-          <ol class="int-list">
-            <li><strong>Create your Airtable base.</strong> Recommended tables: <code>Leads</code>, <code>Bookings</code>, <code>Users</code>, <code>Applications</code>. Fields can mirror the JSON shape (see "Payload format" below).</li>
-            <li><strong>In Make.com, create a new scenario.</strong> Add a <em>Webhooks &gt; Custom webhook</em> trigger. Copy the URL it generates and paste it into the field above.</li>
-            <li><strong>Add a Router after the webhook.</strong> Route by the <code>type</code> field. Each route handles one record type (lead, booking, application, user).</li>
-            <li><strong>For each route, add an Airtable "Create a Record" module</strong> pointing at the matching table. Map JSON fields from <code>record.*</code>. For bookings the guest is nested at <code>record.guest.*</code>.</li>
-            <li><strong>Add email modules to specific routes.</strong> Examples: on the welcome-popup route, send the <code>WELCOME15</code> voucher via Gmail or SendGrid. On the booking-request route, send a confirmation email to <code>record.guest.email</code>.</li>
-            <li><strong>Turn the scenario on.</strong> Submit a test booking or signup and verify the data lands in Airtable and the email goes out. The "Test ping" button above sends a small fake payload to verify connectivity.</li>
-          </ol>
-
-          <h4 class="int-h4 int-h4-gap">Payload format</h4>
-          <p class="int-body int-body-tight">Every webhook fires with the following JSON shape:</p>
-          <pre class="int-pre">{
-  "type": "leads",        // or "bookings", "users", "applications"
-  "source": "ipartment-website",
-  "record": {
-    "id": "IPT-MA12B3C-XYZ",
-    "createdAt": "2026-05-22T11:00:00.000Z",
-    "source": "index.html",
-    "email": "guest@example.com",
-    "phone": "+84 123 456",
-    "type": "welcome_popup_voucher",
-    "voucher": "WELCOME15",
-    "promoValue": "15% off first stay"
-    // ... booking records also have: room, checkin, checkout, nights,
-    //     total, guest:{first,last,email,phone}, etc.
-  }
-}</pre>
-
-          <h4 class="int-h4 int-h4-gap">Things to know</h4>
-          <ul class="int-list">
-            <li><strong>Data still saves locally too.</strong> The webhook is fire-and-forget. If Make is down or unreachable, the record is still kept in this admin dashboard.</li>
-            <li><strong>CORS:</strong> Make webhooks accept POSTs without preflight, so no special setup is needed.</li>
-            <li><strong>Webhook URL is per-browser.</strong> If you open admin.html on a different device, you need to paste the URL there too (or share access via the Make scenario itself).</li>
-            <li><strong>Right now this CRM is a simulator.</strong> When the webhook is set, it becomes real, persistent, and ties into your Airtable + email automation.</li>
-          </ul>
-        </div>
       </div>
     </div>
   </div>

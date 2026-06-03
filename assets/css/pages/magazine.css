@@ -112,23 +112,25 @@ body.lg .featured-text h2 { font-family: var(--font-heading); font-size: clamp(2
 
 /* ===== NEWSLETTER (yellow strip) =========================================
    JS hook #newsletter-form / #news-email preserved. */
+/* Dark band, so it contrasts with the bright-yellow page-cta-band right below it. */
 .mag-newsletter {
-  background: linear-gradient(135deg, var(--yellow), #FFD54B); color: #0a0a0a;
+  background: var(--black-deep, #0c0404); color: #fff;
+  border-top: 1px solid var(--glass-border, rgba(255,255,255,0.1));
   padding: 72px 64px; display: flex; align-items: center; justify-content: space-between;
   gap: 32px; flex-wrap: wrap;
 }
 .mag-newsletter-copy { max-width: 600px; }
-.mag-newsletter-copy h2 { font-family: var(--font-heading); font-size: clamp(26px, 3vw, 38px); font-weight: 600; color: #0a0a0a; line-height: 1.05; margin-bottom: 8px; }
-.mag-newsletter-copy p { font-size: 15px; color: rgba(0,0,0,0.7); line-height: 1.6; }
+.mag-newsletter-copy h2 { font-family: var(--font-heading); font-size: clamp(26px, 3vw, 38px); font-weight: 600; color: #fff; line-height: 1.05; margin-bottom: 8px; }
+.mag-newsletter-copy p { font-size: 15px; color: rgba(255,255,255,0.7); line-height: 1.6; }
 .mag-newsletter-form { display: flex; gap: 8px; flex-wrap: wrap; flex: 1; min-width: 280px; max-width: 480px; }
 .mag-newsletter-input {
   flex: 1; min-width: 200px; padding: 16px 18px; border-radius: 999px;
-  background: #fff; border: 1.5px solid rgba(0,0,0,0.12);
-  font-family: var(--font-body); font-size: 14px; color: #0a0a0a; outline: none;
+  background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.14);
+  font-family: var(--font-body); font-size: 14px; color: #fff; outline: none;
   transition: border-color 0.2s;
 }
-.mag-newsletter-input::placeholder { color: rgba(0,0,0,0.45); }
-.mag-newsletter-input:focus { border-color: #0a0a0a; }
+.mag-newsletter-input::placeholder { color: rgba(255,255,255,0.45); }
+.mag-newsletter-input:focus { border-color: var(--yellow); }
 
 @media (max-width: 1000px) {
   section { padding: 48px 24px; }

@@ -177,10 +177,11 @@
           <div class="fg"><label>Phone (optional)</label><input class="form-input" type="tel" id="guest-phone" placeholder="+84 or international" /></div>
         </div>
         <div class="fg">
-          <label>Promo code</label>
+          <label>Vouchers</label>
+          <button type="button" class="voucher-open-btn" onclick="openVoucherWallet()">&#127903; Choose from my vouchers</button>
           <div id="promo-chips" style="display:none;"></div>
           <div class="promo-row">
-            <input class="form-input" type="text" id="promo-input" placeholder="e.g. WELCOME15" style="text-transform:uppercase;" />
+            <input class="form-input" type="text" id="promo-input" placeholder="or type a code" style="text-transform:uppercase;" />
             <button type="button" class="promo-apply" onclick="applyPromo()">Apply</button>
           </div>
           <div id="promo-msg" style="display:none;"></div>

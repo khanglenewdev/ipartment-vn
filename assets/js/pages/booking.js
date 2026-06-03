@@ -26,21 +26,70 @@
   // out). Account-bound vouchers still work through the existing chip/lookup path.
   const WELCOME_CODES = {
     WELCOME15:   { percent: 15,          label: '15% off your first stay' },
+    STAY20:      { percent: 20,          label: '20% off your stay' },
     WELCOMERIDE: { freeExtra: 'airport', label: 'Free airport pickup' },
-    WELCOMEPACK: { freeExtra: 'welcome', label: 'Free welcome pack' }
+    WELCOMEPACK: { freeExtra: 'welcome', label: 'Free welcome pack' },
+    EARLYBIRD:   { freeExtra: 'early',   label: 'Free early check-in' },
+    SAVE500:     { flat: 500000,         label: '500,000 VND off' }
   };
+
+  // The voucher wallet shown in the picker (showcase: every guest "has" these).
+  // Each code MUST exist in WELCOME_CODES above so it actually redeems.
+  const WALLET = [
+    { code: 'WELCOME15',   icon: '🎁', title: 'Welcome 15',     desc: '15% off your first stay',       badge: '15%',   tag: 'Member' },
+    { code: 'STAY20',      icon: '🏷️', title: 'Long-stay 20', desc: '20% off your room total',    badge: '20%' },
+    { code: 'WELCOMERIDE', icon: '✈️', title: 'Airport pickup', desc: 'Free pickup from Tan Son Nhat',  badge: 'FREE' },
+    { code: 'WELCOMEPACK', icon: '🎉', title: 'Welcome pack',   desc: 'Local snacks and a SIM, on us',  badge: 'FREE' },
+    { code: 'EARLYBIRD',   icon: '🌅', title: 'Early check-in', desc: 'Free early check-in from 09:00', badge: 'FREE' },
+    { code: 'SAVE500',     icon: '💸', title: '500K off',       desc: '500,000 VND off your stay',      badge: '-500K' }
+  ];
 
   // Single source of truth for how much a voucher takes off. Used by the glass
   // receipt, the legacy sidebar and the saved booking so they never disagree.
-  function voucherDiscountFor(roomSubtotal) {
-    const v = state.voucher;
+  // How much a SINGLE voucher takes off.
+  function singleVoucherDiscount(v, roomSubtotal) {
     if (!v) return 0;
     if (v.percent) return Math.round(roomSubtotal * v.percent / 100);
     if (v.freeExtra) {
       const ex = state.extras.find(x => x.key === v.freeExtra);
       return ex ? ex.price : 0;   // only discounts when that add-on is in the order
     }
+    if (v.flat) return v.flat;
     return 0;
+  }
+  // Total from ALL applied vouchers, capped so the booking total never goes below zero.
+  function voucherDiscountFor(roomSubtotal) {
+    let disc = 0;
+    (state.vouchers || []).forEach(v => { disc += singleVoucherDiscount(v, roomSubtotal); });
+    return Math.min(disc, roomSubtotal + state.extrasTotal);
+  }
+  // Build a voucher object from a known code.
+  function voucherObjFromCode(code) {
+    const wc = WELCOME_CODES[code];
+    if (!wc) return null;
+    if (wc.freeExtra) return { code: code, freeExtra: wc.freeExtra, label: wc.label };
+    if (wc.flat) return { code: code, flat: wc.flat, label: wc.label };
+    return { code: code, percent: wc.percent, label: wc.label };
+  }
+  // Replace the applied set with these codes (the wallet "Apply selected").
+  function setVoucherCodes(codes) {
+    state.vouchers = [];
+    (codes || []).forEach(code => {
+      const v = voucherObjFromCode(code);
+      if (!v) return;
+      if (v.freeExtra) ensureExtraSelected(v.freeExtra);
+      state.vouchers.push(v);
+    });
+    reconcileVoucherExtras();
+    updateSidebar();
+  }
+  // Add one voucher to the applied set (dedup by code). Used by the typed input
+  // and account chips so they stack alongside wallet picks.
+  function addVoucher(v) {
+    if (!v || state.vouchers.some(x => x.code === v.code)) return;
+    if (v.freeExtra) ensureExtraSelected(v.freeExtra);
+    state.vouchers.push(v);
+    updateSidebar();
   }
 
   // Ensure an add-on is selected (used when a "free extra" voucher is applied so
@@ -52,7 +101,24 @@
     card.classList.add('selected');
     const price = parseInt(card.dataset.price, 10) || 0;
     const nameEl = card.querySelector('.extra-name');
-    state.extras.push({ key: key, name: nameEl ? nameEl.textContent : key, price: price });
+    // viaVoucher: this add-on was added BY a free-extra voucher, so it is removed
+    // again if that voucher is removed (a manually-picked add-on has no such flag).
+    state.extras.push({ key: key, name: nameEl ? nameEl.textContent : key, price: price, viaVoucher: true });
+    state.extrasTotal = state.extras.reduce((s, x) => s + x.price, 0);
+  }
+
+  // Drop any voucher-added add-on that is no longer backed by a selected free-extra
+  // voucher, so clearing such a voucher also clears the add-on it brought in.
+  function reconcileVoucherExtras() {
+    const covered = state.vouchers.filter(v => v.freeExtra).map(v => v.freeExtra);
+    state.extras = state.extras.filter(x => {
+      if (x.viaVoucher && covered.indexOf(x.key) === -1) {
+        const card = document.querySelector('.extra-card[data-extra="' + x.key + '"]');
+        if (card) card.classList.remove('selected');
+        return false;
+      }
+      return true;
+    });
     state.extrasTotal = state.extras.reduce((s, x) => s + x.price, 0);
   }
 
@@ -83,7 +149,7 @@
     appliedRate: 'nightly',
     guests: parseInt(_p.get('guests'), 10) || 1,
     extras: [],
-    voucher: null,        // { code, percent, id }
+    vouchers: [],         // applied vouchers: [{ code, percent|freeExtra|flat, label, id? }]
     voucherDiscount: 0,
     calMonthOffset: 0,    // single-month calendar navigation
   };
@@ -147,7 +213,7 @@
       var html = '<div class="l"><span>' + fmtInt(rate) + ' × ' + state.nights + ' night' + (state.nights > 1 ? 's' : '') + '</span><span class="v">' + fmtInt(subtotal) + '</span></div>';
       if (pct > 0) html += '<div class="l disc"><span>' + label + ' unlocked</span><span class="v">-' + pct + '%</span></div>';
       if (state.extrasTotal > 0) html += '<div class="l"><span>Add-ons</span><span class="v">+ ' + fmtInt(state.extrasTotal) + '</span></div>';
-      if (state.voucher && vDisc > 0) { var vlabel = state.voucher.freeExtra ? (state.voucher.label || ('Voucher ' + state.voucher.code)) : ('Voucher ' + state.voucher.code); html += '<div class="l disc"><span>' + vlabel + '</span><span class="v">-' + fmtInt(vDisc) + '</span></div>'; }
+      (state.vouchers || []).forEach(function (v) { var d = singleVoucherDiscount(v, subtotal); if (d > 0) { var vlabel = v.label || ('Voucher ' + v.code); html += '<div class="l disc"><span>' + vlabel + '</span><span class="v">-' + fmtInt(d) + '</span></div>'; } });
       if (lines) lines.innerHTML = html;
     } else if (lines) {
       lines.innerHTML = '<div class="l"><span>Select your dates</span><span class="v">-</span></div>';
@@ -474,25 +540,19 @@
     // no account required. A voucher chip passes voucherId, so only treat a code
     // as a public welcome code when it is NOT coming from an account chip.
     if (!voucherId && WELCOME_CODES[code]) {
+      if (state.vouchers.some(v => v.code === code)) { showPromoMsg(code + ' is already applied.', true); return; }
       const wc = WELCOME_CODES[code];
-      if (wc.freeExtra) {
-        ensureExtraSelected(wc.freeExtra);
-        state.voucher = { code: code, freeExtra: wc.freeExtra, label: wc.label };
-        if (input) input.value = code;
-        showPromoMsg(code + ' applied: your ' + extraName(wc.freeExtra) + ' is on us.', true);
-      } else {
-        state.voucher = { code: code, percent: wc.percent, label: wc.label };
-        if (input) input.value = code;
-        showPromoMsg(code + ' applied: ' + wc.percent + '% off your stay.', true);
-      }
-      updateSidebar();
+      addVoucher(voucherObjFromCode(code));   // also selects the free add-on and refreshes the receipt
+      if (input) input.value = '';
+      if (wc.freeExtra) showPromoMsg(code + ' added: your ' + extraName(wc.freeExtra) + ' is on us.', true);
+      else if (wc.flat) showPromoMsg(code + ' added: ' + formatVND(wc.flat) + ' off your stay.', true);
+      else showPromoMsg(code + ' added: ' + wc.percent + '% off your stay.', true);
       return;
     }
 
     // Must be logged in - vouchers live in your account
     const user = window.ipartmentAuth ? await window.ipartmentAuth.getUser() : null;
     if (!user) {
-      state.voucher = null; updateSidebar();
       const msg = document.getElementById('promo-msg');
       if (msg) {
         msg.style.display = 'block'; msg.className = 'promo-err';
@@ -517,22 +577,79 @@
     }
 
     if (!match) {
-      state.voucher = null; updateSidebar();
       showPromoMsg('That code is not in your account.', false);
       return;
     }
-    state.voucher = { code: match.code, percent: match.percent, id: match.id };
-    if (input) input.value = match.code;
-    showPromoMsg(match.code + ' applied: ' + match.percent + '% off your stay.', true);
-    updateSidebar();
+    if (state.vouchers.some(v => v.code === match.code)) { showPromoMsg(match.code + ' is already applied.', true); return; }
+    addVoucher({ code: match.code, percent: match.percent, id: match.id });
+    if (input) input.value = '';
+    showPromoMsg(match.code + ' added: ' + match.percent + '% off your stay.', true);
   };
 
   window.removePromo = function() {
-    state.voucher = null;
+    state.vouchers = [];
+    reconcileVoucherExtras();
     const input = document.getElementById('promo-input');
     if (input) input.value = '';
     showPromoMsg('', true);
     updateSidebar();
+  };
+
+  // ---- Voucher wallet picker -----------------------------------------------
+  // A tappable menu of the vouchers the guest holds, so they pick one instead of
+  // typing a code. Every code routes through applyPromo, so all of them redeem.
+  function voucherWalletEsc(e) { if (e.key === 'Escape') window.closeVoucherWallet(); }
+  function updateWalletApplyCount() {
+    var n = document.querySelectorAll('#voucher-overlay .voucher-card.selected').length;
+    var btn = document.querySelector('#voucher-overlay .voucher-apply-btn');
+    if (btn) btn.textContent = n ? ('Apply ' + n + ' voucher' + (n > 1 ? 's' : '')) : 'Apply';
+  }
+  window.toggleWalletCard = function(btn) { btn.classList.toggle('selected'); updateWalletApplyCount(); };
+  window.clearWalletSelection = function() {
+    [].forEach.call(document.querySelectorAll('#voucher-overlay .voucher-card.selected'), function(c) { c.classList.remove('selected'); });
+    updateWalletApplyCount();
+  };
+  window.applyWalletSelection = function() {
+    var sel = document.querySelectorAll('#voucher-overlay .voucher-card.selected');
+    var codes = [].map.call(sel, function(c) { return c.getAttribute('data-code'); });
+    setVoucherCodes(codes);   // replaces the applied set with the chosen vouchers; all redeem
+    showPromoMsg(codes.length ? (codes.length + ' voucher' + (codes.length > 1 ? 's' : '') + ' applied.') : 'Vouchers cleared.', true);
+    window.closeVoucherWallet();
+  };
+  window.openVoucherWallet = function() {
+    if (document.getElementById('voucher-overlay')) return;
+    var applied = (state.vouchers || []).map(function(v) { return v.code; });
+    var cards = WALLET.map(function(v) {
+      var on = applied.indexOf(v.code) > -1;
+      return '<button type="button" class="voucher-card' + (on ? ' selected' : '') + '" data-code="' + v.code + '" onclick="toggleWalletCard(this)">'
+        + '<span class="vc-check" aria-hidden="true"></span>'
+        + '<span class="vc-icon">' + v.icon + '</span>'
+        + '<span class="vc-text"><span class="vc-title">' + v.title + (v.tag ? ' <span class="vc-tag">' + v.tag + '</span>' : '') + '</span>'
+        + '<span class="vc-desc">' + v.desc + '</span></span>'
+        + '<span class="vc-badge">' + v.badge + '</span>'
+        + '</button>';
+    }).join('');
+    var html = '<div class="voucher-overlay" id="voucher-overlay" role="dialog" aria-modal="true" aria-label="Your vouchers">'
+      + '<div class="voucher-modal">'
+      + '<button class="voucher-close" type="button" aria-label="Close" onclick="closeVoucherWallet()">&times;</button>'
+      + '<div class="voucher-head"><h3>Your vouchers</h3><p>Select any you want, then apply. You can stack more than one.</p></div>'
+      + '<div class="voucher-list">' + cards + '</div>'
+      + '<div class="voucher-foot"><button type="button" class="voucher-clear" onclick="clearWalletSelection()">Clear</button><button type="button" class="voucher-apply-btn" onclick="applyWalletSelection()">Apply</button></div>'
+      + '</div></div>';
+    document.body.insertAdjacentHTML('beforeend', html);
+    var ov = document.getElementById('voucher-overlay');
+    requestAnimationFrame(function() { ov.classList.add('open'); });
+    setTimeout(function() { ov.classList.add('open'); }, 60);
+    ov.addEventListener('click', function(e) { if (e.target === ov) window.closeVoucherWallet(); });
+    document.addEventListener('keydown', voucherWalletEsc);
+    updateWalletApplyCount();
+  };
+  window.closeVoucherWallet = function() {
+    var ov = document.getElementById('voucher-overlay');
+    if (!ov) return;
+    ov.classList.remove('open');
+    document.removeEventListener('keydown', voucherWalletEsc);
+    setTimeout(function() { if (ov && ov.parentNode) ov.remove(); }, 300);
   };
 
   // For logged-in guests: surface their active account vouchers as one-tap chips.
@@ -576,9 +693,10 @@
       // Voucher: percent off the room subtotal only (add-ons excluded)
       const voucherRow = document.getElementById('sb-voucher-row');
       state.voucherDiscount = voucherDiscountFor(state.totalPrice);
-      if (state.voucher && state.voucherDiscount > 0 && voucherRow) {
+      if (state.vouchers.length && state.voucherDiscount > 0 && voucherRow) {
         voucherRow.style.display = 'flex';
-        document.getElementById('sb-voucher-label').textContent = state.voucher.freeExtra ? (state.voucher.label || `Voucher ${state.voucher.code}`) : `Voucher ${state.voucher.code} (-${state.voucher.percent}%)`;
+        const vlabel = state.vouchers.length === 1 ? (state.vouchers[0].label || `Voucher ${state.vouchers[0].code}`) : `${state.vouchers.length} vouchers`;
+        document.getElementById('sb-voucher-label').textContent = vlabel;
         document.getElementById('sb-voucher-val').textContent = '-' + formatVND(state.voucherDiscount);
       } else if (voucherRow) {
         voucherRow.style.display = 'none';
@@ -682,7 +800,7 @@
       nights: state.nights, guests: state.guests,
       rate: state.appliedRate, ratePerNight: state.totalPrice/state.nights,
       subtotal: state.totalPrice, extras: state.extras, extrasTotal: state.extrasTotal,
-      voucherCode: state.voucher ? state.voucher.code : '', voucherDiscount,
+      voucherCode: state.vouchers.map(v => v.code).join(', '), voucherDiscount,
       total,
       guest: { first, last, email, phone, nationality: nat, purpose, notes },
       status: 'pending_confirmation'
@@ -695,7 +813,7 @@
     // their user_id; guests are stored with a null user_id and their contact in
     // guests_detail. Admins see all bookings either way.
     if (window.sb) {
-      const appliedVoucher = state.voucher;
+      const appliedVouchers = state.vouchers.slice();
       const getUser = window.ipartmentAuth ? window.ipartmentAuth.getUser() : Promise.resolve(null);
       Promise.resolve(getUser).then(function (u) {
         window.sb.from('bookings').insert({
@@ -712,17 +830,19 @@
           rate: state.appliedRate,
           subtotal: state.totalPrice,
           extras_total: state.extrasTotal,
-          voucher_code: appliedVoucher ? appliedVoucher.code : null,
+          voucher_code: appliedVouchers.length ? appliedVouchers.map(v => v.code).join(', ') : null,
           voucher_discount: voucherDiscount,
           total: total,
           status: 'requested'
         }).then(function (res) {
           if (res.error) console.warn('[ipartment] booking save failed:', res.error.message);
         });
-        // Mark an account voucher as used once it has been redeemed
-        if (u && appliedVoucher && appliedVoucher.id) {
-          window.sb.from('vouchers').update({ status: 'used' }).eq('id', appliedVoucher.id).then(function (r2) {
-            if (r2.error) console.warn('[ipartment] voucher mark-used failed:', r2.error.message);
+        // Mark any redeemed account vouchers as used
+        if (u) {
+          appliedVouchers.filter(function (v) { return v.id; }).forEach(function (av) {
+            window.sb.from('vouchers').update({ status: 'used' }).eq('id', av.id).then(function (r2) {
+              if (r2.error) console.warn('[ipartment] voucher mark-used failed:', r2.error.message);
+            });
           });
         }
       });
@@ -741,7 +861,7 @@
       <div class="conf-row"><span class="cl">Guests</span><span class="cv">${state.guests}</span></div>
       <div class="conf-row"><span class="cl">Rate applied</span><span class="cv">${state.appliedRate.charAt(0).toUpperCase()+state.appliedRate.slice(1)} rate</span></div>
       ${state.extras.length ? `<div class="conf-row"><span class="cl">Add-ons</span><span class="cv">${state.extras.map(x=>x.name).join(', ')}</span></div>` : ''}
-      ${state.voucher ? `<div class="conf-row"><span class="cl">Voucher</span><span class="cv">${state.voucher.code} (-${formatVND(voucherDiscount)})</span></div>` : ''}
+      ${state.vouchers.length ? `<div class="conf-row"><span class="cl">Voucher${state.vouchers.length>1?'s':''}</span><span class="cv">${state.vouchers.map(v=>v.code).join(', ')} (-${formatVND(voucherDiscount)})</span></div>` : ''}
       <div class="conf-row"><span class="cl">Total</span><span class="cv">${formatVND(total)}</span></div>
       <div class="conf-row"><span class="cl">Contact</span><span class="cv">${email}</span></div>
     `;

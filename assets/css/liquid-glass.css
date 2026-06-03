@@ -573,3 +573,86 @@ body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline
   body.lg .site-header-main { padding: 6px 7px 6px 16px; }
   body.lg .page-hero-text { padding: 120px 22px 36px; }
 }
+
+/* ===== SCROLL LOCK ====================================================== */
+/* Freeze the page behind any full-screen modal so the background cannot scroll
+   while a pop-up is open. scrollbar-gutter keeps the layout from shifting when
+   the scrollbar hides during the lock. */
+html { scrollbar-gutter: stable; }
+html:has(.cta-overlay.open),
+html:has(.auth-overlay.open),
+html:has(.fq-overlay.open),
+html:has(.fb-overlay.open),
+html:has(.voucher-overlay.open),
+html:has(#app-modal.open),
+html:has(#art-modal.open) {
+  overflow: hidden;
+}
+
+/* ===== VOUCHER WALLET (booking) ======================================== */
+body.lg .voucher-overlay {
+  position: fixed; inset: 0; z-index: 100000;
+  display: flex; align-items: center; justify-content: center; padding: 22px;
+  background: rgba(8,4,4,0.74);
+  opacity: 0; pointer-events: none; transition: opacity 0.3s;
+}
+body.lg .voucher-overlay.open { opacity: 1; pointer-events: auto; }
+body.lg .voucher-modal {
+  width: 100%; max-width: 440px; max-height: 86vh;
+  display: flex; flex-direction: column; overflow: hidden; position: relative;
+  background: var(--glass-base-strong, rgba(22,18,16,0.92));
+  backdrop-filter: blur(var(--blur-xl, 28px)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--blur-xl, 28px)) saturate(160%);
+  border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18));
+  border-radius: 22px; box-shadow: var(--shadow-glass-lg, 0 40px 100px -30px rgba(0,0,0,0.8));
+  transform: translateY(20px) scale(0.97); transition: transform 0.35s var(--ease, ease);
+}
+body.lg .voucher-overlay.open .voucher-modal { transform: none; }
+body.lg .voucher-close {
+  position: absolute; top: 12px; right: 12px; width: 34px; height: 34px;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); border-radius: 50%;
+  color: #fff; font-size: 18px; line-height: 1; cursor: pointer; z-index: 2;
+}
+body.lg .voucher-close:hover { background: rgba(255,255,255,0.16); }
+body.lg .voucher-head { padding: 24px 24px 12px; }
+body.lg .voucher-head h3 { font-family: var(--font-heading); font-size: 24px; font-weight: 600; color: #fff; margin: 0 0 4px; }
+body.lg .voucher-head p { font-size: 13px; color: rgba(255,255,255,0.6); margin: 0; }
+body.lg .voucher-list { flex: 1 1 auto; min-height: 0; padding: 6px 16px 16px; overflow-y: auto; display: flex; flex-direction: column; gap: 10px; }
+body.lg .voucher-card {
+  display: flex; align-items: center; gap: 12px; text-align: left; width: 100%;
+  padding: 13px 15px; cursor: pointer; font-family: var(--font-body);
+  background: rgba(255,255,255,0.04); border: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+  border-left: 3px solid var(--terracotta, #d8613c); border-radius: 14px;
+  transition: background 0.18s, border-color 0.18s, transform 0.18s;
+}
+body.lg .voucher-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,237,0,0.4); transform: translateY(-1px); }
+body.lg .voucher-card.selected { border-color: var(--yellow); border-left-color: var(--yellow); background: rgba(255,237,0,0.08); }
+body.lg .vc-check { flex-shrink: 0; width: 20px; height: 20px; border-radius: 6px; border: 1.5px solid rgba(255,255,255,0.3); position: relative; transition: background 0.15s, border-color 0.15s; }
+body.lg .voucher-card.selected .vc-check { background: var(--yellow); border-color: var(--yellow); }
+body.lg .voucher-card.selected .vc-check::after { content: '\2713'; position: absolute; inset: 0; display: flex; align-items: center; justify-content: center; color: #0a0a0a; font-size: 13px; font-weight: 700; }
+body.lg .vc-icon { font-size: 23px; flex-shrink: 0; width: 26px; text-align: center; }
+body.lg .vc-text { display: flex; flex-direction: column; gap: 2px; flex: 1; min-width: 0; }
+body.lg .vc-title { font-size: 15px; font-weight: 600; color: #fff; display: flex; align-items: center; gap: 7px; }
+body.lg .vc-tag { font-family: var(--font-mono); font-size: 8px; letter-spacing: 0.1em; text-transform: uppercase; padding: 2px 6px; border-radius: 999px; background: rgba(255,237,0,0.16); color: var(--yellow); }
+body.lg .vc-desc { font-size: 12.5px; color: rgba(255,255,255,0.62); line-height: 1.4; }
+body.lg .vc-badge { flex-shrink: 0; font-family: var(--font-mono); font-size: 11px; font-weight: 700; padding: 6px 10px; border-radius: 999px; background: rgba(255,255,255,0.08); color: #fff; border: 1px solid var(--glass-border); }
+body.lg .voucher-card.selected .vc-badge { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); }
+body.lg .voucher-foot { flex-shrink: 0; display: flex; gap: 10px; padding: 14px 16px; border-top: 1px solid var(--glass-border, rgba(255,255,255,0.1)); background: rgba(0,0,0,0.2); }
+body.lg .voucher-clear { flex: 0 0 auto; padding: 12px 18px; border-radius: 11px; cursor: pointer; background: rgba(255,255,255,0.06); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.8); font-family: var(--font-body); font-weight: 600; font-size: 13px; }
+body.lg .voucher-clear:hover { background: rgba(255,255,255,0.12); }
+body.lg .voucher-apply-btn { flex: 1; padding: 12px 18px; border-radius: 11px; cursor: pointer; background: var(--yellow); border: none; color: #0a0a0a; font-family: var(--font-body); font-weight: 700; font-size: 14px; transition: background 0.18s; }
+body.lg .voucher-apply-btn:hover { background: #fff; }
+@media (prefers-reduced-transparency: reduce) {
+  body.lg .voucher-modal { background: #161210 !important; backdrop-filter: none !important; -webkit-backdrop-filter: none !important; }
+}
+
+/* button that opens the wallet, inside the booking promo box */
+.voucher-open-btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px; width: 100%;
+  padding: 13px 16px; margin-bottom: 10px; cursor: pointer;
+  background: var(--yellow, #ffed00); color: #0a0a0a; border: none; border-radius: 12px;
+  font-family: var(--font-body); font-weight: 700; font-size: 14px;
+  transition: transform 0.18s, background 0.18s;
+}
+.voucher-open-btn:hover { background: #fff; transform: translateY(-1px); }
