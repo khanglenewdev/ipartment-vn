@@ -1,0 +1,49 @@
+---
+pagination:
+  data: previewList
+  size: 1
+  alias: item
+permalink: "previews/{{ item.id }}.html"
+eleventyExcludeFromCollections: true
+---
+{#- Renders ONE real section in isolation, with the full production design
+    system and real ipartment content, so the showcase can embed the genuine
+    article instead of a mock-up. Asset paths are ../ because this outputs one
+    level deep in /previews/. -#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ item.id }} - live section preview</title>
+  <meta name="robots" content="noindex" />
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="{{ site.fontUrl }}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" />
+  <link rel="stylesheet" href="../assets/css/main.css" />
+  <link rel="stylesheet" href="../assets/css/components.css" />
+  <link rel="stylesheet" href="../assets/css/advanced.css" />
+  <link rel="stylesheet" href="../assets/css/liquid-glass.css" />
+  <link rel="stylesheet" href="../assets/css/pages/home.css" />
+  <link rel="stylesheet" href="../assets/css/chatbot.css" />
+  <link rel="stylesheet" href="../assets/css/finder.css" />
+  <style>
+    :root{
+      --yellow: {{ brand.colors.accent }};
+      --yellow-dark: {{ brand.colors.accentDark }};
+      --terracotta: {{ brand.colors.tint }};
+      --font-heading: {{ brand.fonts.heading | safe }};
+      --font-body: {{ brand.fonts.body | safe }};
+      --font-mono: {{ brand.fonts.mono | safe }};
+    }
+    /* show content immediately (no scroll-reveal JS in a static preview) */
+    [class*="reveal"]{opacity:1 !important;transform:none !important;}
+    html{zoom:1;}
+  </style>
+</head>
+<body class="lg">
+{% set sec = home[item.dataKey] %}
+{% include item.template %}
+</body>
+</html>

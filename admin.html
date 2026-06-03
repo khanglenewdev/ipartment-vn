@@ -63,7 +63,10 @@
       <div class="kpi"><div class="lbl">Applications</div><div class="val" id="kpi-applications">0</div><div class="sub">Career page submissions</div></div>
     </div>
 
-    <div class="tabs">
+    <div class="tabs-control">
+      <button class="tabs-toggle" id="tabs-toggle" type="button" aria-expanded="true" aria-controls="admin-tabs">Minimize tabs &#9650;</button>
+    </div>
+    <div class="tabs" id="admin-tabs">
       <button class="tab-btn-admin active" data-tab="leads">Leads</button>
       <button class="tab-btn-admin" data-tab="users">Accounts</button>
       <button class="tab-btn-admin" data-tab="bookings">Bookings</button>
@@ -275,5 +278,20 @@
 <script src="assets/js/main.js"></script>
 <script src="assets/js/data/articles.js"></script>
 <script src="assets/js/pages/admin.js"></script>
+<script>
+  /* Tab row collapse/expand. With 12 tabs the row wraps into several lines;
+     minimizing hides all but the active tab so the bar is a single chip. */
+  (function () {
+    var toggle = document.getElementById('tabs-toggle');
+    var tabs = document.getElementById('admin-tabs');
+    if (!toggle || !tabs) return;
+    var count = tabs.querySelectorAll('.tab-btn-admin').length;
+    function setLabel(min) {
+      toggle.innerHTML = min ? ('Show all tabs (' + count + ') &#9660;') : ('Minimize tabs &#9650;');
+      toggle.setAttribute('aria-expanded', String(!min));
+    }
+    toggle.addEventListener('click', function () { setLabel(tabs.classList.toggle('tabs--min')); });
+  })();
+</script>
 </body>
 </html>

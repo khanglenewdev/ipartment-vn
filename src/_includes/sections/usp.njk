@@ -1,0 +1,22 @@
+{#- ============================================================
+    SECTION: USP / variant "grid" (the original 4-tile layout).
+    Reads `sec` (= home.usp). This is the default variant.
+    A second variant lives in usp-rows.njk. Both read the SAME data.
+    Switch them in src/index.njk to see design change, content stay.
+    ============================================================ -#}
+<section class="section usp-section paper-section" id="why">
+  <div class="section-head">
+    <span class="section-eyebrow reveal">{{ sec.eyebrow }}</span>
+    <h2 class="section-title reveal reveal-delay-1">{{ sec.title | safe }}</h2>
+    <p class="section-body reveal reveal-delay-2">{{ sec.body }}</p>
+  </div>
+  <div class="usp-grid">
+    {% for item in sec.items %}
+    <div class="usp reveal{% if loop.index0 %} reveal-delay-{{ loop.index0 }}{% endif %}">
+      <div class="usp-icon">{{ item.icon | safe }}</div>
+      <h4>{{ item.title | safe }}</h4>
+      <p>{{ item.text }}</p>
+    </div>
+    {% endfor %}
+  </div>
+</section>

@@ -1,0 +1,62 @@
+{#- ============================================================
+    THE HEAD (site-level machine + Layer 0 + Layer 7 technical SEO).
+    The structure is identical for every page and every client.
+    The values come from page front matter, brand.json and site.json.
+    ============================================================ -#}
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>{{ title }}</title>
+  <meta name="description" content="{{ description }}" />
+
+  <link rel="canonical" href="{{ site.domain }}{{ page.url }}" />
+
+  {% if preloadImage %}<link rel="preload" as="image" href="{{ preloadImage }}" fetchpriority="high" />{% endif %}
+
+  <!-- Open Graph + Twitter -->
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="{{ site.ogSiteName }}" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="{{ ogTitle or title }}" />
+  <meta property="og:description" content="{{ ogDescription or description }}" />
+  <meta property="og:url" content="{{ site.domain }}{{ page.url }}" />
+  <meta property="og:image" content="{{ ogImage or site.ogImage }}" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="{{ ogTitle or title }}" />
+  <meta name="twitter:description" content="{{ ogDescription or description }}" />
+  <meta name="twitter:image" content="{{ ogImage or site.ogImage }}" />
+
+  {% include "partials/schema.njk" %}
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="{{ site.fontUrl }}" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+
+  <!-- Shared design system (every page) -->
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/advanced.css" />
+  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
+  {% if pageCss %}<link rel="stylesheet" href="assets/css/{{ pageCss }}" />{% endif %}
+  <link rel="stylesheet" href="assets/css/chatbot.css" />
+  <link rel="stylesheet" href="assets/css/finder.css" />
+
+  {#- ========================================================
+      LAYER 0: BRAND IDENTITY KNOBS.
+      These override the design-system tokens in main.css :root.
+      Change a value in src/_data/brand.json and the whole site
+      re-themes. This is the single proof that brand identity is
+      separate from design.
+      ======================================================== -#}
+  <style>
+  :root{
+    --yellow: {{ brand.colors.accent }};
+    --yellow-dark: {{ brand.colors.accentDark }};
+    --terracotta: {{ brand.colors.tint }};
+    --font-heading: {{ brand.fonts.heading | safe }};
+    --font-body: {{ brand.fonts.body | safe }};
+    --font-mono: {{ brand.fonts.mono | safe }};
+  }
+  </style>

@@ -1,0 +1,45 @@
+{
+  "_comment": "THE GOALS MENU. A client picks 2-3 of these. Each goal pulls a known set of section TYPES and FUNCTIONS into the build plan. This is the mapping that turns planning into configuration. Section ids match sections.json; function ids match functions.json.",
+  "items": [
+    {
+      "id": "be-found",
+      "label": "Be found",
+      "tagline": "Rank in search, on the map, and in AI answers.",
+      "blurb": "Show up when someone searches for what you do, in your city, at the moment they are ready to spend. Be the answer an AI assistant gives.",
+      "sections": ["hero", "content", "faq", "location"],
+      "functions": ["seo-schema", "gbp-local", "reviews"]
+    },
+    {
+      "id": "earn-trust",
+      "label": "Earn trust",
+      "tagline": "Convince a skeptic in seconds.",
+      "blurb": "Put enough real signal at every touchpoint that a stranger decides you are worth contacting: real proof, real photos, specifics not adjectives.",
+      "sections": ["proof", "features", "faq"],
+      "functions": ["reviews", "post-purchase"]
+    },
+    {
+      "id": "convert-capture",
+      "label": "Convert and capture",
+      "tagline": "Turn a visitor into an owned lead.",
+      "blurb": "Most visitors are not ready to buy today. The job today is to not lose them: capture the contact, make the next step easy.",
+      "sections": ["hero", "pricing", "cta", "capture"],
+      "functions": ["lead-capture", "booking", "chatbot", "popups"]
+    },
+    {
+      "id": "understand-customer",
+      "label": "Understand the customer",
+      "tagline": "Mine data on purpose.",
+      "blurb": "Know which searches bring them, where they hesitate, what offer wins, what they wish you offered. Zero-party data, collected at moments of high trust.",
+      "sections": ["capture"],
+      "functions": ["finder-quiz", "preference-center", "post-purchase", "exit-survey", "funnel-analytics", "ab-offer", "chatbot"]
+    },
+    {
+      "id": "scale",
+      "label": "Scale and run without the owner",
+      "tagline": "Compound the asset.",
+      "blurb": "Let the system handle first contact and qualification, bring customers back, and turn data into better decisions about what to build and where to grow.",
+      "sections": [],
+      "functions": ["accounts", "referrals", "preference-center", "funnel-analytics"]
+    }
+  ]
+}

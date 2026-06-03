@@ -1,0 +1,53 @@
+{
+  "_comment": "NICHE PACKAGES. The niche sets the SHAPE: which pages exist and which specialized section types and functions are on the table. The visual style is NOT decided here (personality picks style, not niche). 'pages' is the default page skeleton. 'sectionsSpecial' are section types this niche usually needs on top of the universal set. 'functions' are the functions this niche usually leans on.",
+  "items": [
+    {
+      "id": "hospitality",
+      "label": "Hospitality / serviced apartments",
+      "blurb": "Stays, rooms, bookings. Atmosphere sells; the booking action must always be reachable.",
+      "pages": ["Home", "Accommodation", "Booking", "About", "Magazine", "FAQ", "Contact"],
+      "sectionsSpecial": ["hero", "pricing", "proof", "location"],
+      "functions": ["booking", "chatbot", "finder-quiz", "gbp-local", "reviews", "accounts"]
+    },
+    {
+      "id": "clinic-health",
+      "label": "Clinic / health / wellness",
+      "blurb": "Conditions, credentials, trust. A skeptical, often-burned audience that needs specifics and reassurance.",
+      "pages": ["Home", "Services", "Conditions", "About / Credentials", "Booking", "FAQ", "Contact"],
+      "sectionsSpecial": ["features", "proof", "faq", "capture"],
+      "functions": ["booking", "lead-capture", "reviews", "gbp-local", "seo-schema"]
+    },
+    {
+      "id": "fnb",
+      "label": "Restaurant / cafe / F&B",
+      "blurb": "Menu, atmosphere, reservations and orders. Walk-in and call-driven.",
+      "pages": ["Home", "Menu", "About", "Reservations", "Contact"],
+      "sectionsSpecial": ["hero", "content", "location", "cta"],
+      "functions": ["booking", "gbp-local", "reviews", "chatbot"]
+    },
+    {
+      "id": "professional-services",
+      "label": "Professional services / B2B",
+      "blurb": "Expertise, outcomes, a considered decision. Sells on proof and clarity.",
+      "pages": ["Home", "Services", "Case studies", "About", "Contact"],
+      "sectionsSpecial": ["features", "proof", "pricing", "capture"],
+      "functions": ["lead-capture", "ab-offer", "funnel-analytics", "seo-schema", "reviews"]
+    },
+    {
+      "id": "personal-brand",
+      "label": "Personal brand / creator",
+      "blurb": "One person, a point of view, an audience. The about page does most of the work.",
+      "pages": ["Home", "About", "Work / Portfolio", "Writing", "Contact / Subscribe"],
+      "sectionsSpecial": ["hero", "content", "proof", "capture"],
+      "functions": ["lead-capture", "preference-center", "seo-schema"]
+    },
+    {
+      "id": "shop",
+      "label": "Small e-commerce / shop",
+      "blurb": "Products, proof, a buy decision. Owns its customers instead of renting them from a marketplace.",
+      "pages": ["Home", "Shop", "Product", "About", "FAQ", "Cart / Checkout"],
+      "sectionsSpecial": ["proof", "pricing", "faq", "capture"],
+      "functions": ["finder-quiz", "post-purchase", "reviews", "accounts", "popups", "funnel-analytics"]
+    }
+  ]
+}

@@ -309,10 +309,10 @@
     document.body.removeAttribute('data-popup-open');
     document.removeEventListener('keydown', escClose);
     setTimeout(() => overlay.remove(), 400);
-    // They closed the offer without taking it - ask why, gently, once.
-    if (!window.__ctaConverted) {
-      setTimeout(() => { if (window.ipartmentExitSurvey) window.ipartmentExitSurvey('welcome_popup_dismissed'); }, 700);
-    }
+    // Previously this chained straight into the exit survey on dismiss, which
+    // felt like being ambushed right after closing a popup. The survey is now
+    // reserved for genuine exit intent (see initExitIntent), so we do not fire
+    // it here anymore.
   }
 
   function handlePopupSubmit(e) {
@@ -360,9 +360,13 @@
   function exitSurveyShown() { try { return sessionStorage.getItem('ipartment_exit_survey') === '1'; } catch (e) { return false; } }
 
   window.ipartmentExitSurvey = function(context) {
-    // Showcase mode: re-triggers each time the visitor leaves, but never stacks.
+    // Show at most ONCE per session, and never stack on another popup. This is
+    // the main "make it less sensitive" guard: once it has appeared, it will
+    // not come back no matter how the visitor moves the mouse or navigates.
+    if (exitSurveyShown()) return;
     if (document.getElementById('exit-survey')) return;                                                       // one is already showing
     if (document.querySelector('.cta-overlay.open') || document.querySelector('.auth-overlay.open')) return;  // another popup is up
+    try { sessionStorage.setItem('ipartment_exit_survey', '1'); } catch (e) {}
     const html = `
       <div class="exit-survey" id="exit-survey" role="dialog" aria-label="Quick question">
         <button class="exit-survey-close" id="exit-survey-close" aria-label="Close">&times;</button>
@@ -425,10 +429,24 @@
   function initExitIntent() {
     const path = (window.location.pathname || '').toLowerCase();
     if (path.includes('admin')) return;
+    // Desktop only: "cursor leaves the top of the window" is not a real gesture
+    // on touch, where it would misfire constantly.
+    if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
+
+    // Deliberately not sensitive. The survey only arms after the visitor has
+    // spent real time on the page AND scrolled at least once, so it cannot fire
+    // the moment someone lands and flicks the mouse toward the tabs or address
+    // bar. With the once-per-session guard inside ipartmentExitSurvey, normal
+    // navigating no longer triggers it.
+    let armed = false, engaged = false;
+    window.addEventListener('scroll', function () { engaged = true; }, { passive: true, once: true });
+    setTimeout(function () { armed = true; }, 30000); // at least 30s on the page
+
     document.addEventListener('mouseout', function (e) {
-      if (e.clientY <= 0 && !e.relatedTarget && !window.__bookingDone && window.ipartmentExitSurvey) {
-        window.ipartmentExitSurvey('page_exit');
-      }
+      if (!armed || !engaged) return;
+      if (e.clientY > 0 || e.relatedTarget) return;     // only a genuine exit over the TOP edge
+      if (window.__bookingDone || !window.ipartmentExitSurvey) return;
+      window.ipartmentExitSurvey('page_exit');
     });
   }
 

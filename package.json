@@ -1,0 +1,13 @@
+{
+  "name": "ipartment-vn",
+  "version": "1.0.0",
+  "private": true,
+  "description": "ipartment Vietnam - Reference Build One. Layered Eleventy site.",
+  "scripts": {
+    "start": "eleventy --serve",
+    "build": "eleventy"
+  },
+  "devDependencies": {
+    "@11ty/eleventy": "^2.0.1"
+  }
+}

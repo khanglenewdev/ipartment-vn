@@ -1,0 +1,46 @@
+{#- ============================================================
+    SITE-LEVEL: footer. Written once. Columns + contact + legal
+    come from site.json and brand.json.
+    ============================================================ -#}
+<footer class="site-footer">
+  <div class="footer-grid">
+    <div class="footer-brand">
+      <a href="index.html" class="logo">{{ brand.logoText.first }}<span>{{ brand.logoText.rest }}</span></a>
+      <p>{{ brand.footerBlurb }}</p>
+    </div>
+
+    {% for col in site.footer.columns %}
+    <div class="footer-col">
+      <h5>{{ col.title }}</h5>
+      <ul>
+        {% for link in col.links %}
+        <li><a href="{{ link.url }}">{{ link.label }}</a></li>
+        {% endfor %}
+      </ul>
+    </div>
+    {% endfor %}
+
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="mailto:{{ brand.contact.email }}">{{ brand.contact.email }}</a></li>
+        <li><a href="tel:{{ brand.contact.phone }}">{{ brand.contact.phoneDisplay }}</a></li>
+        <li><a href="about.html#location">{{ brand.contact.addressShort }}</a></li>
+      </ul>
+      <h5 style="margin-top:28px;">Social</h5>
+      <ul>
+        <li><a href="{{ brand.contact.facebook }}" target="_blank" rel="noopener">Our Facebook</a></li>
+      </ul>
+    </div>
+  </div>
+
+  <div class="footer-bottom">
+    <span>&copy; 2026 {{ brand.legalName }}. All rights reserved.</span>
+    <span class="footer-byline">{{ site.footer.byline }}</span>
+    <div style="display:flex;gap:24px;">
+      {% for link in site.footer.legal %}
+      <a href="{{ link.url }}">{{ link.label }}</a>
+      {% endfor %}
+    </div>
+  </div>
+</footer>

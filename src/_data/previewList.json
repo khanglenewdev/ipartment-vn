@@ -1,0 +1,9 @@
+[
+  { "id": "hero-split",  "template": "sections/hero/a.njk",   "dataKey": "hero" },
+  { "id": "vp-pillars",  "template": "sections/usp.njk",       "dataKey": "usp" },
+  { "id": "vp-rows",     "template": "sections/usp-rows.njk",  "dataKey": "usp" },
+  { "id": "pf-cards",    "template": "sections/reviews.njk",   "dataKey": "reviews" },
+  { "id": "ct-cards",    "template": "sections/magazine.njk",  "dataKey": "magazine" },
+  { "id": "cta-banner",  "template": "sections/cta.njk",       "dataKey": "cta" },
+  { "id": "loc-split",   "template": "sections/location.njk",  "dataKey": "location" }
+]

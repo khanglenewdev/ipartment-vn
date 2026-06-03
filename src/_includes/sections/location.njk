@@ -1,0 +1,18 @@
+{#- SECTION: location. `sec` = home.location. The #home-map div is the
+    mount point for the Leaflet map function. -#}
+<section class="location-section paper-section">
+  <div class="location-text reveal">
+    <span class="section-eyebrow">{{ sec.eyebrow }}</span>
+    <h2>{{ sec.title | safe }}</h2>
+    <p>{{ sec.text }}</p>
+    <div class="location-stats">
+      {% for s in sec.stats %}
+      <div><div class="location-stat-num">{{ s.num }}</div><div class="location-stat-label">{{ s.label }}</div></div>
+      {% endfor %}
+    </div>
+    <a href="{{ sec.ctaUrl }}" class="btn btn-primary magnetic">{{ sec.ctaLabel }}</a>
+  </div>
+  <div class="location-map-wrap reveal reveal-delay-1">
+    <div id="home-map" class="map"></div>
+  </div>
+</section>

@@ -19,9 +19,10 @@
       sub: 'Online now', placeholder: 'Type your question...',
       talkHuman: 'Talk to a human', findApt: 'Find my apartment', back: 'Back to topics', skip: 'Skip',
       ask: 'Anything else I can help with?',
+      more: 'What else may I help you with?',
       ctaBook: 'Start my booking', ctaQuote: 'Get my quote', ctaView: 'Show me the apartments',
-      miss: 'I want to get this exactly right rather than guess. Our team can follow up personally, usually within a couple of hours. Want me to have them reach out?',
-      offer: 'Our team can follow up personally on this, usually within a couple of hours. Want me to have them reach out?',
+      miss: 'That is a good question, and I would rather get it exactly right than guess. Our team can follow up personally, usually within a couple of hours. Would you like me to have them reach out?',
+      offer: 'I would love to make sure you get the right answer. Our team can follow up personally, usually within a couple of hours. Would you like me to have them reach out?',
       yes: 'Yes, please', no: 'No thanks',
       askContact: 'Great. What is the best email or phone number to reach you? Either is fine. We will only use it to help with your stay, never spam you, and you can ask us to delete it anytime.',
       contactPh: 'Email or phone', send: 'Send',
@@ -40,9 +41,10 @@
       sub: 'Đang trực tuyến', placeholder: 'Nhập câu hỏi của bạn...',
       talkHuman: 'Gặp nhân viên', findApt: 'Tìm căn hộ cho tôi', back: 'Về danh mục', skip: 'Bỏ qua',
       ask: 'Tôi có thể giúp gì thêm không?',
+      more: 'Bạn cần tôi hỗ trợ gì thêm không?',
       ctaBook: 'Bắt đầu đặt phòng', ctaQuote: 'Nhận báo giá riêng', ctaView: 'Xem căn hộ',
-      miss: 'Tôi muốn trả lời thật chính xác thay vì đoán. Đội ngũ của chúng tôi có thể liên hệ trực tiếp, thường trong vài giờ. Bạn có muốn chúng tôi liên hệ không?',
-      offer: 'Đội ngũ của chúng tôi có thể liên hệ trực tiếp về việc này, thường trong vài giờ. Bạn có muốn chúng tôi liên hệ không?',
+      miss: 'Câu hỏi hay đấy, và tôi muốn trả lời thật chính xác thay vì đoán. Đội ngũ của chúng tôi có thể liên hệ trực tiếp, thường trong vài giờ. Bạn có muốn chúng tôi liên hệ không?',
+      offer: 'Tôi muốn chắc chắn bạn nhận được câu trả lời đúng. Đội ngũ của chúng tôi có thể liên hệ trực tiếp, thường trong vài giờ. Bạn có muốn chúng tôi liên hệ không?',
       yes: 'Có, làm ơn', no: 'Không, cảm ơn',
       askContact: 'Tuyệt vời. Email hoặc số điện thoại nào tiện nhất để liên hệ bạn? Cái nào cũng được. Chúng tôi chỉ dùng để hỗ trợ kỳ nghỉ của bạn, không bao giờ gửi spam, và bạn có thể yêu cầu xóa bất cứ lúc nào.',
       contactPh: 'Email hoặc số điện thoại', send: 'Gửi',
@@ -63,6 +65,7 @@
   var lang = (document.documentElement.lang || 'en').toLowerCase().indexOf('vi') === 0 ? 'vi' : 'en';
   var state = 'WELCOME';
   var openedOnce = false;
+  var greetedLangs = {}; // which languages have already seen the full greeting
   var launcher, panel, scrollEl, input, sendBtn, langWrap, nudgeEl, dotEl;
   var reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
 
@@ -114,6 +117,7 @@
     state = 'WELCOME';
     var topics = E.topics();
     var greet = skipGreeting ? t().ask : (E.welcome(lang) || t().ask);
+    if (!skipGreeting) greetedLangs[lang] = 1;
     botMsg(linkify(greet), function () {
       var chips = topics.map(function (tp) {
         return { label: (lang === 'vi' ? tp.label_vi : tp.label_en) || tp.category, cls: 'ipc-topic', onClick: function () { gotoTopic(tp); } };
@@ -156,13 +160,16 @@
         // a natural capture moment: offer, do not force
         addCta(t().ctaQuote, { cls: 'terracotta', onClick: function () { offerCapture({ intent: 'lead', question: entry.q_en }, true); } });
       }
-      // related follow-up chips + back
+      // After answering, gently ask if there is anything else, then show
+      // related follow-up chips + back.
       var rel = (entry._suggest || E.related(entry.id)) || [];
-      var chips = rel.slice(0, 3).map(function (q) {
-        return { label: (lang === 'vi' ? q.q_vi : q.q_en), onClick: function () { addUser(lang === 'vi' ? q.q_vi : q.q_en); gotoAnswer(q, 'related'); } };
+      botMsg(linkify(t().more), function () {
+        var chips = rel.slice(0, 3).map(function (q) {
+          return { label: (lang === 'vi' ? q.q_vi : q.q_en), onClick: function () { addUser(lang === 'vi' ? q.q_vi : q.q_en); gotoAnswer(q, 'related'); } };
+        });
+        chips.push({ label: t().back, cls: 'ipc-back', onClick: function () { gotoWelcome(true); } });
+        addChips(chips);
       });
-      chips.push({ label: t().back, cls: 'ipc-back', onClick: function () { gotoWelcome(true); } });
-      addChips(chips);
     });
   }
 
@@ -261,8 +268,10 @@
     if (l === lang) return; lang = l;
     langWrap.querySelectorAll('button').forEach(function (b) { b.classList.toggle('active', b.getAttribute('data-l') === l); });
     input.placeholder = t().placeholder;
-    // re-introduce the menu in the new language (history above stays)
-    if (openedOnce) gotoWelcome(false);
+    // Re-introduce the menu in the new language. Greet in FULL only the first
+    // time a language is shown; after that just offer a light follow-up, so the
+    // greeting does not spam every time the guest toggles EN/VI.
+    if (openedOnce) gotoWelcome(!!greetedLangs[lang]);
   }
 
   // ---- proactive nudge (once per session, intent pages only) ----
@@ -359,7 +368,7 @@
     });
     var lift = (top !== null) ? Math.max(base, Math.round(window.innerHeight - top) + 14) : base;
     launcher.style.bottom = lift + 'px';
-    if (nudgeEl) nudgeEl.style.bottom = (lift + 64) + 'px';
+    if (nudgeEl) nudgeEl.style.bottom = (lift + 82) + 'px';
     // On desktop the panel floats just above the launcher; lift it too. On
     // mobile the panel is laid out by CSS (near full-screen) so leave it alone.
     if (!mobile && top !== null) {

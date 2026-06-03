@@ -126,6 +126,19 @@ body.lg { background: var(--black-deep); }
 .tab-btn-admin:hover { color: #fff; border-color: var(--glass-border-hi); background: rgba(255,255,255,0.06); }
 .tab-btn-admin.active { background: var(--yellow); border-color: var(--yellow); color: #0a0a0a; font-weight: 700; }
 
+/* ===== TAB ROW COLLAPSE TOGGLE ======================================== */
+.tabs-control { margin-bottom: 10px; }
+.tabs-toggle {
+  background: var(--glass-base-soft); border: 1px solid var(--glass-border); border-radius: 999px;
+  backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm));
+  padding: 7px 14px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
+  letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.2s;
+}
+.tabs-toggle:hover { color: #fff; border-color: var(--glass-border-hi); background: rgba(255,255,255,0.06); }
+/* minimized: collapse the row to just the active tab */
+.tabs.tabs--min .tab-btn-admin { display: none; }
+.tabs.tabs--min .tab-btn-admin.active { display: inline-flex; }
+
 /* ===== TAB CONTENT PANEL =============================================== */
 .tab-content {
   background: var(--glass-base);

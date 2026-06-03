@@ -1,0 +1,28 @@
+{#- SECTION: testimonials carousel. `sec` = home.reviews. Slides and
+    dots are generated from the same data array, so they always match. -#}
+<section class="section review-section paper-section">
+  <div class="section-head center">
+    <span class="section-eyebrow reveal">{{ sec.eyebrow }}</span>
+    <h2 class="section-title reveal reveal-delay-1">{{ sec.title | safe }}</h2>
+  </div>
+  <div class="testimonial-carousel reveal reveal-delay-2">
+    <div class="testimonial-track" id="testimonial-track">
+      {% for r in sec.items %}
+      <div class="testimonial-slide{% if loop.first %} active{% endif %}">
+        <div class="testimonial-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+        <p class="testimonial-quote">"{{ r.quote }}"</p>
+        <p class="testimonial-author">{{ r.author }}</p>
+      </div>
+      {% endfor %}
+    </div>
+    <div class="testimonial-controls">
+      <button class="testimonial-arrow" id="testimonial-prev" type="button" aria-label="Previous quote">&#8249;</button>
+      <div class="testimonial-dots" id="testimonial-dots">
+        {% for r in sec.items %}
+        <button class="testimonial-dot{% if loop.first %} active{% endif %}" data-idx="{{ loop.index0 }}" aria-label="Slide {{ loop.index }}"></button>
+        {% endfor %}
+      </div>
+      <button class="testimonial-arrow" id="testimonial-next" type="button" aria-label="Next quote">&#8250;</button>
+    </div>
+  </div>
+</section>

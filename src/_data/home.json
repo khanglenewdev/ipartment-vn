@@ -1,0 +1,95 @@
+{
+  "_comment": "LAYER 6: CONTENT for the homepage. This is the 'meaning' layer, written fresh per client. Notice the markup is gone: this is just the words and the facts. The section templates in src/_includes/sections/ arrange it. Rich fields may contain <em> and <br/> and HTML entities; the templates output those with the 'safe' filter.",
+
+  "hero": {
+    "pill": "Now Open &middot; Thao Dien",
+    "headline": "Your second home<br/>in <em>Saigon.</em>",
+    "deck": "Premium serviced apartments designed for people who actually live here, not just pass through. Flexible stays from 1 night to 6 months in the most walkable corner of Thao Dien.",
+    "ctaPrimary": { "label": "Check my dates", "url": "booking.html" },
+    "ctaSecondary": { "label": "Explore apartments", "url": "accommodation.html" },
+    "trust": ["No account required", "Free cancellation", "No payment until confirmed"],
+    "cardTitle": "Book your <em>stay</em>",
+    "priceFrom": "1.2M",
+    "priceUnit": "per night"
+  },
+
+  "usp": {
+    "eyebrow": "Why ipartment",
+    "title": "Built for people who <em>stay longer.</em>",
+    "body": "Hotels are designed for tourists. ipartment is designed for people who need a real home, with a proper kitchen, fast Wi-Fi, a workspace, and a neighbourhood worth living in.",
+    "items": [
+      { "icon": "&#x1F3E0;", "title": "Fully <em>furnished</em>", "text": "Smart locks, climate, lighting. Full kitchen, 500 Mbps fibre, smart TV, washer, premium bedding. Move in with a bag." },
+      { "icon": "&#x1F4F6;", "title": "Remote-work <em>ready</em>", "text": "Dedicated workspace, 500 Mbps fibre, zero shared-office noise. Your apartment is your office, designed to actually work from." },
+      { "icon": "&#x1F511;", "title": "24/7 <em>check-in</em>", "text": "Check in any hour via a digital key sent to your phone. Stay 1 night or 6 months. Rates get better the longer you stay." },
+      { "icon": "&#x1F4CD;", "title": "Best <em>address</em>", "text": "Saigon's most cosmopolitan district. International schools, riverside cafes, co-working spaces, and Metro Line 1, all walkable." }
+    ]
+  },
+
+  "finder": {
+    "title": "Not sure which apartment fits?",
+    "text": "Take the 30-second finder and we will recommend the right one.",
+    "button": "Find my apartment"
+  },
+
+  "rooms": {
+    "eyebrow": "Accommodation",
+    "title": "Four sizes.<br/><em>One standard.</em>",
+    "viewAllLabel": "View all",
+    "viewAllUrl": "accommodation.html",
+    "items": [
+      { "code": "XS", "anchor": "xs", "img": "https://images.unsplash.com/photo-1522708323590-d24dbb6b0267?w=700&q=80", "alt": "Compact Studio XS apartment interior", "tag": "XS &middot; 25-30 m&sup2;", "name": "The <em>Compact</em>", "spec": "Sleeps 1-2", "text": "Everything you need, nothing you don't. Perfect for short and mid-term stays.", "price": "From 1,200,000 &#8363;" },
+      { "code": "S", "anchor": "s", "img": "https://images.unsplash.com/photo-1560448204-e02f11c3d0e2?w=700&q=80", "alt": "Standard Studio S apartment interior", "tag": "S &middot; 35-40 m&sup2;", "name": "The <em>Standard</em>", "spec": "Sleeps 2", "text": "Proper seating and dining area. Best for mid-term stays and remote workers.", "price": "From 1,650,000 &#8363;" },
+      { "code": "M", "anchor": "m", "img": "https://images.unsplash.com/photo-1484154218962-a197022b5858?w=700&q=80", "alt": "Spacious Apartment M interior", "tag": "M &middot; 45-55 m&sup2;", "name": "The <em>Spacious</em>", "spec": "Sleeps 2-3", "text": "Separate living, dining, and home-office zones. The most popular choice.", "price": "From 2,100,000 &#8363;" },
+      { "code": "L", "anchor": "l", "img": "https://images.unsplash.com/photo-1586023492125-27b2c045efd7?w=700&q=80", "alt": "Long-Stay Suite L interior", "tag": "L &middot; 65-75 m&sup2;", "name": "The <em>Long-Stay</em>", "spec": "Sleeps 3-4", "text": "Separate bedroom, full living room, family kitchen. Built for long-term living.", "price": "From 2,800,000 &#8363;" }
+    ]
+  },
+
+  "reviews": {
+    "eyebrow": "Guests say",
+    "title": "300+ stays.<br/><em>4.8 average rating.</em>",
+    "items": [
+      { "quote": "Exactly what long-term business travel should feel like. A real home, not a hotel room. I'd move in permanently if I could.", "author": "Michael S., Consultant. 3-month stay" },
+      { "quote": "The location in Thao Dien is unbeatable. International schools, cafes, the river, all within walking distance. Felt at home from day one.", "author": "Anna K., Expat Relocator. 6-month stay" },
+      { "quote": "Our entire team relocated to HCMC. ipartment handled everything. Corporate rates, multiple units, zero hassle.", "author": "Regional HR Lead. Group booking, 12 units" },
+      { "quote": "Self check-in worked flawlessly at midnight after a long flight. Workspace setup is better than most co-working spaces I've used.", "author": "David T., Product Manager. 6 weeks" }
+    ]
+  },
+
+  "corporate": {
+    "eyebrow": "For companies",
+    "title": "Relocating a team<br/>to <em>Saigon?</em>",
+    "text": "Corporate rates, central billing, and a dedicated account manager. We have handled relocations for teams of 2 to 20+. From a 3-month project to a permanent regional HQ.",
+    "ctaLabel": "Get my quote"
+  },
+
+  "location": {
+    "eyebrow": "Find us",
+    "title": "Xuan Thuy Street,<br/><em>Thao Dien.</em>",
+    "text": "Quiet residential street, three minutes from Metro Line 1, fifteen minutes from District 1. The sweet spot between connected and calm.",
+    "stats": [
+      { "num": "3 min", "label": "Metro station" },
+      { "num": "15 min", "label": "District 1" },
+      { "num": "25 min", "label": "Airport" }
+    ],
+    "ctaLabel": "View full map",
+    "ctaUrl": "about.html#location"
+  },
+
+  "magazine": {
+    "eyebrow": "Magazine",
+    "title": "Life in <em>Thao Dien.</em>",
+    "allLabel": "All articles",
+    "items": [
+      { "url": "https://e.vnexpress.net/news/travel/food-recipes/places-worth-a-visit-in-thao-dien-one-of-world-s-coolest-neighborhoods-4874391.html", "img": "https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=700&q=80", "alt": "Saigon at night", "tag": "Local Guide", "title": "Thao Dien named one of the world's coolest neighborhoods", "excerpt": "VnExpress International covers Time Out's pick of Thao Dien as one of the planet's coolest neighbourhoods. Eateries, river views, walkable streets." },
+      { "url": "https://www.jica.go.jp/english/information/press/2024/20241225_21.html", "img": "https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=700&q=80", "alt": "Metro Line 1 train", "tag": "News", "title": "Metro Line 1 opens, Vietnam's first underground urban metro", "excerpt": "JICA announces the official opening of the Ben Thanh to Suoi Tien metro. Thao Dien station is a 3-minute walk from ipartment." },
+      { "url": "https://www.asialifestylemagazine.com/ho-chi-minh-city-expat-guide/", "img": "https://images.unsplash.com/photo-1598544919456-fcb105fa7a6f?w=700&q=80", "alt": "Saigon sunset skyline", "tag": "Expat Life", "title": "Ho Chi Minh City Expat Guide 2026", "excerpt": "Asia Lifestyle Magazine's complete guide to HCMC's best districts, cost of living, and what to expect when you move here." }
+    ]
+  },
+
+  "cta": {
+    "title": "Move in <em>today.</em>",
+    "sub": "Stays from 1 night to 6 months. No account needed, no payment until confirmed.",
+    "button": "Book my stay &#8594;",
+    "buttonUrl": "booking.html"
+  }
+}

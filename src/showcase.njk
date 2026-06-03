@@ -1,0 +1,113 @@
+---
+permalink: showcase.html
+eleventyExcludeFromCollections: true
+---
+{% from "showcase/previews.njk" import prev %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Library Showcase - internal tool</title>
+  <meta name="robots" content="noindex, nofollow" />
+  <link rel="stylesheet" href="assets/css/showcase.css" />
+</head>
+<body class="sc">
+
+<header class="sc-head">
+  <div class="sc-wrap">
+    <div class="sc-kicker">Internal tool, not a client page</div>
+    <h1>The library</h1>
+    <p>The reusable parts we build sites from. Pick a niche and one or more goals to see the recommended build, and to filter the catalog of section variants and functions. This is the source AI reads to assemble the next client. We refine it as we go.</p>
+  </div>
+</header>
+
+<div class="sc-controls">
+  <div class="sc-wrap">
+    <div class="sc-ctl-group">
+      <span class="sc-ctl-label">Niche</span>
+      <select class="sc-select" id="nicheSelect">
+        <option value="">All niches</option>
+        {% for n in library.niches.items %}<option value="{{ n.id }}">{{ n.label }}</option>{% endfor %}
+      </select>
+    </div>
+    <div class="sc-ctl-group">
+      <span class="sc-ctl-label">Goals</span>
+      {% for g in library.goals.items %}<button class="sc-chip" data-goal="{{ g.id }}">{{ g.label }}</button>{% endfor %}
+    </div>
+    <button class="sc-reset" id="resetBtn">Reset</button>
+  </div>
+</div>
+
+<div class="sc-wrap">
+
+  <!-- THE RECIPE PANEL -->
+  <section class="sc-build" id="buildPanel">
+    <h2>Your build</h2>
+    <div class="sc-build-sub" id="buildSub">Pick a niche and goals above to assemble a recommended plan.</div>
+    <div class="sc-build-cols">
+      <div class="sc-build-col"><h3>Pages</h3><ul id="buildPages"><li class="sc-build-empty">No niche selected</li></ul></div>
+      <div class="sc-build-col"><h3>Sections</h3><ul id="buildSections"><li class="sc-build-empty">No goals selected</li></ul></div>
+      <div class="sc-build-col"><h3>Functions</h3><ul id="buildFunctions"><li class="sc-build-empty">No goals selected</li></ul></div>
+    </div>
+  </section>
+
+  <!-- SECTION CATALOG -->
+  {% for sec in library.sections.items %}
+  <section class="sc-section-block" data-sectiontype="{{ sec.id }}">
+    <h2>{{ sec.label }} <span class="count">{{ sec.variants | length }} variants</span></h2>
+    <p class="sc-purpose">{{ sec.purpose }}</p>
+    <div class="sc-grid">
+      {% for v in sec.variants %}
+      <article class="sc-card sc-variant" data-goals="{{ v.goals | join(' ') }}" data-niches="{{ v.niches | join(' ') }}">
+        {% if v.built %}
+        <div class="sc-frame">
+          <span class="sc-real">live ipartment</span>
+          <iframe src="previews/{{ v.id }}.html" loading="lazy" scrolling="no" tabindex="-1" title="{{ v.name }} live preview"></iframe>
+          <a class="sc-frame-link" href="previews/{{ v.id }}.html" target="_blank" rel="noopener" aria-label="Open full example"></a>
+        </div>
+        {% else %}
+        {{ prev(v.preview) }}
+        {% endif %}
+        <div class="sc-card-body">
+          <h4>{{ v.name }}{% if v.built %}<span class="sc-badge-built">built</span>{% else %}<span class="sc-badge-soon">spec</span>{% endif %}</h4>
+          <div class="sc-desc">{{ v.description }}</div>
+          <div class="sc-when"><strong>Use when:</strong> {{ v.whenToUse }}</div>
+          <div class="sc-principle">{{ v.principle }}</div>
+          <div class="sc-tags">
+            {% for g in v.goals %}<span class="sc-tag goal">{{ g }}</span>{% endfor %}
+            {% for n in v.niches %}<span class="sc-tag">{{ n }}</span>{% endfor %}
+          </div>
+          <div class="sc-src">Source: <a href="{{ v.sourceUrl }}" target="_blank" rel="noopener">{{ v.source }}</a></div>
+        </div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+  {% endfor %}
+
+  <!-- FUNCTION CATALOG -->
+  <section class="sc-section-block" id="functionsBlock">
+    <h2>Functions <span class="count">{{ library.functions.items | length }} in the library</span></h2>
+    <p class="sc-purpose">The interactive features and data-capture mechanisms. Built once, reused, and tuned over time. The capture and intelligence functions are the moat.</p>
+    <div class="sc-grid">
+      {% for fn in library.functions.items %}
+      <article class="sc-fn sc-function" data-goals="{{ fn.goals | join(' ') }}">
+        <h4>{{ fn.name }}{% if fn.built %}<span class="sc-badge-built">built</span>{% else %}<span class="sc-badge-soon">spec</span>{% endif %}</h4>
+        <div class="sc-desc">{{ fn.does }}</div>
+        <div class="sc-data"><b>Captures:</b> {{ fn.data }}</div>
+        <div class="sc-when"><strong>Use when:</strong> {{ fn.whenToUse }}</div>
+        <div class="sc-principle">{{ fn.principle }}</div>
+        <div class="sc-tags">{% for g in fn.goals %}<span class="sc-tag goal">{{ g }}</span>{% endfor %}<span class="sc-tag">{{ fn.level }}-level</span></div>
+        <div class="sc-src">Source: <a href="{{ fn.sourceUrl }}" target="_blank" rel="noopener">{{ fn.source }}</a></div>
+      </article>
+      {% endfor %}
+    </div>
+  </section>
+
+</div>
+
+<script>window.LIB = {{ library | dump | safe }};</script>
+<script src="assets/js/showcase.js"></script>
+</body>
+</html>

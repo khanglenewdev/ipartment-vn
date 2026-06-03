@@ -1,0 +1,47 @@
+{
+  "_comment": "SITE-WIDE settings: the deploy domain, the navigation (a site-level function), the footer, and SEO/social defaults. Nav and footer are written ONCE here and rendered on every page by the partials, instead of being copy-pasted into every HTML file.",
+
+  "domain": "https://ipartment.vn",
+  "ogSiteName": "ipartment Vietnam",
+  "ogImage": "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1200&h=630&fit=crop&q=80",
+  "fontUrl": "https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap",
+
+  "nav": [
+    { "label": "About", "url": "about.html" },
+    { "label": "Accommodation", "url": "accommodation.html" },
+    { "label": "Magazine", "url": "magazine.html" },
+    { "label": "Career", "url": "career.html" },
+    { "label": "FAQ", "url": "faq.html" },
+    { "label": "My Account", "url": "my-account.html" },
+    { "label": "Admin", "url": "admin.html" },
+    { "label": "Book my stay", "url": "booking.html", "cta": true }
+  ],
+
+  "footer": {
+    "columns": [
+      {
+        "title": "Accommodation",
+        "links": [
+          { "label": "Studio XS", "url": "accommodation.html#xs" },
+          { "label": "Studio S", "url": "accommodation.html#s" },
+          { "label": "Apartment M", "url": "accommodation.html#m" },
+          { "label": "Long-Stay Suite L", "url": "accommodation.html#l" }
+        ]
+      },
+      {
+        "title": "Company",
+        "links": [
+          { "label": "About Us", "url": "about.html" },
+          { "label": "Career", "url": "career.html" },
+          { "label": "Magazine", "url": "magazine.html" },
+          { "label": "FAQ", "url": "faq.html" }
+        ]
+      }
+    ],
+    "byline": "Penguin & Mun Business Digital Presence",
+    "legal": [
+      { "label": "Privacy Policy", "url": "legal.html#privacy" },
+      { "label": "Terms", "url": "legal.html#terms" }
+    ]
+  }
+}

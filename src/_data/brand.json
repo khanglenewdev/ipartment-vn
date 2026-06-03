@@ -1,0 +1,29 @@
+{
+  "_comment": "LAYER 0: BRAND IDENTITY. These are the client knobs. Change a value here and the whole site updates. To re-theme for a different client, this file plus content is most of the job. The colors below override the design-system tokens in assets/css/main.css (see src/_includes/partials/head.njk).",
+
+  "name": "ipartment",
+  "legalName": "ipartment Vietnam",
+  "logoText": { "first": "i", "rest": "partment" },
+  "tagline": "Your second home in Thao Dien, Ho Chi Minh City.",
+  "footerBlurb": "Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.",
+
+  "contact": {
+    "email": "khangle.forwork@gmail.com",
+    "phone": "+84779488070",
+    "phoneDisplay": "+84 779 488 070",
+    "addressShort": "Xuan Thuy St, Thao Dien",
+    "facebook": "https://www.facebook.com/profile.php?id=61577261575118"
+  },
+
+  "colors": {
+    "accent": "#FFED00",
+    "accentDark": "#e0d500",
+    "tint": "#D8613C"
+  },
+
+  "fonts": {
+    "heading": "'Cormorant Garamond', Georgia, serif",
+    "body": "'Inter', 'Helvetica Neue', Arial, sans-serif",
+    "mono": "'JetBrains Mono', ui-monospace, SFMono-Regular, Menlo, monospace"
+  }
+}

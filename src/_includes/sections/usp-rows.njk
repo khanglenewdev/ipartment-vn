@@ -1,0 +1,45 @@
+{#- ============================================================
+    SECTION: USP / variant "rows" (PROOF-OF-CONCEPT VARIANT).
+    Same data as usp.njk (home.usp). Different design: an editorial
+    numbered list instead of a tile grid. The small scoped <style>
+    block is self-contained so it touches no global CSS.
+
+    THE DEMO: in src/index.njk, change the usp line's template from
+    "sections/usp.njk" to "sections/usp-rows.njk", rebuild, and the
+    section redesigns while every word stays the same. That is a
+    section-level style variant from the library.
+    ============================================================ -#}
+<style>
+  .usp-rows .uspr-list { max-width: 920px; margin: 0 auto; display: flex; flex-direction: column; gap: 0; }
+  .usp-rows .uspr {
+    display: grid; grid-template-columns: 64px 1fr; gap: 28px; align-items: start;
+    padding: 32px 0; border-top: 1px solid rgba(0,0,0,0.10);
+  }
+  .usp-rows .uspr:last-child { border-bottom: 1px solid rgba(0,0,0,0.10); }
+  .usp-rows .uspr-num {
+    font-family: var(--font-heading); font-size: 38px; line-height: 1;
+    color: var(--terracotta); font-variant-numeric: lining-nums;
+  }
+  .usp-rows .uspr-emoji { font-size: 22px; margin-left: 8px; }
+  .usp-rows .uspr h4 { font-size: 22px; margin: 0 0 6px; }
+  .usp-rows .uspr p { margin: 0; opacity: 0.78; max-width: 60ch; }
+</style>
+
+<section class="section usp-section usp-rows paper-section" id="why">
+  <div class="section-head">
+    <span class="section-eyebrow reveal">{{ sec.eyebrow }}</span>
+    <h2 class="section-title reveal reveal-delay-1">{{ sec.title | safe }}</h2>
+    <p class="section-body reveal reveal-delay-2">{{ sec.body }}</p>
+  </div>
+  <div class="uspr-list reveal reveal-delay-2">
+    {% for item in sec.items %}
+    <div class="uspr">
+      <div class="uspr-num">{% if loop.index < 10 %}0{% endif %}{{ loop.index }}<span class="uspr-emoji">{{ item.icon | safe }}</span></div>
+      <div>
+        <h4>{{ item.title | safe }}</h4>
+        <p>{{ item.text }}</p>
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+</section>

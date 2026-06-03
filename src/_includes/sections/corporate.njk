@@ -1,0 +1,10 @@
+{#- SECTION: corporate. `sec` = home.corporate. CTA mails the brand. -#}
+<section class="corporate-section">
+  <div class="corporate-content reveal">
+    <span class="section-eyebrow">{{ sec.eyebrow }}</span>
+    <h2>{{ sec.title | safe }}</h2>
+    <p>{{ sec.text }}</p>
+    <a href="mailto:{{ brand.contact.email }}" class="btn btn-primary magnetic">{{ sec.ctaLabel }}</a>
+  </div>
+  <div class="corporate-img reveal reveal-zoom"></div>
+</section>

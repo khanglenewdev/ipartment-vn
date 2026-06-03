@@ -1,0 +1,17 @@
+{#- ============================================================
+    SITE-LEVEL FUNCTION: navigation.
+    Written once, here. The nav items come from site.json. The old
+    site repeated this exact block in all 9 HTML files by hand.
+    ============================================================ -#}
+<header class="site-header">
+  <div class="site-header-main">
+    <a href="index.html" class="logo">{{ brand.logoText.first }}<span>{{ brand.logoText.rest }}</span></a>
+    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+    <nav class="site-nav">
+      {% for item in site.nav %}
+      <a href="{{ item.url }}"{% if item.cta %} class="nav-cta"{% endif %}>{{ item.label }}</a>
+      {% endfor %}
+    </nav>
+  </div>
+  <div class="site-header-edu">For educational purposes only</div>
+</header>

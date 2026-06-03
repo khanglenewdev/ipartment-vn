@@ -1,0 +1,36 @@
+{#- SECTION: rooms grid. `sec` = home.rooms. Room cards come from data;
+    the stats bar keeps its data-count markup intact for the JS counter. -#}
+<section class="section rooms-section">
+  <div class="rooms-header">
+    <div class="section-head">
+      <span class="section-eyebrow reveal">{{ sec.eyebrow }}</span>
+      <h2 class="section-title reveal reveal-delay-1">{{ sec.title | safe }}</h2>
+    </div>
+    <a href="{{ sec.viewAllUrl }}" class="btn btn-outline-dark reveal reveal-delay-2">{{ sec.viewAllLabel }}</a>
+  </div>
+  <div class="rooms-grid">
+    {% for room in sec.items %}
+    <a href="accommodation.html#{{ room.anchor }}" class="room room-card reveal{% if loop.index0 %} reveal-delay-{{ loop.index0 }}{% endif %}" data-room="{{ room.code }}">
+      <div class="room-img">
+        <img loading="lazy" class="room-photo" src="{{ room.img }}" alt="{{ room.alt }}" />
+        <span class="room-tag">{{ room.tag | safe }}</span>
+      </div>
+      <div class="room-body">
+        <h3>{{ room.name | safe }}</h3>
+        <div class="spec">{{ room.spec }}</div>
+        <p>{{ room.text }}</p>
+        <div class="room-foot">
+          <div class="room-price">{{ room.price | safe }}<small>per night &middot; all fees in</small></div>
+          <span class="room-go">&#8599;</span>
+        </div>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+  <div class="stats reveal">
+    <div class="stat"><b><span data-count="4">0</span></b><span>Apartment sizes</span></div>
+    <div class="stat"><b><span data-count="4.8">0</span>&#9733;</b><span>Guest rating</span></div>
+    <div class="stat"><b><span data-count="38" data-suffix="%">0</span></b><span>Long-stay savings</span></div>
+    <div class="stat"><b>3<span class="stat-unit">min</span></b><span>To Metro Line 1</span></div>
+  </div>
+</section>

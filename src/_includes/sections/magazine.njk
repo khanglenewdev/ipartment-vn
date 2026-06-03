@@ -1,0 +1,22 @@
+{#- SECTION: magazine. `sec` = home.magazine. Cards from data. -#}
+<section class="magazine-section">
+  <div class="magazine-header">
+    <div class="section-head">
+      <span class="section-eyebrow reveal">{{ sec.eyebrow }}</span>
+      <h2 class="section-title reveal reveal-delay-1">{{ sec.title | safe }}</h2>
+    </div>
+    <a href="magazine.html" class="btn btn-outline reveal reveal-delay-2">{{ sec.allLabel }}</a>
+  </div>
+  <div class="mag-grid">
+    {% for a in sec.items %}
+    <a href="{{ a.url }}" target="_blank" rel="noopener" class="mag reveal{% if loop.index0 %} reveal-delay-{{ loop.index0 }}{% endif %}">
+      <div class="mag-img-wrap"><img class="mag-img" src="{{ a.img }}" alt="{{ a.alt }}" loading="lazy" /></div>
+      <div class="mag-body">
+        <span class="mag-tag">{{ a.tag }}</span>
+        <h3 class="mag-title">{{ a.title }}</h3>
+        <p class="mag-excerpt">{{ a.excerpt }}</p>
+      </div>
+    </a>
+    {% endfor %}
+  </div>
+</section>

@@ -1,0 +1,79 @@
+{#- ============================================================
+    SECTION: hero / variant A ("booking card on the right").
+    Reads `sec` (= home.hero). The booking form is a FUNCTION, so
+    its markup and element IDs are kept intact for booking-widget.js
+    and home.js. Only the words come from data.
+
+    To add a different design, copy this to b.njk, restyle, and point
+    the skeleton at "sections/hero/b.njk". Same data, new look.
+    ============================================================ -#}
+<section class="hero">
+  <div class="hero-bg"></div>
+  <div class="hero-grain"></div>
+  <div class="hero-inner">
+    <div class="hero-text reveal">
+      <div class="hero-pill-row">
+        <span class="hero-pill"><span class="dot"></span>{{ sec.pill | safe }}</span>
+        <span class="hero-pill" id="socialProofPill" hidden></span>
+      </div>
+      <h1>{{ sec.headline | safe }}</h1>
+      <p class="deck">{{ sec.deck }}</p>
+      <div class="hero-ctas">
+        <a href="{{ sec.ctaPrimary.url }}" class="btn btn-primary magnetic">{{ sec.ctaPrimary.label }}</a>
+        <a href="{{ sec.ctaSecondary.url }}" class="btn btn-glass magnetic">{{ sec.ctaSecondary.label }}</a>
+      </div>
+      <p class="hero-trust">{% for t in sec.trust %}<span>&#10003; {{ t }}</span>{% endfor %}</p>
+    </div>
+    <aside class="book-card reveal reveal-delay-1">
+      <h3>{{ sec.cardTitle | safe }}</h3>
+      <div class="price-row">
+        <span class="price-from">From</span>
+        <div class="price" id="hb-price">{{ sec.priceFrom }}<span class="cur">&#8363;</span></div>
+        <span class="price-unit">{{ sec.priceUnit }}</span>
+      </div>
+      <form id="heroBook" class="book-form" novalidate>
+        <div class="book-row book-dates">
+          <button type="button" class="book-field" id="hb-ci-field"><span>Check in</span><span class="bf-date placeholder" id="hb-ci-disp">Add date</span></button>
+          <button type="button" class="book-field" id="hb-co-field"><span>Check out</span><span class="bf-date placeholder" id="hb-co-disp">Add date</span></button>
+          <input type="hidden" id="hb-ci" /><input type="hidden" id="hb-co" />
+          <div class="hb-cal" id="hb-cal" hidden></div>
+        </div>
+        <div class="book-row">
+          <div class="book-field bf-select" id="hb-guests-field">
+            <span>Guests</span>
+            <span class="bf-date" id="hb-guests-disp">2 guests</span>
+            <select id="hb-guests" class="hb-native" tabindex="-1" aria-hidden="true">
+              <option value="1">1 guest</option>
+              <option value="2" selected>2 guests</option>
+              <option value="3">3 guests</option>
+              <option value="4">4 guests</option>
+              <option value="5">5 guests</option>
+              <option value="6">6 guests</option>
+              <option value="7">7 guests</option>
+              <option value="8">8 guests</option>
+            </select>
+            <div class="hb-pop" id="hb-guests-pop" hidden></div>
+          </div>
+          <div class="book-field bf-select" id="hb-apt-field">
+            <span>Apartment</span>
+            <span class="bf-date" id="hb-apt-disp">Any size</span>
+            <select id="hb-apt" class="hb-native" tabindex="-1" aria-hidden="true">
+              <option value="">Any size</option>
+              <option value="XS">XS &middot; Compact Studio</option>
+              <option value="S">S &middot; Standard Studio</option>
+              <option value="M">M &middot; Spacious Apartment</option>
+              <option value="L">L &middot; Long-Stay Suite</option>
+            </select>
+            <div class="hb-pop" id="hb-apt-pop" hidden></div>
+          </div>
+        </div>
+        <button type="submit" class="book-submit">{{ sec.ctaPrimary.label }}</button>
+        <div class="book-trust">No account &middot; Free cancellation &middot; No payment until confirmed</div>
+      </form>
+    </aside>
+  </div>
+  <a href="#why" class="hero-scroll-hint" aria-label="Scroll to learn more">Scroll</a>
+</section>
+
+{#- Site-level function mount: booking bar logic hooks onto this -#}
+<div data-booking-bar></div>

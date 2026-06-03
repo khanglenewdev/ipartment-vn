@@ -1,0 +1,275 @@
+{
+  "_comment": "THE SECTION LIBRARY. Each section TYPE has several design VARIANTS. Same job, different composition. A page is built by picking one variant per section. 'goals' = which goals the variant serves best. 'niches' = ['all'] or specific. 'preview' = the id rendered live in the showcase. 'built' = a production template already exists in src/_includes/sections/. Variants are researched from best-in-class UI/UX, not invented.",
+  "items": [
+    {
+      "id": "hero",
+      "label": "Hero / above the fold",
+      "purpose": "The first thing a visitor sees. States the promise and offers the primary action. 57% of viewing time is spent above the fold.",
+      "variants": [
+        {
+          "id": "hero-split", "name": "Split hero with action card", "preview": "hero-split", "built": true,
+          "description": "Headline and copy on one side, a compact booking or quote widget docked on the other.",
+          "whenToUse": "Hospitality, F&B, clinics: anything where a reservation or enquiry is the primary action.",
+          "principle": "Puts the conversion action in prime real estate. Embedded booking widgets have lifted direct bookings 40%+ vs linking out.",
+          "source": "Mediaboom; HotelTechReport", "sourceUrl": "https://mediaboom.com/news/hotel-website-design-trends/",
+          "goals": ["convert-capture"], "niches": ["hospitality", "fnb", "clinic-health", "shop"]
+        },
+        {
+          "id": "hero-centered", "name": "Centered editorial hero", "preview": "hero-centered", "built": false,
+          "description": "One dominant headline, one sub-line, a single CTA, centered over a clean or photographic background.",
+          "whenToUse": "Personal brands, professional services, premium positioning where message clarity beats features.",
+          "principle": "One headline plus one CTA reduces hesitation. Clarity beats cleverness for skim-readers.",
+          "source": "Nielsen Norman Group; Omniconvert", "sourceUrl": "https://www.omniconvert.com/blog/hero-section-examples/",
+          "goals": ["earn-trust", "be-found"], "niches": ["personal-brand", "professional-services"]
+        },
+        {
+          "id": "hero-fullbleed", "name": "Full-bleed image / video overlay", "preview": "hero-fullbleed", "built": false,
+          "description": "Edge-to-edge background photo or video, headline and CTA overlaid, often with a floating action button.",
+          "whenToUse": "Hospitality, restaurants, lifestyle where atmosphere sells the experience.",
+          "principle": "Immersive visuals let visitors picture the experience before they commit; a persistent CTA captures intent throughout the scroll.",
+          "source": "Mediaboom; ionhospitality", "sourceUrl": "https://www.ionhospitality.com/2026/05/15/8-restaurant-website-must-haves-to-boost-bookings/",
+          "goals": ["convert-capture", "earn-trust"], "niches": ["hospitality", "fnb", "personal-brand"]
+        }
+      ]
+    },
+    {
+      "id": "value-props",
+      "label": "Value propositions / why us",
+      "purpose": "Answers 'why you' fast, inside the first 30 seconds. Designed for scanning, not reading (79% of users scan).",
+      "variants": [
+        {
+          "id": "vp-pillars", "name": "Three-pillar benefit grid", "preview": "vp-pillars", "built": true,
+          "description": "Three or four icon + short-headline + one-line columns directly under the hero.",
+          "whenToUse": "Almost any small business that needs to communicate differentiation fast.",
+          "principle": "Chunked, scannable trios match F-pattern skimming and deliver a 30-second elevator pitch.",
+          "source": "VWO; NN/G F-pattern", "sourceUrl": "https://vwo.com/blog/value-proposition-for-higher-conversion-rate/",
+          "goals": ["earn-trust"], "niches": ["all"]
+        },
+        {
+          "id": "vp-rows", "name": "Editorial numbered rows", "preview": "vp-rows", "built": true,
+          "description": "Benefits as a stacked, numbered editorial list instead of a tile grid.",
+          "whenToUse": "Brands with an editorial, calmer personality; longer benefit copy.",
+          "principle": "A vertical numbered rhythm reads as considered and premium, and gives each point room to breathe.",
+          "source": "Designmodo editorial layouts", "sourceUrl": "https://designmodo.com/magazine-blog-layouts/",
+          "goals": ["earn-trust"], "niches": ["all"]
+        },
+        {
+          "id": "vp-problem", "name": "Problem-to-outcome split", "preview": "vp-problem", "built": false,
+          "description": "Left side names the pain the customer has; right side shows the outcome you deliver.",
+          "whenToUse": "Clinics, professional services, B2B-leaning businesses.",
+          "principle": "Anchoring value to a specific pain and a measurable outcome resonates more than generic feature claims.",
+          "source": "FasterCapital value-proposition guide", "sourceUrl": "https://www.fastercapital.com/content/Conversion-Value-Proposition-and-USP-The-Ultimate-Guide-to-Creating-a-Conversion-Value-Proposition.html",
+          "goals": ["earn-trust", "convert-capture"], "niches": ["clinic-health", "professional-services"]
+        }
+      ]
+    },
+    {
+      "id": "features",
+      "label": "Feature / benefit detail",
+      "purpose": "Explains what is included, in depth, without losing the scanner.",
+      "variants": [
+        {
+          "id": "ft-zigzag", "name": "Alternating (zigzag) rows", "preview": "ft-zigzag", "built": false,
+          "description": "Stacked rows alternating image-left/text-right, then text-left/image-right.",
+          "whenToUse": "Sequential storytelling, services explained step by step, product detail.",
+          "principle": "The Z-motion mirrors natural scanning and the staggered rhythm sustains attention down a long scroll.",
+          "source": "SiteGround layout guide", "sourceUrl": "https://www.siteground.com/academy/website-layout/",
+          "goals": ["earn-trust"], "niches": ["all"]
+        },
+        {
+          "id": "ft-bento", "name": "Bento grid", "preview": "ft-bento", "built": false,
+          "description": "Modular grid of unequal cards; the largest card is the headline feature, smaller cards are secondary.",
+          "whenToUse": "Multi-feature offerings shown in parallel: multi-service businesses, shops, SaaS-like.",
+          "principle": "The largest block claims prime attention while peripheral cards capture the rest. Bento feature sections raised time-on-page ~31% in one study.",
+          "source": "Landdding; OneCodeSoft bento analysis", "sourceUrl": "https://landdding.com/blog/blog-bento-grid-design-guide",
+          "goals": ["earn-trust"], "niches": ["shop", "professional-services", "hospitality"]
+        },
+        {
+          "id": "ft-checklist", "name": "Feature checklist / spec block", "preview": "ft-checklist", "built": false,
+          "description": "Two-column list of capabilities with check icons, optionally beside a single visual.",
+          "whenToUse": "Clinics and services where 'what's included' must be unambiguous.",
+          "principle": "Checklists let prospects confirm coverage without endless scrolling, reducing uncertainty before the CTA.",
+          "source": "Webstacks; Crocoblock", "sourceUrl": "https://www.webstacks.com/blog/feature-section-design",
+          "goals": ["earn-trust"], "niches": ["clinic-health", "professional-services", "shop"]
+        }
+      ]
+    },
+    {
+      "id": "proof",
+      "label": "Social proof / trust",
+      "purpose": "Convinces a skeptic at a glance. Trust cues lift conversions 15-34%.",
+      "variants": [
+        {
+          "id": "pf-logobar", "name": "Logo / star-rating trust bar", "preview": "pf-logobar", "built": false,
+          "description": "Thin strip of partner or press logos, or an aggregate star rating, placed just under the hero.",
+          "whenToUse": "Any business; especially shops and clinics needing instant credibility.",
+          "principle": "Early trust signals establish credibility the moment users land.",
+          "source": "Trustmary trust signals", "sourceUrl": "https://trustmary.com/social-proof/trust-signals/",
+          "goals": ["earn-trust", "be-found"], "niches": ["all"]
+        },
+        {
+          "id": "pf-cards", "name": "Testimonial cards / carousel", "preview": "pf-cards", "built": true,
+          "description": "Rotating or grid of customer quotes with photo, name, and a specific result.",
+          "whenToUse": "Services, personal brands, hospitality.",
+          "principle": "Specific, attributable stories build trust where generic praise fails. Display a 4.0-4.7 rating, not a perfect 5.0, which reads as fake.",
+          "source": "Northwestern/Spiegel; testimonial.to", "sourceUrl": "https://spiegel.medill.northwestern.edu/how-online-reviews-influence-sales/",
+          "goals": ["earn-trust"], "niches": ["all"]
+        },
+        {
+          "id": "pf-undercta", "name": "Proof under the CTA", "preview": "pf-undercta", "built": false,
+          "description": "A short testimonial or customer-count line placed directly beneath a CTA button.",
+          "whenToUse": "Any conversion-critical CTA or form.",
+          "principle": "Reassurance at the decision point reduces friction. One company saw a 59% lift placing proof under CTAs.",
+          "source": "LanderLab; Hubstaff case", "sourceUrl": "https://landerlab.io/blog/social-proof-examples",
+          "goals": ["earn-trust", "convert-capture"], "niches": ["all"]
+        }
+      ]
+    },
+    {
+      "id": "pricing",
+      "label": "Pricing / offer",
+      "purpose": "Presents the offer so the decision is easy and the right option stands out.",
+      "variants": [
+        {
+          "id": "pr-tiers", "name": "Three tiers, highlighted middle", "preview": "pr-tiers", "built": false,
+          "description": "Three plan cards side by side, the middle one elevated and badged 'Most popular'.",
+          "whenToUse": "Productized services, memberships, bundles.",
+          "principle": "Goldilocks anchoring: customers pick the middle option ~65% of the time; highlighting lifts average order value 15-35%.",
+          "source": "Unbounce pricing study", "sourceUrl": "https://lollypop.design/blog/2025/may/saas-pricing-page-design/",
+          "goals": ["convert-capture"], "niches": ["professional-services", "shop", "hospitality"]
+        },
+        {
+          "id": "pr-single", "name": "Single offer panel", "preview": "pr-single", "built": false,
+          "description": "One prominent price or offer block with an inclusions checklist and one CTA.",
+          "whenToUse": "Personal brands, single-service providers, clinics with one headline package.",
+          "principle": "One clear offer with a 'what's included' list removes comparison paralysis and focuses the decision.",
+          "source": "Webstacks pricing practices", "sourceUrl": "https://www.webstacks.com/blog/pricing-page-design",
+          "goals": ["convert-capture"], "niches": ["personal-brand", "clinic-health", "professional-services"]
+        },
+        {
+          "id": "pr-table", "name": "Comparison table", "preview": "pr-table", "built": false,
+          "description": "Feature rows by plan columns with checkmarks; stacks to accordions on mobile.",
+          "whenToUse": "Multi-tier offerings where buyers genuinely compare features.",
+          "principle": "Side-by-side checklists make differences scannable; mobile stacking keeps CTAs visible.",
+          "source": "Crocoblock; InfluenceFlow", "sourceUrl": "https://ninjatables.com/pricing-table-design-examples/",
+          "goals": ["convert-capture"], "niches": ["professional-services", "shop"]
+        }
+      ]
+    },
+    {
+      "id": "faq",
+      "label": "FAQ",
+      "purpose": "Answers objections and feeds AEO. FAQ markup is ~3.2x more likely to appear in AI answers.",
+      "variants": [
+        {
+          "id": "faq-accordion", "name": "Accordion list", "preview": "faq-accordion", "built": false,
+          "description": "Vertical stack of collapsible question rows with a caret, full header clickable.",
+          "whenToUse": "Many short questions: the default for most small-business FAQs.",
+          "principle": "Collapsing reduces overwhelm and lets users prioritize; the caret matches expectations and aids mobile.",
+          "source": "Nielsen Norman Group accordions", "sourceUrl": "https://www.nngroup.com/topic/accordions/",
+          "goals": ["be-found", "earn-trust"], "niches": ["all"]
+        },
+        {
+          "id": "faq-twocol", "name": "Open two-column FAQ", "preview": "faq-twocol", "built": false,
+          "description": "All questions and answers visible in a two-column grid, nothing collapsed.",
+          "whenToUse": "Short FAQs (under ~6) or when uninterrupted reading matters.",
+          "principle": "NN/G warns against accordions when users need most of the content; hidden content gets forgotten.",
+          "source": "Nielsen Norman Group", "sourceUrl": "https://www.nngroup.com/articles/accordions-complex-content/",
+          "goals": ["be-found", "earn-trust"], "niches": ["all"]
+        }
+      ]
+    },
+    {
+      "id": "content",
+      "label": "Content / magazine teaser",
+      "purpose": "Owned content that ranks, demonstrates expertise, and feeds AEO.",
+      "variants": [
+        {
+          "id": "ct-featured", "name": "Featured + grid", "preview": "ct-featured", "built": false,
+          "description": "One large featured post plus a grid of smaller cards beside or below it.",
+          "whenToUse": "Sites with an active blog or news section.",
+          "principle": "Strong visual hierarchy signals the one to read first, then offers browse options, mirroring editorial curation.",
+          "source": "Designmodo magazine layouts", "sourceUrl": "https://designmodo.com/magazine-blog-layouts/",
+          "goals": ["be-found"], "niches": ["all"]
+        },
+        {
+          "id": "ct-cards", "name": "Uniform card grid", "preview": "ct-cards", "built": true,
+          "description": "Equal-size thumbnail cards, usually three across, with a 'View all' link.",
+          "whenToUse": "Quick, low-maintenance 'latest from the blog' teasers.",
+          "principle": "Equal cards assume parallel browsing: clean and scannable for visitors who jump around.",
+          "source": "Figma community card-grid pattern", "sourceUrl": "https://designmodo.com/magazine-blog-layouts/",
+          "goals": ["be-found"], "niches": ["all"]
+        }
+      ]
+    },
+    {
+      "id": "location",
+      "label": "Location / contact",
+      "purpose": "Helps people find and reach you, and supports local SEO. 76% who search a local business on mobile visit within 24h.",
+      "variants": [
+        {
+          "id": "loc-split", "name": "Split: details + map", "preview": "loc-split", "built": true,
+          "description": "Address, hours and phone in text on one side, a lazy-loaded map on the other.",
+          "whenToUse": "Single-location local businesses.",
+          "principle": "A clear map plus text address aids both users and local SEO. Lazy-load the map for Core Web Vitals.",
+          "source": "ScaleBloom; Hurrdat", "sourceUrl": "https://www.scalebloom.com/blog/multi-location-website-design/",
+          "goals": ["be-found"], "niches": ["all"]
+        },
+        {
+          "id": "loc-card", "name": "Contact card + form", "preview": "loc-card", "built": false,
+          "description": "Phone, hours, and a short form or 'Book now' placed high, no scrolling needed.",
+          "whenToUse": "F&B, clinics, walk-in or call-driven businesses.",
+          "principle": "Highlighting contact above the fold removes the search step; F/Z layout guides the eye to the action.",
+          "source": "Mos Web Design local guide", "sourceUrl": "https://moswebdesign.com/articles/local-business-website-design/",
+          "goals": ["be-found", "convert-capture"], "niches": ["clinic-health", "fnb", "professional-services"]
+        }
+      ]
+    },
+    {
+      "id": "cta",
+      "label": "Final CTA / conversion strip",
+      "purpose": "The last conversion attempt before exit.",
+      "variants": [
+        {
+          "id": "cta-banner", "name": "Full-width focused banner", "preview": "cta-banner", "built": true,
+          "description": "Edge-to-edge contrasting band, one headline, one button, lots of whitespace.",
+          "whenToUse": "The closing section of nearly any page.",
+          "principle": "A single prominent CTA with no competing links is the last attempt before exit; contrast and whitespace draw the eye.",
+          "source": "Unbounce CTA examples", "sourceUrl": "https://unbounce.com/conversion-rate-optimization/call-to-action-examples/",
+          "goals": ["convert-capture"], "niches": ["all"]
+        },
+        {
+          "id": "cta-reassure", "name": "Reassurance CTA", "preview": "cta-reassure", "built": false,
+          "description": "CTA button paired with a trust line, guarantee, or mini-testimonial directly beneath.",
+          "whenToUse": "Higher-friction offers: clinics, paid services, checkout entry.",
+          "principle": "Pairing the ask with proof or a risk-reducer at the decision point cuts hesitation.",
+          "source": "Unbounce; LanderLab", "sourceUrl": "https://landerlab.io/blog/social-proof-examples",
+          "goals": ["convert-capture", "earn-trust"], "niches": ["clinic-health", "professional-services", "shop"]
+        }
+      ]
+    },
+    {
+      "id": "capture",
+      "label": "Lead capture block",
+      "purpose": "Turns an anonymous visitor into an owned contact. The job is to not lose the people who were interested but not ready today.",
+      "variants": [
+        {
+          "id": "cap-inline", "name": "Inline one-step capture", "preview": "cap-inline", "built": false,
+          "description": "A short, single-step form (name + email or phone) with a reason line and reassurance microcopy.",
+          "whenToUse": "Newsletter, guide download, simple enquiry.",
+          "principle": "Fewest fields wins. Phone is the most abandonment-prone field, so make it optional and say why.",
+          "source": "Baymard; form studies", "sourceUrl": "https://baymard.com/blog/ecommerce-checkout-usability-report-and-benchmark",
+          "goals": ["convert-capture", "understand-customer"], "niches": ["all"]
+        },
+        {
+          "id": "cap-convo", "name": "Conversational one-question capture", "preview": "cap-convo", "built": false,
+          "description": "Asks one question at a time, chat-style, easiest thing first, phone offered not demanded.",
+          "whenToUse": "Quote flows and anything past three fields.",
+          "principle": "One-question-at-a-time capture collects several times more contacts than a static form; each tiny step feels easy.",
+          "source": "Multi-step lead form studies", "sourceUrl": "https://ventureharbour.com/multi-step-lead-forms-get-300-conversions/",
+          "goals": ["convert-capture", "understand-customer"], "niches": ["all"]
+        }
+      ]
+    }
+  ]
+}

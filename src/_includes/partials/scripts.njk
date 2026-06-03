@@ -1,0 +1,18 @@
+{#- ============================================================
+    SITE-LEVEL FUNCTIONS: the script stack. Shared scripts load on
+    every page; the page's own script loads if front matter sets
+    `pageScript`. These are the moat functions: analytics, capture,
+    chatbot, finder.
+    ============================================================ -#}
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/booking-widget.js"></script>
+<script src="assets/js/advanced.js"></script>
+{% if pageScript %}<script src="assets/js/{{ pageScript }}"></script>{% endif %}
+<script src="assets/js/chatbot/fuse.min.js"></script>
+<script src="assets/js/chatbot/chatbot-engine.js"></script>
+<script src="assets/js/chatbot/chatbot-capture.js"></script>
+<script src="assets/js/chatbot/chatbot-ui.js"></script>
+<script src="assets/js/finder/finder-quiz.js"></script>

@@ -1,0 +1,74 @@
+{#- ============================================================
+    LAYER 7 (technical SEO/AEO scaffolding).
+    The SHAPE of this structured data is standardized and reused
+    for every hospitality client. The VALUES come from brand.json
+    and property.json. Swap those two files and the schema is
+    correct for the next property.
+    ============================================================ -#}
+  <!-- Brand entity: Organization + WebSite -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@graph": [
+      {
+        "@type": "Organization",
+        "@id": "{{ site.domain }}/#organization",
+        "name": "{{ brand.legalName }}",
+        "url": "{{ site.domain }}/",
+        "logo": "{{ property.logo }}",
+        "description": "{{ property.orgDescription }}",
+        "email": "{{ brand.contact.email }}",
+        "telephone": "{{ brand.contact.phone }}",
+        "sameAs": [
+          "{{ brand.contact.facebook }}"
+        ]
+      },
+      {
+        "@type": "WebSite",
+        "@id": "{{ site.domain }}/#website",
+        "url": "{{ site.domain }}/",
+        "name": "{{ brand.legalName }}",
+        "publisher": { "@id": "{{ site.domain }}/#organization" }
+      }
+    ]
+  }
+  </script>
+
+  <!-- The property itself -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "{{ property.type }}",
+    "@id": "{{ site.domain }}/#hotel",
+    "name": "{{ brand.legalName }}",
+    "description": "{{ property.description }}",
+    "url": "{{ site.domain }}/",
+    "image": [{% for img in property.images %}"{{ img | safe }}"{% if not loop.last %}, {% endif %}{% endfor %}],
+    "brand": { "@id": "{{ site.domain }}/#organization" },
+    "address": {
+      "@type": "PostalAddress",
+      "streetAddress": "{{ property.address.streetAddress }}",
+      "addressLocality": "{{ property.address.addressLocality }}",
+      "addressRegion": "{{ property.address.addressRegion }}",
+      "addressCountry": "{{ property.address.addressCountry }}"
+    },
+    "geo": {
+      "@type": "GeoCoordinates",
+      "latitude": {{ property.geo.latitude }},
+      "longitude": {{ property.geo.longitude }}
+    },
+    "priceRange": "{{ property.priceRange }}",
+    "currenciesAccepted": "{{ property.currenciesAccepted }}",
+    "checkinTime": "{{ property.checkinTime }}",
+    "checkoutTime": "{{ property.checkoutTime }}",
+    "petsAllowed": "{{ property.petsAllowed }}",
+    "numberOfRooms": {{ property.numberOfRooms }},
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "{{ property.aggregateRating.ratingValue }}",
+      "ratingCount": "{{ property.aggregateRating.ratingCount }}",
+      "bestRating": "{{ property.aggregateRating.bestRating }}"
+    },
+    "amenityFeature": [{% for a in property.amenities %}{ "@type": "LocationFeatureSpecification", "name": "{{ a }}", "value": true }{% if not loop.last %}, {% endif %}{% endfor %}]
+  }
+  </script>

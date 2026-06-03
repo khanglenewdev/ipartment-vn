@@ -1,0 +1,34 @@
+{#- ============================================================
+    THE PAGE SHELL (site-level machine).
+    Every page is wrapped in this. It builds the <head>, drops in
+    the site-level chrome (nav, footer, sticky bar, scripts) that
+    is identical on every page, and pours the page's own sections
+    into the middle. Written once. Reused by every page.
+    ============================================================ -#}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+{% include "partials/head.njk" %}
+</head>
+<body class="{{ bodyClass or 'has-header lg' }}">
+
+{% include "partials/header.njk" %}
+
+{{ content | safe }}
+
+{% include "partials/footer.njk" %}
+
+{#- Site-level function: persistent mobile booking bar -#}
+<div class="sticky-book-bar" id="stickyBookBar" data-sticky-mode="browse" aria-hidden="true">
+  <div class="sticky-book-price">
+    <span class="sticky-book-from">From</span>
+    <strong id="stickyBookAmount">1,200,000 VND / night</strong>
+  </div>
+  <a href="booking.html" class="btn btn-primary sticky-book-cta">Check my dates</a>
+</div>
+
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+{% include "partials/scripts.njk" %}
+</body>
+</html>

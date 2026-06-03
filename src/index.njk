@@ -1,0 +1,40 @@
+---
+layout: layouts/base.njk
+permalink: index.html
+title: "ipartment Vietnam - Premium Serviced Apartments in Thao Dien, Ho Chi Minh City"
+description: "ipartment Vietnam. Your second home in Thao Dien, District 2, Ho Chi Minh City. Premium designed serviced apartments, flexible stays from 1 night to 6 months."
+ogTitle: "ipartment Vietnam - Premium Serviced Apartments in Thao Dien"
+ogDescription: "Your second home in Thao Dien, District 2, Ho Chi Minh City. Premium serviced apartments, flexible stays from 1 night to 6 months."
+bodyClass: "has-header lg"
+pageCss: "pages/home.css"
+pageScript: "pages/home.js"
+preloadImage: "https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=1800&q=80"
+
+# ===========================================================
+# THE PAGE SKELETON (Layer 4).
+# A page is just an ordered list of sections. Each line says which
+# block of content (key, from home.json) and which design template
+# renders it. Reorder lines to reorder the page. Delete a line to
+# remove a section. Add a line to add one.
+#
+# PROOF-OF-CONCEPT: change the `usp` template below from
+#   sections/usp.njk   (tile grid)
+# to
+#   sections/usp-rows.njk   (editorial numbered list)
+# rebuild, and the section redesigns with the same words.
+# ===========================================================
+sections:
+  - { key: hero,      template: "sections/hero/a.njk" }
+  - { key: usp,       template: "sections/usp.njk" }
+  - { key: finder,    template: "sections/finder.njk" }
+  - { key: rooms,     template: "sections/rooms.njk" }
+  - { key: reviews,   template: "sections/reviews.njk" }
+  - { key: corporate, template: "sections/corporate.njk" }
+  - { key: location,  template: "sections/location.njk" }
+  - { key: magazine,  template: "sections/magazine.njk" }
+  - { key: cta,       template: "sections/cta.njk" }
+---
+{% for s in sections %}
+{% set sec = home[s.key] %}
+{% include s.template %}
+{% endfor %}
