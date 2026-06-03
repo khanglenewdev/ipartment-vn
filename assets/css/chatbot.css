@@ -1,0 +1,215 @@
+/* ============================================================
+   ipartment chatbot widget - Liquid Glass styling
+   Built from the site's existing tokens (assets/css/main.css :root)
+   so it looks native. No em dashes or en dashes anywhere.
+   ============================================================ */
+
+/* ---- launcher (bottom-right floating button) ---- */
+.ipc-launcher {
+  position: fixed; right: 22px; bottom: 22px; z-index: 90000;
+  width: 58px; height: 58px; border-radius: 50%; cursor: pointer;
+  border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18));
+  background: linear-gradient(150deg, var(--terracotta, #d8613c), #b94a28);
+  color: #fff; display: flex; align-items: center; justify-content: center;
+  box-shadow: 0 10px 30px rgba(0,0,0,0.4), 0 0 0 0 rgba(216,97,60,0.5);
+  transition: transform 0.25s var(--ease, cubic-bezier(0.16,1,0.3,1)), box-shadow 0.25s;
+}
+.ipc-launcher:hover { transform: translateY(-2px) scale(1.05); box-shadow: 0 14px 36px rgba(0,0,0,0.5); }
+.ipc-launcher:active { transform: scale(0.97); }
+.ipc-launcher svg { width: 26px; height: 26px; display: block; }
+.ipc-launcher .ipc-ic { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
+.ipc-launcher .ipc-face { width: 86%; height: 86%; object-fit: contain; display: block; pointer-events: none; }
+.ipc-launcher.ipc-face-mode { background: radial-gradient(circle at 50% 42%, #fff7e2, #ffe6b0); border-color: rgba(180,120,40,0.45); }
+.ipc-launcher.ipc-open-state { background: linear-gradient(150deg, #3a2a24, #2a1d18); }
+/* attention pulse ring (shown until first open) */
+.ipc-launcher.ipc-pulse::after {
+  content: ''; position: absolute; inset: -3px; border-radius: 50%;
+  border: 2px solid var(--terracotta, #d8613c); opacity: 0; pointer-events: none;
+  animation: ipcPulse 2.4s ease-out infinite;
+}
+@keyframes ipcPulse { 0% { transform: scale(1); opacity: 0.6; } 70%, 100% { transform: scale(1.35); opacity: 0; } }
+/* unread dot for the proactive nudge */
+.ipc-dot {
+  position: absolute; top: 2px; right: 3px; width: 13px; height: 13px; border-radius: 50%;
+  background: var(--yellow, #ffed00); border: 2px solid #b94a28; display: none;
+}
+.ipc-launcher.ipc-has-nudge .ipc-dot { display: block; }
+
+/* ---- proactive nudge bubble ---- */
+.ipc-nudge {
+  position: fixed; right: 22px; bottom: 90px; z-index: 89999; max-width: 230px;
+  background: var(--glass-base-strong, rgba(20,18,16,0.7)); color: #fff;
+  backdrop-filter: blur(var(--blur-lg, 18px)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-lg, 18px)) saturate(180%);
+  border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18)); border-radius: 16px 16px 4px 16px;
+  padding: 13px 16px; font-family: var(--font-body, system-ui); font-size: 13.5px; line-height: 1.45;
+  box-shadow: var(--shadow-glass-md, 0 12px 32px rgba(0,0,0,0.4));
+  opacity: 0; transform: translateY(8px); transition: opacity 0.3s, transform 0.3s; cursor: pointer;
+}
+.ipc-nudge.show { opacity: 1; transform: translateY(0); }
+.ipc-nudge .ipc-nudge-x { position: absolute; top: 4px; right: 7px; background: none; border: none; color: rgba(255,255,255,0.5); font-size: 15px; cursor: pointer; line-height: 1; }
+
+/* ---- panel ---- */
+.ipc-panel {
+  position: fixed; right: 22px; bottom: 92px; z-index: 90001;
+  width: 380px; max-width: calc(100vw - 36px); height: 580px; max-height: calc(100vh - 130px);
+  display: flex; flex-direction: column; overflow: hidden;
+  background: var(--glass-base-strong, rgba(20,18,16,0.72));
+  backdrop-filter: blur(var(--blur-xl, 30px)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-xl, 30px)) saturate(180%);
+  border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18)); border-radius: 22px;
+  box-shadow: var(--shadow-glass-lg, 0 30px 70px rgba(0,0,0,0.55));
+  opacity: 0; transform: translateY(16px) scale(0.97); transform-origin: bottom right;
+  transition: opacity 0.3s var(--ease, ease), transform 0.35s var(--ease, ease);
+  pointer-events: none;
+}
+.ipc-panel.open { opacity: 1; transform: translateY(0) scale(1); pointer-events: auto; }
+
+/* ---- header ---- */
+.ipc-head {
+  flex: 0 0 auto; display: flex; align-items: center; gap: 11px;
+  padding: 15px 16px 14px; border-bottom: 1px solid var(--glass-border, rgba(255,255,255,0.1));
+  background: linear-gradient(180deg, rgba(216,97,60,0.18), transparent);
+}
+.ipc-avatar {
+  width: 38px; height: 38px; border-radius: 50%; flex-shrink: 0; overflow: hidden;
+  background: linear-gradient(150deg, var(--terracotta, #d8613c), #b94a28);
+  display: flex; align-items: center; justify-content: center; color: #fff; font-size: 18px;
+}
+.ipc-avatar .ipc-face { width: 100%; height: 100%; object-fit: cover; display: block; }
+.ipc-head-titles { flex: 1 1 auto; min-width: 0; }
+.ipc-head-titles .ipc-name { font-family: var(--font-heading, serif); font-size: 16px; font-weight: 600; color: #fff; line-height: 1.1; }
+.ipc-head-titles .ipc-sub { font-family: var(--font-mono, monospace); font-size: 9.5px; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 2px; display: flex; align-items: center; gap: 5px; }
+.ipc-head-titles .ipc-sub::before { content: ''; width: 6px; height: 6px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 6px #4ade80; }
+.ipc-lang {
+  flex-shrink: 0; display: inline-flex; border: 1px solid var(--glass-border, rgba(255,255,255,0.14));
+  border-radius: 999px; overflow: hidden; font-family: var(--font-mono, monospace); font-size: 10px; font-weight: 600;
+}
+.ipc-lang button { background: none; border: none; color: rgba(255,255,255,0.55); padding: 5px 9px; cursor: pointer; letter-spacing: 0.05em; transition: background 0.15s, color 0.15s; }
+.ipc-lang button.active { background: var(--yellow, #ffed00); color: #0a0a0a; }
+.ipc-close {
+  flex-shrink: 0; width: 32px; height: 32px; border-radius: 50%; border: none; cursor: pointer;
+  background: rgba(255,255,255,0.1); color: #fff; font-size: 18px; line-height: 1;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.ipc-close:hover { background: rgba(255,255,255,0.2); }
+
+/* ---- scroll / message area ---- */
+.ipc-scroll {
+  flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain;
+  padding: 16px 14px 8px; display: flex; flex-direction: column; gap: 10px;
+}
+.ipc-msg {
+  max-width: 84%; padding: 10px 13px; font-family: var(--font-body, system-ui); font-size: 13.5px; line-height: 1.5;
+  border-radius: 15px; white-space: pre-wrap; word-wrap: break-word; animation: ipcIn 0.28s var(--ease, ease) both;
+}
+.ipc-msg.bot { align-self: flex-start; background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border, rgba(255,255,255,0.1)); color: rgba(255,255,255,0.92); border-bottom-left-radius: 5px; }
+.ipc-msg.user { align-self: flex-end; background: var(--yellow, #ffed00); color: #1a1a08; font-weight: 500; border-bottom-right-radius: 5px; }
+.ipc-msg a { color: var(--yellow, #ffed00); text-decoration: underline; }
+.ipc-msg.user a { color: #5a4a00; }
+@keyframes ipcIn { from { opacity: 0; transform: translateY(6px); } to { opacity: 1; transform: translateY(0); } }
+
+/* chips (topics, questions, related, quick replies) */
+.ipc-chips { display: flex; flex-wrap: wrap; gap: 7px; align-self: stretch; animation: ipcIn 0.28s var(--ease, ease) both; }
+/* suggestion chips are a light yellow tone so they read as tappable prompts,
+   clearly distinct from the grey bot bubbles and the solid-yellow user bubbles */
+.ipc-chip {
+  background: rgba(255,237,0,0.1); border: 1px solid rgba(255,237,0,0.34); color: #ffe98c;
+  font-family: var(--font-body, system-ui); font-size: 12.5px; line-height: 1.3; text-align: left;
+  padding: 8px 12px; border-radius: 13px; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+}
+.ipc-chip:hover { background: rgba(255,237,0,0.2); border-color: var(--yellow, #ffed00); color: #fff8cc; }
+.ipc-chip:active { transform: scale(0.97); }
+/* secondary chips (Back to topics, Talk to a human) stay quiet and grey so the
+   yellow suggestion chips are visually the primary thing to tap */
+.ipc-chip.ipc-back { background: rgba(255,255,255,0.05); border-color: var(--glass-border, rgba(255,255,255,0.12)); color: rgba(255,255,255,0.6); font-family: var(--font-mono, monospace); font-size: 11px; letter-spacing: 0.04em; }
+.ipc-chip.ipc-back:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); color: #fff; }
+.ipc-chip.ipc-topic { font-weight: 600; }
+
+/* primary CTA button under an answer */
+.ipc-cta {
+  align-self: flex-start; display: inline-flex; align-items: center; gap: 7px;
+  background: var(--yellow, #ffed00); color: #0a0a0a; border: none; cursor: pointer;
+  font-family: var(--font-mono, monospace); font-size: 11.5px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 10px 16px; border-radius: 11px; transition: transform 0.15s, box-shadow 0.15s; text-decoration: none;
+  animation: ipcIn 0.28s var(--ease, ease) both;
+}
+.ipc-cta:hover { transform: translateY(-1px); box-shadow: 0 6px 18px rgba(255,237,0,0.3); }
+.ipc-cta.terracotta { background: var(--terracotta, #d8613c); color: #fff; }
+
+/* typing indicator */
+.ipc-typing { align-self: flex-start; display: flex; gap: 4px; padding: 12px 14px; background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border, rgba(255,255,255,0.1)); border-radius: 15px; border-bottom-left-radius: 5px; }
+.ipc-typing span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.5); animation: ipcBounce 1.2s infinite; }
+.ipc-typing span:nth-child(2) { animation-delay: 0.18s; }
+.ipc-typing span:nth-child(3) { animation-delay: 0.36s; }
+@keyframes ipcBounce { 0%, 60%, 100% { transform: translateY(0); opacity: 0.5; } 30% { transform: translateY(-5px); opacity: 1; } }
+
+/* inline capture field (one question at a time) */
+.ipc-capture { align-self: stretch; display: flex; gap: 7px; animation: ipcIn 0.28s var(--ease, ease) both; }
+.ipc-capture input {
+  flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,0.06); border: 1.5px solid var(--glass-border-hi, rgba(255,255,255,0.16));
+  color: #fff; font-family: var(--font-body, system-ui); font-size: 13.5px; padding: 10px 13px; border-radius: 12px;
+}
+.ipc-capture input::placeholder { color: rgba(255,255,255,0.4); }
+.ipc-capture input:focus { outline: none; border-color: var(--yellow, #ffed00); }
+.ipc-capture button { flex-shrink: 0; background: var(--yellow, #ffed00); color: #0a0a0a; border: none; cursor: pointer; font-weight: 700; padding: 0 15px; border-radius: 12px; font-size: 13px; }
+.ipc-privacy { align-self: flex-start; font-size: 10.5px; color: rgba(255,255,255,0.45); line-height: 1.4; max-width: 90%; }
+.ipc-privacy a { color: rgba(255,255,255,0.7); }
+
+/* ---- input bar ---- */
+.ipc-input { flex: 0 0 auto; display: flex; gap: 8px; padding: 11px 13px 13px; border-top: 1px solid var(--glass-border, rgba(255,255,255,0.1)); }
+.ipc-input input {
+  flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,0.06); border: 1.5px solid var(--glass-border, rgba(255,255,255,0.12));
+  color: #fff; font-family: var(--font-body, system-ui); font-size: 13.5px; padding: 11px 14px; border-radius: 13px;
+}
+.ipc-input input::placeholder { color: rgba(255,255,255,0.4); }
+.ipc-input input:focus { outline: none; border-color: var(--terracotta, #d8613c); }
+.ipc-input input:disabled { opacity: 0.5; }
+.ipc-send {
+  flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer;
+  background: var(--yellow, #ffed00); color: #0a0a0a; display: flex; align-items: center; justify-content: center;
+  transition: transform 0.15s, background 0.15s;
+}
+.ipc-send:hover { transform: scale(1.06); }
+.ipc-send:disabled { background: rgba(255,255,255,0.15); color: rgba(255,255,255,0.4); cursor: default; transform: none; }
+.ipc-send svg { width: 18px; height: 18px; }
+
+/* lift the existing back-to-top button so it never sits under the launcher */
+body .back-to-top { bottom: 90px; }
+
+/* ---- mobile ---- */
+@media (max-width: 560px) {
+  /* The launcher hides while the panel is open (close via the header X), so the
+     panel can use almost the whole screen with nothing peeking out under it,
+     and the closed launcher never overlaps a page button. */
+  .ipc-panel {
+    left: 10px; right: 10px; top: 56px; bottom: 14px;
+    width: auto; max-width: none; height: auto; max-height: none; border-radius: 20px;
+  }
+  body.ipc-chat-open .ipc-launcher { display: none; }
+  .ipc-launcher { right: 16px; bottom: 16px; width: 54px; height: 54px; }
+  .ipc-nudge { right: 16px; bottom: 80px; max-width: calc(100vw - 84px); }
+  body .back-to-top { bottom: 80px; }
+
+  /* roomier and easier to tap: larger type, more breathing room, no cramping */
+  .ipc-head { padding: 14px 14px 13px; }
+  .ipc-scroll { padding: 16px 13px 10px; gap: 12px; }
+  .ipc-msg { max-width: 88%; font-size: 14.5px; padding: 11px 14px; line-height: 1.5; }
+  .ipc-chips { gap: 8px; }
+  .ipc-chip { font-size: 13.5px; padding: 11px 14px; border-radius: 14px; }
+  .ipc-cta { font-size: 12.5px; padding: 13px 18px; }
+  .ipc-input { padding: 12px 12px calc(12px + env(safe-area-inset-bottom, 0px)); gap: 9px; }
+  .ipc-input input, .ipc-capture input { font-size: 16px; padding: 12px 14px; } /* 16px avoids iOS zoom-on-focus */
+  .ipc-send { width: 46px; height: 46px; }
+}
+
+/* ---- accessibility ---- */
+@media (prefers-reduced-motion: reduce) {
+  .ipc-launcher.ipc-pulse::after, .ipc-typing span { animation: none; }
+  .ipc-msg, .ipc-chips, .ipc-cta, .ipc-capture { animation: none; }
+  .ipc-panel { transition: opacity 0.2s; }
+}
+@media (prefers-reduced-transparency: reduce) {
+  .ipc-panel, .ipc-nudge { background: #1a1512; backdrop-filter: none; -webkit-backdrop-filter: none; }
+}
+.ipc-launcher:focus-visible, .ipc-chip:focus-visible, .ipc-close:focus-visible, .ipc-send:focus-visible, .ipc-cta:focus-visible, .ipc-lang button:focus-visible {
+  outline: 2px solid var(--yellow, #ffed00); outline-offset: 2px;
+}

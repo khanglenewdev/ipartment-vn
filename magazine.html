@@ -1,174 +1,188 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Magazine – ipartment Vietnam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
-  <style>
-    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:var(--font-body);color:var(--black);background:var(--white);}
-    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
-    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
-    .logo span{color:var(--yellow);}
-    nav{display:flex;align-items:center;gap:32px;}
-    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
-    nav a:hover,nav a.active{color:var(--yellow);}
-    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
-    .tag{display:inline-block;background:var(--yellow);color:var(--black);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;}
-    footer{background:var(--black);color:var(--white);padding:80px 80px 40px;}
-    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;}
-    .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;}
-    .footer-col h5{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;}
-    .footer-col ul{list-style:none;}
-    .footer-col ul li{margin-bottom:10px;}
-    .footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;}
-    .footer-col ul li a:hover{color:var(--white);}
-    .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);}
-    .footer-bottom a{color:rgba(255,255,255,0.32);text-decoration:none;}
-    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}.footer-grid{grid-template-columns:1fr;}}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Magazine - ipartment Vietnam</title>
+  <meta name="description" content="Real articles, guides and news about Thao Dien, Ho Chi Minh City and Vietnam hospitality." />
+  <link rel="canonical" href="https://ipartment.vn/magazine.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ipartment Vietnam" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="Magazine - Life in Thao Dien - ipartment Vietnam" />
+  <meta property="og:description" content="Real articles, guides and news about Thao Dien, Ho Chi Minh City and Vietnam hospitality." />
+  <meta property="og:url" content="https://ipartment.vn/magazine.html" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1200&h=630&fit=crop&q=80" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="Thao Dien, Ho Chi Minh City" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="Magazine - Life in Thao Dien - ipartment Vietnam" />
+  <meta name="twitter:description" content="Real articles, guides and news about Thao Dien and Vietnam hospitality." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1583417319070-4a69db38a482?w=1200&h=630&fit=crop&q=80" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ipartment.vn/" },
+      { "@type": "ListItem", "position": 2, "name": "Magazine", "item": "https://ipartment.vn/magazine.html" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/advanced.css" />
+  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
+  <link rel="stylesheet" href="assets/css/pages/magazine.css" />
+  <link rel="stylesheet" href="assets/css/chatbot.css" />
+  <link rel="stylesheet" href="assets/css/finder.css" />
 </head>
-<body>
-<header>
-  <a href="index.html" class="logo">i<span>partment</span></a>
-  <nav>
-    <a href="about.html">About</a>
-    <a href="accommodation.html">Accommodation</a>
-    <a href="magazine.html" class="active">Magazine</a>
-    <a href="career.html">Career</a>
-    <a href="faq.html">FAQ</a>
-    <a href="my-account.html">My Account</a>
-    <a href="booking.html" class="nav-cta">Book a Stay</a>
-  </nav>
+<body class="has-header lg">
+
+<header class="site-header">
+  <div class="site-header-main">
+    <a href="index.html" class="logo">i<span>partment</span></a>
+    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+    <nav class="site-nav">
+      <a href="about.html">About</a>
+      <a href="accommodation.html">Accommodation</a>
+      <a href="magazine.html" class="active">Magazine</a>
+      <a href="career.html">Career</a>
+      <a href="faq.html">FAQ</a>
+      <a href="my-account.html">My Account</a>
+      <a href="admin.html">Admin</a>
+      <a href="booking.html" class="nav-cta">Book my stay</a>
+    </nav>
+  </div>
+  <div class="site-header-edu">For educational purposes only</div>
 </header>
 
-<div style="margin-top:72px;background:var(--black);min-height:480px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;">
-  <div style="padding:96px 80px 80px;display:flex;flex-direction:column;justify-content:center;">
-    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.8);margin-bottom:16px;">ipartment Magazine</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,68px);font-weight:900;color:var(--white);line-height:1.1;max-width:700px;">Live better<br/><span style="color:var(--yellow);">in Saigon.</span></h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.68);max-width:520px;margin-top:20px;line-height:1.75;">Local guides, upcoming events, business insights and news & promos — everything you need to get the most out of life in Thao Dien.</p>
+<section class="page-hero" style="padding:0;">
+  <div class="page-hero-text">
+    <span class="page-hero-eyebrow reveal">ipartment Magazine</span>
+    <h1 class="reveal reveal-delay-1">Live better<br/><span class="accent">in Saigon.</span></h1>
+    <p class="reveal reveal-delay-2">Real articles and news from credible publications. Local guides, business insights and event updates curated by our team in Thao Dien.</p>
+    <p class="reveal reveal-delay-3" style="margin-top:14px;font-size:12px;letter-spacing:0.08em;text-transform:uppercase;color:rgba(255,237,0,0.75);font-weight:600;">Curated by the ipartment Vietnam team &middot; Updated June 2026</p>
   </div>
-  <div style="background:url('https://images.unsplash.com/photo-1559825481-12a05cc00344?w=900&q=80') center/cover no-repeat;position:relative;">
-    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.45),transparent);"></div>
+  <div class="page-hero-img page-hero-img-zoom" style="background-image:url('https://images.unsplash.com/photo-1559825481-12a05cc00344?w=1200&q=80');"></div>
+</section>
+
+<div class="cat-nav">
+  <button data-cat="all" class="active">All Articles</button>
+  <button data-cat="featured">Featured</button>
+  <button data-cat="local">Local Guide</button>
+  <button data-cat="regional">Regional</button>
+  <button data-cat="business">Business</button>
+  <button data-cat="news">News</button>
+</div>
+
+<section class="paper-section mag-search-section">
+  <div class="mag-search">
+    <input type="search" id="mag-search" placeholder="Search articles by topic, keyword..." />
   </div>
-</div>
+</section>
 
-<!-- CATEGORY FILTERS -->
-<div style="background:var(--white);border-bottom:1px solid #eee;padding:0 80px;display:flex;gap:0;">
-  <a href="#local" style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--black);text-decoration:none;padding:20px 28px 18px;border-bottom:3px solid var(--black);">Local Guide</a>
-  <a href="#events" style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);text-decoration:none;padding:20px 28px 18px;border-bottom:3px solid transparent;">Upcoming Events</a>
-  <a href="#business" style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);text-decoration:none;padding:20px 28px 18px;border-bottom:3px solid transparent;">Business</a>
-  <a href="#promos" style="font-size:12px;font-weight:700;letter-spacing:0.12em;text-transform:uppercase;color:var(--gray-mid);text-decoration:none;padding:20px 28px 18px;border-bottom:3px solid transparent;">News & Promos</a>
-</div>
+<section id="featured-section" class="paper-section mag-featured-section">
+  <span class="section-eyebrow reveal">Featured</span>
+  <h2 class="section-title reveal reveal-delay-1 mag-featured-title">Feature.</h2>
+  <div id="featured-slot"></div>
+</section>
 
-<!-- MAIN FEATURED POST — ipartment Launch -->
-<div id="local" style="padding:80px 80px 0;">
-  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:24px;">Featured</span>
-  <a href="https://www.facebook.com/share/p/1Lv3J4DqbS/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;display:block;">
-    <div style="display:grid;grid-template-columns:1fr 1fr;gap:0;background:var(--black);overflow:hidden;min-height:480px;">
-      <div style="background:url('https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=900&q=80') center/cover no-repeat;min-height:400px;"></div>
-      <div style="padding:56px 56px;display:flex;flex-direction:column;justify-content:center;">
-        <span style="display:inline-block;background:var(--yellow);color:var(--black);font-size:10px;font-weight:700;letter-spacing:0.14em;text-transform:uppercase;padding:4px 10px;margin-bottom:20px;width:fit-content;">News &amp; Promos</span>
-        <h2 style="font-family:'Playfair Display',serif;font-size:clamp(26px,3vw,40px);font-weight:900;color:var(--white);line-height:1.2;margin-bottom:20px;">Hello Saigon — ipartment Has Officially Landed in Thao Dien</h2>
-        <p style="font-size:15px;color:rgba(255,255,255,0.72);line-height:1.8;margin-bottom:28px;">We are live. After months of building, ipartment Vietnam has officially opened its doors in the hottest spot of Thao Dien. If you are looking for a living space that blends hotel-level comfort with the warmth of home — inspired by modern European living and proudly rooted in Germany — this is it. Fully furnished studios and apartments. Hotel services. Flexible stays. A community that actually feels like yours.</p>
-        <div style="display:flex;align-items:center;gap:16px;">
-          <span style="font-size:11px;color:rgba(255,255,255,0.4);font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">May 2026 · ipartment Team</span>
-          <span style="display:inline-flex;align-items:center;gap:6px;font-size:12px;font-weight:700;color:var(--yellow);letter-spacing:0.06em;text-transform:uppercase;">Read on Facebook &#8599;</span>
-        </div>
-      </div>
-    </div>
-  </a>
-</div>
+<section class="paper-section mag-articles-section">
+  <span class="section-eyebrow reveal">Articles</span>
+  <h2 class="section-title reveal reveal-delay-1 mag-articles-title">Read, explore.</h2>
 
-<!-- SECONDARY FEATURED -->
-<div style="padding:64px 80px 80px;">
-  <div style="display:grid;grid-template-columns:3fr 2fr;gap:32px;">
-    <div style="overflow:hidden;cursor:pointer;position:relative;">
-      <img src="https://images.unsplash.com/photo-1565967511849-76a60a516170?w=900&q=80" alt="Thao Dien Guide" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
-      <div style="padding:32px 0 0;">
-        <span class="tag" style="margin-bottom:16px;display:inline-block;">Local Guide</span>
-        <h2 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;line-height:1.25;margin-bottom:14px;">The Complete Thao Dien Guide: Where to Eat, Explore & Unwind When You First Arrive in Saigon</h2>
-        <p style="font-size:15px;color:#555;line-height:1.75;max-width:640px;">From egg coffee mornings to riverside cocktails at sunset — the unmissable spots around ipartment, curated by people who actually live here. Whether you have just landed or you have been here for months, this is the guide.</p>
-        <p style="font-size:11px;color:var(--gray-mid);margin-top:16px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">May 2026</p>
-      </div>
-    </div>
-    <div style="display:flex;flex-direction:column;gap:32px;">
-      <div id="events">
-        <img src="https://images.unsplash.com/photo-1551882547-ff40c63fe5fa?w=500&q=80" alt="Grand Opening" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
-        <div style="padding:20px 0 0;">
-          <span class="tag" style="margin-bottom:12px;display:inline-block;">Upcoming Event</span>
-          <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;line-height:1.3;margin-bottom:10px;">Grand Opening: ipartment Vietnam Official Launch — 2026</h3>
-          <p style="font-size:13px;color:#666;line-height:1.7;">Join us for exclusive launch offers and a special opening celebration. First guests receive 15% off their first stay.</p>
-          <p style="font-size:11px;color:var(--gray-mid);margin-top:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">May 2026</p>
-        </div>
-      </div>
-      <div id="business">
-        <img src="https://images.unsplash.com/photo-1497366216548-37526070297c?w=500&q=80" alt="Business article" style="width:100%;aspect-ratio:16/9;object-fit:cover;display:block;" />
-        <div style="padding:20px 0 0;">
-          <span class="tag" style="margin-bottom:12px;display:inline-block;">Business</span>
-          <h3 style="font-family:'Playfair Display',serif;font-size:20px;font-weight:700;line-height:1.3;margin-bottom:10px;">5 Reasons Thao Dien is the Top Choice for Expats Working in Ho Chi Minh City</h3>
-          <p style="font-size:13px;color:#666;line-height:1.7;">Connectivity, community, co-working — all within walking distance of your ipartment front door.</p>
-          <p style="font-size:11px;color:var(--gray-mid);margin-top:12px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">April 2026</p>
-        </div>
-      </div>
-    </div>
+  <div class="article-grid" id="article-grid"></div>
+
+  <div id="empty-state" class="mag-empty">
+    <h3>No articles found</h3>
+    <p>Try a different keyword or browse all categories.</p>
   </div>
-</div>
+</section>
 
-<!-- MORE ARTICLES -->
-<div id="promos" style="background:var(--gray-light);padding:80px 80px;">
-  <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:24px;">News & Promos</span>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;">
-    <a href="https://www.facebook.com/share/p/1Lv3J4DqbS/" target="_blank" rel="noopener" style="text-decoration:none;color:inherit;background:var(--white);overflow:hidden;display:block;">
-      <img src="https://images.unsplash.com/photo-1600585154340-be6161a56a0c?w=500&q=80" alt="ipartment launch" style="width:100%;aspect-ratio:16/9;object-fit:cover;" />
-      <div style="padding:24px 22px;">
-        <span class="tag" style="margin-bottom:14px;display:inline-block;">News &amp; Promo</span>
-        <h3 style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.35;margin-bottom:10px;">Hello Saigon — ipartment Has Officially Landed in Thao Dien</h3>
-        <p style="font-size:13px;color:#666;line-height:1.7;">Hotel comfort, the warmth of home, European design. We are live on Xuan Thuy St. Come see what we built.</p>
-        <p style="font-size:11px;color:var(--gray-mid);margin-top:14px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">May 2026 · Facebook</p>
-      </div>
-    </a>
-    <div style="background:var(--white);overflow:hidden;">
-      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=500&q=80" alt="Thao Dien cafe" style="width:100%;aspect-ratio:16/9;object-fit:cover;" />
-      <div style="padding:24px 22px;">
-        <span class="tag" style="margin-bottom:14px;display:inline-block;">News &amp; Promo</span>
-        <h3 style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.35;margin-bottom:10px;">Grand Opening Special: 15% Off Your First Stay at ipartment Vietnam</h3>
-        <p style="font-size:13px;color:#666;line-height:1.7;">Book before July 31, 2026 and receive our launch discount — no code needed, applied at checkout automatically.</p>
-        <p style="font-size:11px;color:var(--gray-mid);margin-top:14px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">May 2026</p>
-      </div>
-    </div>
-    <div style="background:var(--white);overflow:hidden;">
-
-      <img src="https://images.unsplash.com/photo-1541888946425-d81bb19240f5?w=500&q=80" alt="Metro" style="width:100%;aspect-ratio:16/9;object-fit:cover;" />
-      <div style="padding:24px 22px;">
-        <span class="tag" style="margin-bottom:14px;display:inline-block;">Local Guide</span>
-        <h3 style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.35;margin-bottom:10px;">Metro Line 1 is Open: What It Means for Thao Dien Residents</h3>
-        <p style="font-size:13px;color:#666;line-height:1.7;">HCMC's first metro line connects Thao Dien directly to Ben Thanh in under 20 minutes. Here's everything ipartment guests need to know.</p>
-        <p style="font-size:11px;color:var(--gray-mid);margin-top:14px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">April 2026</p>
-      </div>
-    </div>
-    <div style="background:var(--white);overflow:hidden;">
-      <img src="https://images.unsplash.com/photo-1542314831-068cd1dbfeeb?w=500&q=80" alt="Hotel interior" style="width:100%;aspect-ratio:16/9;object-fit:cover;" />
-      <div style="padding:24px 22px;">
-        <span class="tag" style="margin-bottom:14px;display:inline-block;">Business</span>
-        <h3 style="font-family:'Playfair Display',serif;font-size:19px;font-weight:700;line-height:1.35;margin-bottom:10px;">Why Serviced Apartments Beat Hotels for Stays Over 2 Weeks — A Cost Breakdown</h3>
-        <p style="font-size:13px;color:#666;line-height:1.7;">The numbers don't lie. We break down the real cost difference between hotel rooms and ipartment for extended business stays.</p>
-        <p style="font-size:11px;color:var(--gray-mid);margin-top:14px;font-weight:600;letter-spacing:0.06em;text-transform:uppercase;">March 2026</p>
-      </div>
-    </div>
+<section class="mag-newsletter">
+  <div class="mag-newsletter-copy">
+    <h2>Get the Thao Dien letter, monthly.</h2>
+    <p>New articles, neighborhood updates and ipartment news. One email a month, no spam.</p>
   </div>
-</div>
+  <form id="newsletter-form" class="mag-newsletter-form">
+    <input type="email" id="news-email" placeholder="your@email.com" required class="mag-newsletter-input" />
+    <button type="submit" class="btn btn-black">Subscribe</button>
+  </form>
+</section>
 
-<footer>
+<section class="page-cta-band">
+  <h2>Come see Thao Dien for yourself.</h2>
+  <p>Premium serviced apartments, from one night to six months. No payment until we confirm.</p>
+  <a href="accommodation.html" class="btn btn-black btn-lg magnetic">Show me the apartments &#8594;</a>
+</section>
+
+<footer class="site-footer">
   <div class="footer-grid">
-    <div class="footer-brand"><a href="index.html" class="logo">i<span>partment</span></a><p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
-    <div class="footer-col"><h5>Accommodation</h5><ul><li><a href="accommodation.html#xs">Studio XS</a></li><li><a href="accommodation.html#s">Studio S</a></li><li><a href="accommodation.html#m">Apartment M</a></li><li><a href="accommodation.html#l">Long-Stay Suite L</a></li></ul></div>
-    <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="career.html">Career</a></li><li><a href="magazine.html">Magazine</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
-    <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li><li><a href="tel:+84779488070">+84 779 488 070</a></li><li><a href="#">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="margin-top:28px;">Social</h5><ul><li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li></ul></div>
+    <div class="footer-brand">
+      <a href="index.html" class="logo">i<span>partment</span></a>
+      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Accommodation</h5>
+      <ul>
+        <li><a href="accommodation.html#xs">Studio XS</a></li>
+        <li><a href="accommodation.html#s">Studio S</a></li>
+        <li><a href="accommodation.html#m">Apartment M</a></li>
+        <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="career.html">Career</a></li>
+        <li><a href="magazine.html">Magazine</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
+        <li><a href="tel:+84779488070">+84 779 488 070</a></li>
+        <li><a href="about.html#location">Xuan Thuy St, Thao Dien</a></li>
+      </ul>
+      <h5 style="margin-top:28px;">Social</h5>
+      <ul>
+        <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-bottom"><span>&copy; 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy">Privacy Policy</a><a href="legal.html#terms">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 ipartment Vietnam. All rights reserved.</span>
+    <span class="footer-byline">Penguin &amp; Mun Business Digital Presence</span>
+    <div style="display:flex;gap:24px;">
+      <a href="legal.html#privacy">Privacy Policy</a>
+      <a href="legal.html#terms">Terms</a>
+    </div>
+  </div>
 </footer>
+
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/advanced.js"></script>
+<script src="assets/js/data/articles.js"></script>
+<script src="assets/js/pages/magazine.js"></script>
+<script src="assets/js/chatbot/fuse.min.js"></script>
+<script src="assets/js/chatbot/chatbot-engine.js"></script>
+<script src="assets/js/chatbot/chatbot-capture.js"></script>
+<script src="assets/js/chatbot/chatbot-ui.js"></script>
+<script src="assets/js/finder/finder-quiz.js"></script>
 </body>
 </html>

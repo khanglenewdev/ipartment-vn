@@ -1,0 +1,571 @@
+/* ============================================================
+   ipartment - LIQUID GLASS shared layer (2026 redesign)
+   Loaded after main.css / components.css / advanced.css, before the
+   page CSS. Tokens live in main.css :root. A page opts in with
+   <body class="lg ...">, so nothing goes half-dark before conversion.
+
+   This file owns: dark canvas, the glass pill nav (restyled from the
+   existing .site-header markup), glass buttons + forms + footer, every
+   shared modal (welcome popup, auth, quiz, exit survey, toast), the
+   sticky booking bar, maps, the reusable component vocabulary, and the
+   accessibility fallbacks. Page files only add their own layout.
+   ============================================================ */
+
+/* ===== DARK CANVAS ======================================================= */
+body.lg {
+  background: var(--black-deep);
+  color: #fff;
+}
+/* The nav floats; no solid bar to reserve space for. Pages set their own top. */
+body.lg.has-header { padding-top: 0; }
+body.lg ::selection { background: var(--yellow); color: #0a0a0a; }
+
+/* Glass scrollbar - applied globally (every page is dark).
+   IMPORTANT: Chromium IGNORES ::-webkit-scrollbar styling on any scroller
+   that also has the standard scrollbar-width/scrollbar-color set (and those
+   props inherit). So we DO NOT set them globally - we hand Chrome/Edge/Safari
+   the webkit pseudo-elements below, and only give Firefox the standard props
+   via @supports (Firefox has no ::-webkit-scrollbar). */
+::-webkit-scrollbar { width: 13px; height: 13px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-track-piece { background: transparent; }
+::-webkit-scrollbar-thumb {
+  background: rgba(255,255,255,0.22);
+  background-clip: content-box;
+  border: 3px solid transparent;          /* transparent padding => floating glass pill */
+  border-radius: 999px;
+  transition: background 0.2s;
+}
+::-webkit-scrollbar-thumb:hover  { background: rgba(255,255,255,0.42); background-clip: content-box; }
+::-webkit-scrollbar-thumb:active { background: rgba(255,255,255,0.55); background-clip: content-box; }
+::-webkit-scrollbar-corner { background: transparent; }
+/* Firefox only (no webkit scrollbar support): give it the thin glass variant */
+@supports not selector(::-webkit-scrollbar) {
+  html { scrollbar-width: thin; scrollbar-color: rgba(255,255,255,0.3) transparent; }
+}
+
+.mono { font-family: var(--font-mono); }
+
+/* ===== GLASS PILL NAV (restyles the existing .site-header markup) ======== */
+body.lg .site-header {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 9999;
+  background: transparent;
+  padding: 14px 22px 0;
+  display: flex; justify-content: center; align-items: flex-start;
+  pointer-events: none;
+}
+body.lg .site-header-main {
+  pointer-events: auto;
+  height: auto; width: auto;
+  display: inline-flex; align-items: center; justify-content: flex-start; gap: 4px;
+  padding: 7px 8px 7px 20px;
+  background: rgba(10,10,10,0.35);
+  backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+  border: 1px solid var(--glass-border);
+  border-radius: 999px;
+  box-shadow: 0 20px 60px -16px rgba(0,0,0,0.65), var(--glass-inner);
+  max-width: calc(100vw - 44px);
+}
+body.lg .site-header .logo {
+  font-family: var(--font-body); font-weight: 900; font-size: 18px;
+  letter-spacing: -0.02em; color: #fff; text-transform: lowercase;
+  margin-right: 16px; flex-shrink: 0;
+}
+body.lg .site-header .logo span { color: var(--yellow); }
+body.lg nav.site-nav { display: flex; align-items: center; gap: 1px; }
+body.lg nav.site-nav a {
+  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  letter-spacing: 0; text-transform: none;
+  color: rgba(255,255,255,0.72); text-decoration: none;
+  padding: 8px 13px; border-radius: 999px;
+  transition: color 0.2s, background 0.2s;
+}
+body.lg nav.site-nav a:hover { color: #fff; background: rgba(255,255,255,0.08); }
+body.lg nav.site-nav a.active { color: #fff; background: rgba(255,255,255,0.06); }
+body.lg nav.site-nav a.active::after { display: none; }
+body.lg nav.site-nav a.nav-cta {
+  background: var(--yellow); color: #0a0a0a; font-weight: 700;
+  padding: 9px 17px; margin-left: 6px;
+}
+body.lg nav.site-nav a.nav-cta:hover { background: #fff; color: #0a0a0a; transform: translateY(-1px); }
+body.lg nav.site-nav a.nav-cta.active { background: var(--yellow); }
+
+/* Educational disclaimer - small glass pill pinned to the top-left,
+   filling the empty space beside the centered nav pill. */
+body.lg .site-header-edu {
+  position: absolute; top: 18px; left: 24px; pointer-events: auto;
+  background: rgba(10,10,10,0.5);
+  backdrop-filter: blur(var(--blur-sm));
+  -webkit-backdrop-filter: blur(var(--blur-sm));
+  border: 1px solid rgba(255,237,0,0.18); border-radius: 999px;
+  color: rgba(255,237,0,0.72);
+  font-family: var(--font-mono); font-size: 9px; font-style: normal;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 6px 13px; white-space: nowrap;
+}
+body.lg .menu-toggle { color: #fff; }
+
+/* ===== BUTTONS (glass language) ========================================== */
+body.lg .btn {
+  display: inline-flex; align-items: center; justify-content: center; gap: 8px;
+  font-family: var(--font-body); font-weight: 600; font-size: 13px;
+  letter-spacing: 0.02em; text-transform: none;
+  padding: 15px 26px; border-radius: 999px; border: none;
+  text-decoration: none; cursor: pointer; white-space: nowrap;
+  transition: transform 0.25s var(--ease), background 0.25s, color 0.25s, border-color 0.25s, box-shadow 0.25s;
+}
+body.lg .btn-primary { background: var(--yellow); color: #0a0a0a; box-shadow: 0 12px 36px -10px rgba(255,237,0,0.4); }
+body.lg .btn-primary:hover { background: #fff; color: #0a0a0a; transform: translateY(-2px); box-shadow: 0 16px 48px -10px rgba(255,237,0,0.5); }
+body.lg .btn-outline, body.lg .btn-glass, body.lg .btn-outline-dark {
+  background: var(--glass-base); color: #fff;
+  border: 1px solid var(--glass-border-hi);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+}
+body.lg .btn-outline:hover, body.lg .btn-glass:hover, body.lg .btn-outline-dark:hover {
+  background: rgba(20,18,16,0.7); border-color: rgba(255,255,255,0.32); transform: translateY(-2px);
+}
+body.lg .btn-black { background: #0a0a0a; color: var(--yellow); box-shadow: 0 12px 36px -10px rgba(0,0,0,0.5); }
+body.lg .btn-black:hover { background: #fff; color: #0a0a0a; transform: translateY(-2px); }
+body.lg .btn-white { background: #fff; color: #0a0a0a; }
+body.lg .btn-white:hover { background: var(--gray-light); transform: translateY(-2px); }
+body.lg .btn-lg { padding: 17px 34px; font-size: 14px; }
+body.lg .btn-sm { padding: 10px 18px; font-size: 12px; }
+body.lg .btn:disabled, body.lg .btn[disabled] { background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.3); box-shadow: none; cursor: not-allowed; transform: none; }
+
+/* ===== SECTION SCAFFOLDING (shared by every page) ======================== */
+body.lg .section-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--yellow);
+  margin-bottom: 16px;
+}
+body.lg .section-eyebrow::before { content: ''; width: 26px; height: 1px; background: var(--yellow); }
+body.lg .section-eyebrow.eyebrow-light { color: var(--yellow); }
+body.lg .section-title {
+  font-family: var(--font-heading); font-weight: 500;
+  font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; letter-spacing: -0.02em;
+  color: #fff; margin-bottom: 14px;
+}
+body.lg .section-title em { font-style: italic; color: var(--yellow); }
+body.lg .section-body { font-size: 15px; line-height: 1.65; color: rgba(255,255,255,0.68); max-width: 600px; }
+
+/* ===== GLASS SURFACE primitives ========================================== */
+body.lg .glass {
+  background: var(--glass-base);
+  backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  border: 1px solid var(--glass-border);
+  border-radius: 18px;
+  box-shadow: var(--shadow-glass-md);
+  position: relative; isolation: isolate;
+}
+body.lg .glass-soft { background: var(--glass-base-soft); }
+body.lg .glass-strong { background: var(--glass-base-strong); box-shadow: var(--shadow-glass-lg); }
+
+/* Shared sub-page hero (about, accommodation, magazine, career, faq).
+   Full-bleed cinematic photo with a dark gradient on top so the text
+   reads, matching the homepage hero. The photo lives in .page-hero-img. */
+body.lg .page-hero { display: flex; align-items: flex-end; position: relative; overflow: hidden; background: var(--black-deep); min-height: 56vh; }
+body.lg .page-hero-img { position: absolute; inset: 0; z-index: 0; }
+body.lg .page-hero-img::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to top, rgba(12,4,4,0.95) 0%, rgba(12,4,4,0.45) 55%, rgba(12,4,4,0.6) 100%); }
+body.lg .page-hero-text { position: relative; z-index: 2; width: 100%; max-width: 1320px; margin: 0 auto; padding: 150px 56px 54px; }
+body.lg .page-hero-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-weight: 600; letter-spacing: 0.2em;
+  color: var(--yellow);
+}
+body.lg .page-hero-eyebrow::before { content: ''; width: 26px; height: 1px; background: var(--yellow); }
+body.lg .page-hero-text h1 { font-weight: 500; letter-spacing: -0.02em; }
+body.lg .page-hero-text h1 .accent, body.lg .page-hero-text h1 em { color: var(--yellow); font-style: italic; }
+body.lg .page-hero-text p { color: rgba(255,255,255,0.78); }
+
+/* Pages without a photo hero need top room for the floating nav */
+body.lg .page-top-pad { padding-top: 104px; }
+
+/* Paper section (long reading - the C-hybrid relief beat) */
+.paper-section { background: var(--paper); color: var(--ink); }
+/* Prefixed with body.lg so they out-specify body.lg .section-eyebrow /
+   .section-title (paper titles that also carry .section-title would
+   otherwise inherit the dark-theme white and vanish on paper). */
+body.lg .paper-section .eyebrow, body.lg .paper-section .section-eyebrow {
+  display: inline-flex; align-items: center; gap: 12px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.2em; text-transform: uppercase; color: var(--terracotta);
+  margin-bottom: 16px;
+}
+body.lg .paper-section .eyebrow::before, body.lg .paper-section .section-eyebrow::before { content: ''; width: 26px; height: 1px; background: var(--terracotta); }
+body.lg .paper-section h2, body.lg .paper-section .section-title {
+  font-family: var(--font-heading); font-weight: 500; color: var(--ink);
+  font-size: clamp(34px, 4.4vw, 64px); line-height: 1.02; letter-spacing: -0.02em; margin-bottom: 14px;
+}
+body.lg .paper-section h2 em, body.lg .paper-section .section-title em { font-style: italic; color: var(--terracotta); }
+body.lg .paper-section .section-body, body.lg .paper-section .section-deck { color: #5b554c; }
+.paper-section .deck { font-size: 16px; color: #5b554c; max-width: 600px; line-height: 1.65; }
+
+/* ===== BADGES / PILLS ==================================================== */
+body.lg .badge {
+  display: inline-flex; align-items: center; gap: 6px;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.14em; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 999px;
+}
+body.lg .badge-yellow { background: var(--yellow); color: #0a0a0a; font-weight: 700; }
+body.lg .badge-glass { background: var(--glass-base); color: var(--yellow); border: 1px solid var(--glass-border-hi); backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm)); }
+body.lg .badge-terracotta { background: var(--terracotta); color: #fff; font-weight: 600; }
+body.lg .badge-success { background: rgba(34,197,94,0.16); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); }
+body.lg .badge-error { background: rgba(229,57,53,0.16); color: #f87171; border: 1px solid rgba(229,57,53,0.3); }
+body.lg .badge .dot { width: 6px; height: 6px; border-radius: 50%; background: var(--green); box-shadow: 0 0 8px var(--green); animation: lgPulse 1.6s infinite; }
+@keyframes lgPulse { 0%,100% { opacity: 1; } 50% { opacity: 0.4; } }
+
+/* ===== FORMS on glass (auth modal, page forms, search boxes) ============= */
+body.lg .form-input, body.lg .form-select, body.lg .form-textarea {
+  background: rgba(255,255,255,0.05);
+  border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 11px;
+  color: #fff;
+  font-family: var(--font-body); font-size: 15px;
+  padding: 13px 15px;
+  transition: border-color 0.2s, background 0.2s;
+}
+body.lg .form-input::placeholder, body.lg .form-textarea::placeholder { color: rgba(255,255,255,0.35); }
+body.lg .form-input:focus, body.lg .form-select:focus, body.lg .form-textarea:focus {
+  outline: none; border-color: var(--yellow); background: rgba(255,255,255,0.08);
+}
+body.lg .form-input.invalid, body.lg .form-select.invalid { border-color: var(--red); }
+body.lg .form-label {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.6);
+}
+body.lg .form-select {
+  appearance: none; -webkit-appearance: none; cursor: pointer; padding-right: 38px;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='6' viewBox='0 0 10 6'%3E%3Cpath fill='%23FFED00' d='M5 6L0 0h10z'/%3E%3C/svg%3E");
+  background-repeat: no-repeat; background-position: right 14px center;
+}
+body.lg .form-select option { background: #161410; color: #fff; }
+
+/* ===== FOOTER ============================================================ */
+body.lg .site-footer { background: var(--black-deep); color: rgba(255,255,255,0.6); border-top: 1px solid rgba(255,255,255,0.08); }
+body.lg .site-footer .footer-grid { border-bottom-color: rgba(255,255,255,0.1); }
+body.lg .site-footer .footer-brand .logo span { color: var(--yellow); }
+body.lg .site-footer .footer-col h5 { color: var(--yellow); font-family: var(--font-mono); letter-spacing: 0.16em; }
+body.lg .site-footer .footer-brand p { color: rgba(255,255,255,0.5); }
+body.lg .site-footer a { color: rgba(255,255,255,0.6); }
+body.lg .site-footer a:hover { color: var(--yellow); }
+
+/* ===== BACK TO TOP (glass circle) ======================================= */
+body.lg .back-to-top {
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border-hi); color: var(--yellow);
+  border-radius: 50%; box-shadow: var(--shadow-glass-sm);
+}
+body.lg .back-to-top:hover { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); }
+
+/* ===== STICKY MOBILE BOOKING BAR ======================================== */
+body.lg .sticky-book-bar {
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-lg)) saturate(160%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+  border-top: 1px solid var(--glass-border-hi);
+}
+body.lg .sticky-book-bar .sticky-book-from { color: rgba(255,255,255,0.55); }
+body.lg .sticky-book-bar #stickyBookAmount, body.lg .sticky-book-bar strong { color: #fff; }
+
+/* ===== TOAST ============================================================= */
+body.lg .toast {
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-lg)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(180%);
+  border: 1px solid var(--glass-border-hi); border-left: 3px solid var(--yellow);
+  border-radius: 12px; color: #fff; box-shadow: var(--shadow-glass-md);
+}
+
+/* ===== SHARED MODAL OVERLAYS re-skinned to glass ========================= */
+/* Welcome popup */
+body.lg .cta-overlay { background: rgba(12,4,4,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+body.lg .cta-popup {
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-xl)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-xl)) saturate(180%);
+  border: 1px solid var(--glass-border-hi); border-radius: 22px; overflow: hidden;
+  box-shadow: var(--shadow-glass-lg);
+}
+body.lg .cta-form { background: transparent; }
+body.lg .cta-form-eyebrow { color: rgba(255,255,255,0.55); font-family: var(--font-mono); letter-spacing: 0.16em; }
+body.lg .cta-form h3 { color: #fff; }
+body.lg .cta-form h3 .accent { color: var(--yellow); }
+body.lg .cta-form .sub { color: rgba(255,255,255,0.7); }
+body.lg .cta-form input {
+  background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12);
+  color: #fff; border-radius: 11px;
+}
+body.lg .cta-form input::placeholder { color: rgba(255,255,255,0.4); }
+body.lg .cta-form input:focus { border-color: var(--yellow); background: rgba(255,255,255,0.08); }
+body.lg .cta-form .country-code {
+  background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12); color: #fff; border-radius: 11px;
+}
+body.lg .cta-form .country-code option { background: #161410; color: #fff; }
+body.lg .cta-form .submit { background: var(--yellow); color: #0a0a0a; border-radius: 11px; font-family: var(--font-mono); letter-spacing: 0.12em; }
+body.lg .cta-form .submit:hover { background: #fff; }
+body.lg .cta-form .disclaimer { color: rgba(255,255,255,0.45); }
+body.lg .cta-form .disclaimer a { color: rgba(255,255,255,0.7) !important; }
+body.lg .cta-close { background: rgba(255,255,255,0.1); color: #fff; box-shadow: none; }
+body.lg .cta-close:hover { background: rgba(255,255,255,0.2); }
+body.lg .cta-success h3 { color: #fff; }
+body.lg .cta-success p { color: rgba(255,255,255,0.7); }
+body.lg .cta-success p strong { color: var(--yellow); }
+/* Mobile: the stacked popup (image on top, form below) can run taller than the
+   screen, which clipped the "Get my voucher" button. Let it scroll, and shrink
+   the photo so the form has room. */
+@media (max-width: 720px) {
+  body.lg .cta-popup { overflow-y: auto; overscroll-behavior: contain; -webkit-overflow-scrolling: touch; max-height: 92vh; }
+  body.lg .cta-visual { min-height: 140px; }
+}
+
+/* Auth + quiz modal */
+body.lg .auth-overlay { background: rgba(12,4,4,0.75); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
+body.lg .auth-modal {
+  display: flex; flex-direction: column; overflow: hidden; max-height: 92vh;
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-xl)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-xl)) saturate(180%);
+  border: 1px solid var(--glass-border-hi); border-radius: 22px;
+  box-shadow: var(--shadow-glass-lg);
+}
+/* Scroll lives on the body (so the modal clips its scrollbar to the rounded
+   corners), the tabs and close button stay put, and overscroll no longer chains
+   to the page behind. Same pattern as the feedback panel. */
+body.lg .auth-modal .auth-body { flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; }
+body.lg .auth-modal .auth-tabs { flex: 0 0 auto; }
+body.lg .auth-close { background: rgba(255,255,255,0.12); color: #fff; z-index: 5; }
+body.lg .auth-close:hover { background: rgba(255,255,255,0.22); }
+/* Tab bar pinned flush to the top of the panel; stays put while a long form scrolls */
+body.lg .auth-tabs {
+  position: sticky; top: 0; z-index: 3;
+  border-bottom: 1px solid var(--glass-border);
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-lg)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(180%);
+  border-radius: 22px 22px 0 0;
+}
+body.lg .auth-tab { color: rgba(255,255,255,0.55); }
+body.lg .auth-tab:hover { color: #fff; background: rgba(255,255,255,0.04); }
+body.lg .auth-tab.active { color: #fff; border-bottom-color: var(--yellow); }
+body.lg .auth-body h2 { color: #fff; }
+body.lg .auth-body .auth-sub { color: rgba(255,255,255,0.6); }
+body.lg .auth-terms { color: rgba(255,255,255,0.65); }
+body.lg .auth-terms a { color: var(--yellow); }
+body.lg .auth-submit { background: var(--yellow); color: #0a0a0a; border-radius: 11px; }
+body.lg .auth-submit:hover { background: #fff; }
+body.lg .auth-forgot { color: rgba(255,255,255,0.55); }
+body.lg .auth-forgot:hover { color: #fff; }
+body.lg .auth-success h2 { color: #fff; }
+body.lg .auth-success p { color: rgba(255,255,255,0.7); }
+body.lg .auth-remember-note { color: #fca5a5; background: rgba(229,57,53,0.12); border-color: rgba(229,57,53,0.4); }
+body.lg .quiz-note { color: rgba(255,255,255,0.7); background: rgba(255,255,255,0.05); border-left-color: var(--yellow); }
+body.lg .quiz-scale button { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.14); color: #fff; }
+body.lg .quiz-scale button:hover { border-color: rgba(255,255,255,0.4); }
+body.lg .quiz-scale button.active { background: var(--yellow); border-color: var(--yellow); color: #0a0a0a; }
+body.lg .quiz-ends { color: rgba(255,255,255,0.45); }
+
+/* Exit-intent survey card.
+   Solid panel, NO backdrop-filter on purpose: a second blur layer animating in
+   over the glass nav makes Chromium repaint the nav + edu pills with a dark halo
+   (the "shadow" you see when the cursor leaves the top of the screen). A
+   near-opaque card never adds that blur layer, so the nav stays clean. */
+body.lg .exit-survey {
+  background: #16120f;
+  border: 1px solid var(--glass-border-hi); border-radius: 16px;
+  box-shadow: var(--shadow-glass-lg);
+}
+body.lg .exit-survey-q { color: #fff; }
+body.lg .exit-survey-close { color: rgba(255,255,255,0.5); }
+body.lg .exit-survey-opts button { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; border-radius: 10px; }
+body.lg .exit-survey-opts button:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
+body.lg .exit-survey-opts button.primary { background: var(--yellow); border-color: var(--yellow); color: #0a0a0a; }
+body.lg .exit-survey input { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; }
+body.lg .exit-survey input:focus { border-color: var(--yellow); }
+
+/* ===== INLINE ALERT ===================================================== */
+body.lg .alert {
+  display: flex; gap: 12px; align-items: flex-start;
+  padding: 13px 16px; background: var(--glass-base);
+  border-left: 3px solid var(--yellow); border-radius: 0 11px 11px 0;
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  font-size: 13px; color: rgba(255,255,255,0.85); line-height: 1.55;
+}
+body.lg .alert.success { border-left-color: var(--green); background: rgba(34,197,94,0.08); }
+body.lg .alert.error { border-left-color: var(--red); background: rgba(229,57,53,0.08); }
+body.lg .alert.info { border-left-color: var(--terracotta); background: rgba(216,97,60,0.08); }
+body.lg .alert b { color: #fff; display: block; margin-bottom: 2px; }
+
+/* ===== EMPTY STATE ====================================================== */
+body.lg .empty {
+  text-align: center; padding: 56px 24px;
+  border: 1px dashed var(--glass-border); border-radius: 16px;
+  background: var(--glass-base-soft); backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm));
+}
+body.lg .empty .ico { font-size: 38px; color: rgba(255,255,255,0.3); margin-bottom: 14px; }
+body.lg .empty h3 { font-family: var(--font-heading); font-size: 24px; font-weight: 600; margin-bottom: 8px; }
+body.lg .empty h3 em { font-style: italic; color: var(--yellow); }
+body.lg .empty p { color: rgba(255,255,255,0.6); font-size: 14px; margin-bottom: 18px; max-width: 360px; margin-left: auto; margin-right: auto; }
+
+/* ===== MAPS in a glass frame =========================================== */
+body.lg .map, body.lg #home-map, body.lg #about-map { background: #160c0c; }
+body.lg .map-recenter-btn { background: rgba(10,10,10,0.85) !important; color: var(--yellow) !important; }
+body.lg .map-recenter-btn:hover { background: var(--yellow) !important; color: #0a0a0a !important; }
+
+/* ===== SPINNER ========================================================= */
+.lg-spinner { width: 22px; height: 22px; border: 2px solid rgba(255,255,255,0.15); border-top-color: var(--yellow); border-radius: 50%; animation: lgSpin 0.8s linear infinite; }
+@keyframes lgSpin { to { transform: rotate(360deg); } }
+
+/* ===== PASSWORD VISIBILITY EYE ========================================= */
+body.lg .pw-wrap { position: relative; display: block; }
+body.lg .pw-wrap .form-input { padding-right: 44px; }
+body.lg .pw-eye {
+  position: absolute; right: 6px; top: 50%; transform: translateY(-50%);
+  width: 30px; height: 30px; display: flex; align-items: center; justify-content: center;
+  background: none; border: none; padding: 0; cursor: pointer;
+  color: rgba(255,255,255,0.5); border-radius: 7px; transition: color 0.15s, background 0.15s;
+}
+body.lg .pw-eye:hover { color: var(--yellow); background: rgba(255,255,255,0.07); }
+body.lg .pw-eye:focus-visible { outline: 2px solid var(--yellow); outline-offset: 1px; }
+
+/* ===== shared page CTA band (yellow) for pages that would otherwise dead-end ===== */
+body.lg .page-cta-band { background: var(--yellow); padding: 60px 40px; text-align: center; }
+body.lg .page-cta-band h2 { font-family: var(--font-heading); font-size: clamp(28px, 4vw, 44px); font-weight: 700; color: #0a0a0a; letter-spacing: -0.01em; line-height: 1.1; margin: 0 0 12px; }
+body.lg .page-cta-band p { font-size: 15px; color: rgba(0,0,0,0.72); max-width: 560px; margin: 0 auto 24px; line-height: 1.55; }
+@media (max-width: 600px) { body.lg .page-cta-band { padding: 48px 22px; } }
+
+/* ===== "RATE OUR WEBSITE" feedback panel (warm glass) ================== */
+body.lg .footer-rate-btn {
+  display: inline-flex; align-items: center; gap: 7px; margin-top: 18px;
+  background: rgba(216,97,60,0.14); border: 1px solid rgba(216,97,60,0.42); color: #f0a987;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  padding: 9px 16px; border-radius: 999px; cursor: pointer; transition: background 0.2s, border-color 0.2s, color 0.2s, transform 0.2s;
+}
+body.lg .footer-rate-btn:hover { background: var(--terracotta); border-color: var(--terracotta); color: #fff; transform: translateY(-1px); }
+
+/* Attention cursor that bobs in toward the Rate button */
+body.lg .footer-rate-wrap { position: relative; display: inline-block; margin-top: 18px; }
+body.lg .footer-rate-wrap .footer-rate-btn { margin-top: 0; }
+body.lg .rate-cursor {
+  position: absolute; right: -12px; bottom: -16px; line-height: 0; pointer-events: none;
+  filter: drop-shadow(0 2px 5px rgba(0,0,0,0.55));
+  animation: rateCursorBob 1.5s ease-in-out infinite;
+}
+@keyframes rateCursorBob {
+  0%, 100% { transform: translate(11px, 11px); opacity: 0.4; }
+  55%      { transform: translate(-2px, -3px); opacity: 1; }
+}
+@media (prefers-reduced-motion: reduce) { body.lg .rate-cursor { animation: none; opacity: 0.85; transform: translate(2px, 2px); } }
+
+/* Star rating row */
+body.lg .fb-stars { display: flex; gap: 7px; margin: 2px 0 18px; }
+body.lg .fb-star {
+  background: none; border: none; padding: 0 2px; cursor: pointer;
+  font-size: 30px; line-height: 1; color: rgba(255,255,255,0.2);
+  transition: color 0.12s, transform 0.12s;
+}
+body.lg .fb-star:hover { transform: scale(1.16); }
+body.lg .fb-star.on { color: var(--yellow); }
+
+body.lg .fb-overlay {
+  position: fixed; inset: 0; z-index: 100000;
+  background: rgba(12,4,4,0.74); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  display: flex; align-items: center; justify-content: center; padding: 22px;
+  opacity: 0; pointer-events: none; transition: opacity 0.35s var(--ease);
+}
+body.lg .fb-overlay.open { opacity: 1; pointer-events: auto; }
+body.lg .fb-panel {
+  position: relative; width: 100%; max-width: 460px; max-height: 92vh;
+  display: flex; flex-direction: column; overflow: hidden;   /* clip the inner scrollbar to the rounded corners */
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-xl)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-xl)) saturate(180%);
+  border: 1px solid var(--glass-border-hi); border-radius: 24px;
+  box-shadow: var(--shadow-glass-lg); isolation: isolate;
+  transform: translateY(18px) scale(0.97); transition: transform 0.4s var(--ease);
+}
+body.lg .fb-overlay.open .fb-panel { transform: translateY(0) scale(1); }
+body.lg .fb-glow { position: absolute; inset: 0; border-radius: 24px; pointer-events: none; z-index: 0; background: radial-gradient(125% 80% at 50% -5%, rgba(216,97,60,0.28), transparent 58%); }
+/* The body is the scroll area (panel clips it). overscroll-behavior stops the
+   page behind the modal from scrolling once you hit the bottom. padding that
+   used to live on the panel moves here so the scrollbar sits inside the glass. */
+body.lg .fb-body { position: relative; z-index: 1; flex: 1 1 auto; min-height: 0; overflow-y: auto; overscroll-behavior: contain; padding: 40px 30px 32px; }
+body.lg .fb-close { position: absolute; top: 14px; right: 14px; width: 36px; height: 36px; display: flex; align-items: center; justify-content: center; padding: 0; border-radius: 50%; background: rgba(255,255,255,0.1); border: none; color: #fff; font-size: 20px; line-height: 1; cursor: pointer; z-index: 6; }
+body.lg .fb-close:hover { background: rgba(255,255,255,0.2); }
+body.lg .fb-emoji { font-size: 34px; text-align: center; margin-bottom: 6px; line-height: 1; }
+body.lg .fb-body h2, body.lg .fb-success h2 { font-family: var(--font-heading); font-size: 30px; font-weight: 600; color: #fff; text-align: center; margin-bottom: 12px; letter-spacing: -0.01em; }
+body.lg .fb-body h2 em, body.lg .fb-success h2 em { font-style: italic; color: var(--yellow); }
+body.lg .fb-success h2 em { color: var(--terracotta); }
+body.lg .fb-intro { font-size: 14px; line-height: 1.65; color: rgba(255,255,255,0.78); text-align: center; margin-bottom: 22px; }
+body.lg .fb-intro strong { color: #fff; }
+body.lg .fb-label { display: block; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: var(--yellow); margin: 0 0 7px; }
+body.lg .fb-input {
+  width: 100%; background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12);
+  border-radius: 12px; color: #fff; font-family: var(--font-body); font-size: 14px; line-height: 1.5;
+  padding: 12px 14px; outline: none; margin-bottom: 18px; transition: border-color 0.2s, background 0.2s;
+}
+body.lg textarea.fb-input { resize: vertical; min-height: 92px; }
+body.lg .fb-input::placeholder { color: rgba(255,255,255,0.4); }
+body.lg .fb-input:focus { border-color: var(--terracotta); background: rgba(255,255,255,0.08); }
+body.lg .fb-thanks { font-family: var(--font-heading); font-style: italic; font-size: 15px; color: rgba(255,255,255,0.72); text-align: center; margin: 2px 0 16px; line-height: 1.5; }
+body.lg .fb-msg { display: none; font-size: 12px; color: #fca5a5; margin: -8px 0 12px; text-align: center; }
+body.lg .fb-msg.show { display: block; }
+body.lg .fb-send {
+  width: 100%; background: linear-gradient(135deg, var(--terracotta), #e88a5c); color: #fff; border: none;
+  padding: 15px; border-radius: 12px; font-family: var(--font-body); font-weight: 700; font-size: 14px; letter-spacing: 0.02em;
+  cursor: pointer; transition: transform 0.2s, box-shadow 0.2s; box-shadow: 0 12px 36px -12px rgba(216,97,60,0.6);
+}
+body.lg .fb-send:hover { transform: translateY(-2px); box-shadow: 0 16px 48px -12px rgba(216,97,60,0.72); }
+body.lg .fb-send:disabled { opacity: 0.7; cursor: default; transform: none; }
+body.lg .fb-success { text-align: center; padding: 10px 0; }
+body.lg .fb-success p { font-size: 14px; color: rgba(255,255,255,0.78); margin-bottom: 20px; line-height: 1.6; }
+body.lg .fb-success .fb-send { max-width: 230px; margin: 0 auto; display: block; }
+
+/* ===== ACCESSIBILITY =================================================== */
+@media (prefers-reduced-transparency: reduce) {
+  body.lg .site-header-main, body.lg .cta-popup, body.lg .auth-modal, body.lg .toast,
+  body.lg .exit-survey, body.lg .sticky-book-bar, body.lg .glass, body.lg .glass-soft, body.lg .glass-strong,
+  body.lg .badge-glass, body.lg .btn-outline, body.lg .btn-glass, body.lg .btn-outline-dark, body.lg .back-to-top {
+    background: var(--black-deep) !important;
+    backdrop-filter: none !important; -webkit-backdrop-filter: none !important;
+    border-color: rgba(255,255,255,0.25) !important;
+  }
+}
+@media (prefers-reduced-motion: reduce) {
+  body.lg .hero-bg, body.lg .book-card, body.lg [class*="float"] { animation: none !important; }
+}
+body.lg :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: inherit; }
+body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline-color: #fff; }
+
+/* ===== RESPONSIVE ====================================================== */
+@media (max-width: 1100px) {
+  /* Collapse the pill to logo + CTA + hamburger. Fully reset the legacy
+     mobile-nav rules from main.css (fixed/black/column) so the closed nav
+     stays inline inside the pill instead of dropping into a black box. */
+  body.lg nav.site-nav {
+    display: inline-flex; position: static; flex-direction: row;
+    background: transparent; padding: 0; gap: 1px; inset: auto;
+  }
+  body.lg nav.site-nav a:not(.nav-cta) { display: none; }
+  body.lg nav.site-nav a.nav-cta { display: inline-flex; margin: 0 0 0 4px; padding: 8px 15px; border-bottom: none; }
+  body.lg .menu-toggle { display: inline-flex; align-items: center; justify-content: center; order: 3; margin-left: 6px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); font-size: 16px; }
+  /* Open state = glass dropdown panel under the pill */
+  body.lg nav.site-nav.open {
+    display: flex; position: fixed; top: 66px; left: 14px; right: 14px;
+    flex-direction: column; align-items: stretch; gap: 2px; padding: 10px;
+    background: var(--glass-base-strong);
+    backdrop-filter: blur(var(--blur-lg)) saturate(160%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+    border: 1px solid var(--glass-border-hi); border-radius: 18px; box-shadow: var(--shadow-glass-lg);
+  }
+  body.lg nav.site-nav.open a { display: block; font-size: 15px; padding: 12px 16px; border-bottom: none; }
+  body.lg nav.site-nav.open a.nav-cta { margin: 6px 0 0; text-align: center; }
+}
+@media (max-width: 900px) {
+  /* Not enough width to pin the edu pill beside the nav: stack it under, centered. */
+  body.lg .site-header { flex-direction: column; align-items: center; gap: 7px; }
+  body.lg .site-header-edu { position: static; top: auto; left: auto; }
+}
+@media (max-width: 640px) {
+  body.lg { --blur-sm: 8px; --blur-md: 12px; --blur-lg: 16px; --blur-xl: 20px; }
+  body.lg .site-header { padding: 10px 12px 0; }
+  body.lg .site-header-main { padding: 6px 7px 6px 16px; }
+  body.lg .page-hero-text { padding: 120px 22px 36px; }
+}

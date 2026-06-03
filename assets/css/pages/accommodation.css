@@ -1,0 +1,124 @@
+/* ============================================================
+   Accommodation (Liquid Glass). body.lg sets the dark canvas + glass
+   chrome; this file lays out the page on dark glass.
+   ============================================================ */
+section { padding: 80px 64px; }
+
+/* Yellow "all included" strip */
+.info-strip { background: var(--yellow); color: #0a0a0a; display: flex; align-items: center; justify-content: space-between; gap: 32px; flex-wrap: wrap; padding: 26px 64px; }
+.info-strip p { font-size: 14px; font-weight: 600; color: #0a0a0a; max-width: 760px; }
+.info-strip strong { font-weight: 800; }
+
+/* Filter */
+.filter-section { padding: 56px 64px 48px; }
+.filter-chips { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin: 28px 0 0; }
+.filter-chip {
+  padding: 9px 18px; border-radius: 999px;
+  background: var(--glass-base-soft); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  cursor: pointer; font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.7); transition: all 0.2s;
+}
+.filter-chip:hover { color: #fff; border-color: var(--glass-border-hi); }
+.filter-chip.active { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); font-weight: 700; }
+
+/* Apartment showcase rows */
+.apt-section { display: grid; grid-template-columns: 1fr 1fr; gap: 0; min-height: 520px; }
+.apt-section.hide { display: none; }
+.apt-section.reverse > .apt-gallery { order: 2; }
+.apt-gallery { position: relative; overflow: hidden; background: #160c0c; }
+.apt-gallery-track { position: absolute; inset: 0; }
+.apt-gallery-slide { position: absolute; inset: 0; background-size: cover; background-position: center; opacity: 0; transition: opacity 0.6s var(--ease); }
+.apt-gallery-slide.active { opacity: 1; }
+.apt-gallery-nav { position: absolute; bottom: 22px; left: 22px; display: flex; gap: 8px; z-index: 5; }
+.apt-gallery-dot { width: 10px; height: 10px; border-radius: 999px; background: rgba(255,255,255,0.4); border: none; cursor: pointer; padding: 0; transition: background 0.2s, width 0.2s; }
+.apt-gallery-dot.active { background: var(--yellow); width: 28px; }
+.apt-gallery-arrow {
+  position: absolute; top: 50%; transform: translateY(-50%); width: 42px; height: 42px; border-radius: 50%;
+  background: var(--glass-base-strong); color: #fff; border: 1px solid var(--glass-border-hi);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  cursor: pointer; font-size: 18px; z-index: 5; display: flex; align-items: center; justify-content: center; transition: all 0.2s;
+}
+.apt-gallery-arrow:hover { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); }
+.apt-gallery-arrow.prev { left: 16px; }
+.apt-gallery-arrow.next { right: 16px; }
+
+.apt-content { padding: 64px 56px; display: flex; flex-direction: column; justify-content: center; background: linear-gradient(160deg, #100e0b, #0a0908); position: relative; }
+.apt-content::before { content: ''; position: absolute; inset: 0; background: var(--glass-tint); opacity: 0.5; pointer-events: none; }
+.apt-content > * { position: relative; }
+.apt-size { font-family: var(--font-heading); font-size: 62px; font-weight: 700; color: var(--yellow); line-height: 1; letter-spacing: -0.02em; }
+.apt-category { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; margin: 10px 0 18px; color: rgba(255,255,255,0.5); }
+.apt-title { font-family: var(--font-heading); font-size: 36px; font-weight: 600; line-height: 1.1; margin-bottom: 14px; color: #fff; }
+.apt-desc { font-size: 15px; line-height: 1.75; margin-bottom: 24px; max-width: 480px; color: rgba(255,255,255,0.72); }
+.apt-features { list-style: none; display: grid; grid-template-columns: 1fr 1fr; gap: 9px; margin-bottom: 28px; }
+.apt-features li { font-size: 13px; display: flex; gap: 10px; align-items: center; color: rgba(255,255,255,0.78); }
+.apt-features li::before { content: ''; display: block; width: 7px; height: 7px; border-radius: 2px; background: var(--yellow); flex-shrink: 0; }
+.apt-price-row { display: flex; align-items: baseline; gap: 12px; margin-bottom: 6px; padding-top: 22px; border-top: 1px solid rgba(255,255,255,0.1); }
+.apt-price-from { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.apt-price { font-family: var(--font-heading); font-size: 32px; font-weight: 700; color: #fff; font-variant-numeric: lining-nums tabular-nums; }
+.apt-price-unit { font-size: 13px; color: rgba(255,255,255,0.5); }
+.apt-week { font-size: 12px; color: rgba(255,255,255,0.5); margin: 0 0 18px; letter-spacing: 0.02em; font-variant-numeric: lining-nums tabular-nums; }
+.apt-content .btn { align-self: flex-start; }
+
+/* Compare table */
+.compare-section { background: linear-gradient(180deg, var(--black-deep), #160c0c); }
+.compare-table {
+  width: 100%; border-collapse: separate; border-spacing: 0; margin-top: 32px;
+  background: var(--glass-base); backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border); border-radius: 16px; overflow: hidden;
+}
+.compare-table th, .compare-table td { padding: 14px 12px; text-align: center; border-bottom: 1px solid rgba(255,255,255,0.06); font-size: 12px; color: rgba(255,255,255,0.82); }
+.compare-table th { background: rgba(255,255,255,0.05); color: var(--yellow); font-family: var(--font-heading); font-size: 19px; font-weight: 700; }
+.compare-table th:first-child, .compare-table td:first-child { width: 180px; text-align: left; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.1em; text-transform: uppercase; font-weight: 600; color: rgba(255,255,255,0.5); }
+.compare-table th:first-child { background: rgba(255,255,255,0.05); }
+.compare-table tbody tr:hover td { background: rgba(255,255,255,0.04); }
+.compare-table tr:last-child td { border-bottom: none; }
+.compare-table td strong { color: var(--yellow); font-family: var(--font-mono); }
+.compare-yes { color: var(--green); font-weight: 700; font-size: 17px; }
+
+/* Corporate */
+.corp-section { background: var(--black-deep); }
+.corp-grid { display: grid; grid-template-columns: 1.05fr 0.95fr; gap: 64px; align-items: center; }
+.corp-panel {
+  background: var(--glass-base); backdrop-filter: blur(var(--blur-lg)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(180%);
+  border: 1px solid var(--glass-border-hi); border-radius: 20px; padding: 40px 38px; box-shadow: var(--shadow-glass-md);
+}
+.corp-panel h3 { font-family: var(--font-heading); font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 22px; }
+.corp-panel ul { list-style: none; display: flex; flex-direction: column; gap: 13px; }
+.corp-panel li { font-size: 14px; color: rgba(255,255,255,0.78); display: flex; gap: 12px; align-items: flex-start; line-height: 1.5; }
+.corp-panel li span { color: var(--yellow); font-weight: 700; flex-shrink: 0; }
+
+/* Reviews */
+.reviews-section { background: linear-gradient(180deg, #160c0c, var(--black-deep)); }
+.review-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; margin-top: 36px; }
+.review-card {
+  background: var(--glass-base-soft); backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border); border-top: 3px solid var(--yellow); border-radius: 14px; padding: 28px 26px;
+  transition: transform 0.3s var(--ease), border-color 0.3s;
+}
+.review-card:hover { transform: translateY(-4px); border-color: var(--glass-border-hi); border-top-color: var(--yellow); }
+.review-stars { font-size: 17px; color: var(--yellow); letter-spacing: 3px; margin-bottom: 14px; }
+.review-quote { font-size: 15px; line-height: 1.65; color: rgba(255,255,255,0.85); margin-bottom: 16px; }
+.review-author { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.6); }
+.review-source { font-size: 11px; color: rgba(255,255,255,0.4); margin-top: 6px; font-style: italic; }
+
+@media (max-width: 1000px) {
+  section { padding: 64px 24px; }
+  .info-strip, .filter-section { padding-left: 24px; padding-right: 24px; }
+  .apt-section { grid-template-columns: 1fr; }
+  .apt-section.reverse > .apt-gallery { order: 0; }
+  .apt-gallery { min-height: 320px; }
+  .apt-content { padding: 48px 24px; }
+  .corp-grid { grid-template-columns: 1fr; gap: 32px; }
+  .review-grid { grid-template-columns: 1fr; }
+  .apt-features { grid-template-columns: 1fr; }
+  .compare-table th, .compare-table td { padding: 12px 8px; }
+}
+@media (max-width: 600px) {
+  .apt-size { font-size: 48px; }
+  .apt-title { font-size: 28px; }
+  .compare-table th:first-child, .compare-table td:first-child { width: 130px; font-size: 9px; }
+  .compare-table th { font-size: 16px; }
+  .compare-table th, .compare-table td { padding: 9px 6px; }
+  .apt-gallery { min-height: 260px; }
+}

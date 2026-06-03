@@ -1,0 +1,307 @@
+/* ============================================================
+   ipartment Vietnam - Component-specific styles
+   Booking bar widget, hero variants, cards, etc.
+   ============================================================ */
+
+/* ============================================================
+   BOOKING BAR (sticky, used on index & accommodation)
+   ============================================================ */
+.booking-bar {
+  background: var(--white); border-top: 3px solid var(--yellow);
+  padding: 0 56px; display: flex; align-items: center;
+  height: 80px; gap: 0;
+  box-shadow: 0 4px 20px rgba(0,0,0,0.07);
+  position: sticky; top: var(--header-height); z-index: 1000;
+}
+.booking-bar.standalone {
+  position: relative; top: auto; margin: 0 auto;
+  max-width: 1200px;
+}
+.booking-field {
+  flex: 1; padding: 0 20px; border-right: 1px solid #e5e5e5;
+  height: 100%; display: flex; flex-direction: column; justify-content: center;
+  cursor: pointer; position: relative; transition: background 0.15s;
+}
+.booking-field:first-child { padding-left: 0; }
+.booking-field:hover { background: #fafafa; }
+.booking-field label {
+  font-size: 10px; font-weight: 700; letter-spacing: 0.14em;
+  text-transform: uppercase; color: var(--gray-mid);
+  margin-bottom: 3px; pointer-events: none;
+}
+.booking-field .bf-val {
+  font-size: 14px; font-weight: 600; color: var(--black); pointer-events: none;
+}
+.booking-field .bf-val.placeholder { color: #aaa; font-weight: 400; }
+.booking-bar .btn-primary {
+  padding: 18px 32px; font-size: 12px; white-space: nowrap; flex-shrink: 0;
+}
+
+.bb-dropdown {
+  position: absolute; top: calc(100% + 4px); left: 0; background: var(--white);
+  box-shadow: var(--shadow-lg); z-index: 2000; display: none; min-width: 320px;
+}
+.bb-dropdown.open { display: block; }
+.bb-dropdown.dd-right { left: auto; right: 0; }
+
+.mini-cal-wrap { padding: 20px 20px 0; }
+.mini-cal-header { display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px; }
+.mini-cal-title { font-family: var(--font-heading); font-size: 15px; font-weight: 900; }
+.mini-cal-nav {
+  background: none; border: none; cursor: pointer;
+  font-size: 16px; padding: 4px 8px; color: var(--black);
+}
+.mini-cal-nav:hover { color: var(--gray-mid); }
+.mini-grid { display: grid; grid-template-columns: repeat(7,1fr); gap: 2px; }
+.mini-day-lbl {
+  font-size: 9px; font-weight: 700; letter-spacing: 0.06em;
+  text-transform: uppercase; color: var(--gray-mid);
+  text-align: center; padding: 3px 0 6px;
+}
+.mini-day {
+  aspect-ratio: 1; display: flex; align-items: center; justify-content: center;
+  font-size: 11px; font-weight: 500; cursor: pointer; border-radius: 2px;
+  transition: all 0.12s; position: relative;
+}
+.mini-day:hover:not(.md-disabled):not(.md-empty) { background: #f0f0f0; }
+.mini-day.md-empty { cursor: default; }
+.mini-day.md-disabled { color: #ccc; cursor: not-allowed; }
+.mini-day.md-today { font-weight: 800; text-decoration: underline; text-underline-offset: 2px; }
+.mini-day.md-checkin { background: var(--black); color: var(--yellow); font-weight: 700; border-radius: 2px 0 0 2px; }
+.mini-day.md-checkout { background: var(--black); color: var(--yellow); font-weight: 700; border-radius: 0 2px 2px 0; }
+.mini-day.md-checkin.md-checkout { border-radius: 2px; }
+.mini-day.md-inrange { background: rgba(0,0,0,0.07); }
+
+.promo-msg {
+  margin: 12px 20px 16px; padding: 9px 12px; font-size: 11px;
+  font-weight: 600; line-height: 1.4; border-radius: 2px;
+}
+.promo-msg.nudge { background: #fff8e1; color: #7a5c00; border-left: 3px solid var(--yellow); }
+.promo-msg.unlocked { background: #f0fdf4; color: #166534; border-left: 3px solid var(--green); }
+
+.apt-options { padding: 12px; display: flex; flex-direction: column; gap: 4px; }
+.apt-opt {
+  display: flex; align-items: center; gap: 14px; padding: 12px 14px;
+  cursor: pointer; transition: background 0.12s;
+  border: 1.5px solid transparent;
+}
+.apt-opt:hover { background: #f5f5f5; }
+.apt-opt.selected { border-color: var(--black); background: #f9f9f9; }
+.apt-opt-cat {
+  font-family: var(--font-heading); font-size: 20px; font-weight: 900;
+  color: var(--yellow); background: var(--black);
+  width: 40px; height: 40px; display: flex; align-items: center;
+  justify-content: center; flex-shrink: 0;
+}
+.apt-opt-info { flex: 1; }
+.apt-opt-name { font-size: 13px; font-weight: 700; color: var(--black); }
+.apt-opt-size { font-size: 11px; color: var(--gray-mid); margin-top: 1px; }
+.apt-opt-price { font-size: 11px; font-weight: 700; color: #666; text-align: right; white-space: nowrap; }
+
+.guest-wrap { padding: 20px; }
+.guest-row { display: flex; align-items: center; justify-content: space-between; margin-bottom: 16px; }
+.guest-label { font-size: 14px; font-weight: 600; }
+.guest-sub { font-size: 11px; color: var(--gray-mid); margin-top: 2px; }
+.guest-controls { display: flex; align-items: center; gap: 12px; }
+.guest-btn {
+  width: 32px; height: 32px; border: 1.5px solid #ddd; background: none;
+  cursor: pointer; font-size: 18px; display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.15s;
+}
+.guest-btn:hover { border-color: var(--black); }
+.guest-num { font-size: 16px; font-weight: 700; min-width: 24px; text-align: center; }
+.guest-apply {
+  width: 100%; margin-top: 8px; background: var(--yellow); color: var(--black);
+  border: none; padding: 13px; font-weight: 700; font-size: 12px;
+  letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; font-family: var(--font-body);
+}
+.guest-apply:hover { background: var(--yellow-dark); }
+
+@media (max-width: 1100px) {
+  .booking-bar { display: none; }
+}
+
+/* ============================================================
+   PAGE HERO (sub-page hero - about, accommodation, etc.)
+   ============================================================ */
+.page-hero {
+  background: var(--black-pure);
+  display: grid; grid-template-columns: 1fr 1fr;
+  min-height: 380px; overflow: hidden;
+  position: relative;
+}
+.page-hero-text {
+  padding: 64px 56px 64px;
+  display: flex; flex-direction: column; justify-content: center;
+}
+.page-hero-text h1 {
+  font-family: var(--font-heading);
+  font-size: clamp(32px, 4.4vw, 58px);
+  font-weight: 900; color: var(--white); line-height: 1.1; max-width: 700px;
+}
+.page-hero-text h1 .accent { color: var(--yellow); }
+.page-hero-text p {
+  font-size: 17px; color: rgba(255,255,255,0.68);
+  max-width: 560px; margin-top: 20px; line-height: 1.75;
+}
+.page-hero-eyebrow {
+  display: inline-block; font-size: 11px; font-weight: 700;
+  letter-spacing: 0.18em; text-transform: uppercase;
+  color: rgba(255, 237, 0, 0.8); margin-bottom: 16px;
+}
+.page-hero-img {
+  position: relative; background-size: cover; background-position: center;
+}
+.page-hero-img::after {
+  content: ''; position: absolute; inset: 0;
+  background: linear-gradient(to right, rgba(0,0,0,0.5), transparent);
+}
+
+/* Ken Burns hover effect for hero image */
+.page-hero-img-zoom {
+  animation: kenBurns 18s ease-in-out infinite alternate;
+}
+@keyframes kenBurns {
+  0% { transform: scale(1); }
+  100% { transform: scale(1.08); }
+}
+
+@media (max-width: 900px) {
+  .page-hero { grid-template-columns: 1fr; min-height: auto; }
+  .page-hero-text { padding: 48px 20px; }
+  .page-hero-img { min-height: 280px; }
+}
+
+/* ============================================================
+   ROOM CARDS (used on home + accommodation)
+   ============================================================ */
+.room-card-grid {
+  display: grid; grid-template-columns: repeat(4, 1fr); gap: 0;
+  align-items: stretch;
+}
+.room-card {
+  position: relative; overflow: hidden;
+  display: flex; flex-direction: column;
+}
+.room-card-img {
+  width: 100%; aspect-ratio: 3/4; object-fit: cover;
+  display: block; transition: transform 0.6s var(--ease); flex-shrink: 0;
+}
+.room-card:hover .room-card-img { transform: scale(1.05); }
+.room-card-label {
+  position: absolute; top: 0; left: 0;
+  background: var(--yellow); color: var(--black);
+  font-size: 11px; font-weight: 800; letter-spacing: 0.14em;
+  text-transform: uppercase; padding: 8px 14px;
+}
+.room-card-info {
+  padding: 24px 22px; background: var(--black);
+  flex: 1; display: flex; flex-direction: column;
+}
+.room-card-size {
+  font-family: var(--font-heading); font-size: 28px; font-weight: 900;
+  color: var(--yellow);
+}
+.room-card-name {
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--white); margin: 4px 0 10px;
+}
+.room-card-desc {
+  font-size: 13px; line-height: 1.65; color: rgba(255,255,255,0.62);
+}
+.room-card-cta {
+  display: inline-block; margin-top: auto; padding-top: 14px;
+  font-size: 11px; font-weight: 700; letter-spacing: 0.1em;
+  text-transform: uppercase; color: var(--yellow);
+  text-decoration: none; border-bottom: 1px solid var(--yellow);
+  padding-bottom: 2px; align-self: flex-start;
+  transition: gap 0.2s;
+}
+.room-card-price {
+  font-size: 13px; font-weight: 700; color: var(--white);
+  margin-top: auto; padding-top: 12px;
+}
+.room-card-price span { font-weight: 400; color: rgba(255,255,255,0.45); }
+
+@media (max-width: 1100px) { .room-card-grid { grid-template-columns: 1fr 1fr; } }
+@media (max-width: 600px) { .room-card-grid { grid-template-columns: 1fr; } }
+
+/* ============================================================
+   TESTIMONIAL CAROUSEL
+   ============================================================ */
+.testimonial-carousel {
+  position: relative; max-width: 920px; margin: 0 auto;
+  text-align: center;
+}
+.testimonial-track {
+  position: relative; min-height: 220px;
+}
+.testimonial-slide {
+  position: absolute; inset: 0;
+  opacity: 0; transition: opacity 0.5s var(--ease);
+  pointer-events: none;
+}
+.testimonial-slide.active { opacity: 1; pointer-events: auto; position: relative; }
+.testimonial-stars {
+  font-size: 22px; color: var(--yellow); margin-bottom: 20px;
+  letter-spacing: 4px;
+}
+.testimonial-quote {
+  font-family: var(--font-heading);
+  font-size: clamp(18px, 2.3vw, 29px);
+  font-weight: 700; line-height: 1.5;
+  margin: 0 auto 24px; color: var(--black);
+}
+.testimonial-author {
+  font-size: 12px; font-weight: 600; letter-spacing: 0.12em;
+  text-transform: uppercase; color: var(--gray-mid);
+}
+.testimonial-dots {
+  display: flex; justify-content: center; gap: 8px; margin-top: 36px;
+}
+.testimonial-dot {
+  width: 10px; height: 10px; background: #ddd; border: none;
+  cursor: pointer; padding: 0; transition: background 0.2s, width 0.2s;
+}
+.testimonial-dot.active { background: var(--black); width: 28px; }
+.testimonial-controls { display: flex; align-items: center; justify-content: center; gap: 24px; margin-top: 36px; }
+.testimonial-controls .testimonial-dots { margin-top: 0; }
+.testimonial-arrow {
+  width: 44px; height: 44px; border-radius: 50%; padding: 0;
+  border: 1.5px solid #ddd; background: var(--white); color: var(--black);
+  font-size: 22px; line-height: 1; cursor: pointer;
+  display: flex; align-items: center; justify-content: center;
+  transition: border-color 0.2s, background 0.2s, color 0.2s;
+}
+.testimonial-arrow:hover { border-color: var(--black); background: var(--black); color: var(--yellow); }
+@media (max-width: 600px) { .testimonial-arrow { width: 38px; height: 38px; font-size: 19px; } .testimonial-controls { gap: 16px; } }
+
+/* ============================================================
+   STICKY MOBILE BOOKING BAR  (Airbnb-style persistent CTA)
+   A NEW element (#stickyBookBar), distinct from the .booking-bar search widget.
+   Mobile-only. z-index 900 sits below the welcome popup (99999), exit-survey
+   (11000) and back-to-top (9000), so nothing it could cover matters.
+   ============================================================ */
+.sticky-book-bar {
+  position: fixed; left: 0; right: 0; bottom: 0; z-index: 900;
+  display: none; align-items: center; justify-content: space-between; gap: 12px;
+  padding: 12px 16px calc(12px + env(safe-area-inset-bottom));
+  background: var(--white); border-top: 1px solid #e5e5e5;
+  box-shadow: var(--shadow-lg);
+  transform: translateY(120%); transition: transform 0.35s var(--ease);
+}
+.sticky-book-bar.is-visible { transform: translateY(0); }
+.sticky-book-price { display: flex; flex-direction: column; line-height: 1.15; min-width: 0; }
+.sticky-book-from { font-size: 10px; font-weight: 700; letter-spacing: 0.14em; text-transform: uppercase; color: var(--gray-mid); }
+.sticky-book-price strong { font-size: 16px; color: var(--black); white-space: nowrap; overflow: hidden; text-overflow: ellipsis; font-variant-numeric: lining-nums tabular-nums; }
+.sticky-book-cta { padding: 13px 22px; font-size: 12px; white-space: nowrap; flex-shrink: 0; }
+.sticky-book-cta:disabled { background: #e0e0e0; color: #aaa; cursor: not-allowed; transform: none; }
+
+/* Mobile only. On desktop the in-page CTAs (and the booking sidebar) are enough. */
+@media (max-width: 768px) {
+  .sticky-book-bar { display: flex; }
+  body.has-sticky-bar { padding-bottom: 74px; }            /* never cover the footer credit */
+  body.has-sticky-bar .back-to-top { bottom: 84px; }        /* lift it above the sticky bar */
+}
+/* When the welcome popup is open, slide the bar away (mirrors the data-popup-open flag set in main.js) */
+body[data-popup-open] .sticky-book-bar { transform: translateY(120%) !important; }

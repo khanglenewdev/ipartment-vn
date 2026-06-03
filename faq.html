@@ -1,164 +1,292 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>FAQ – ipartment Vietnam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
-  <style>
-    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:var(--font-body);color:var(--black);background:var(--white);}
-    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
-    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
-    .logo span{color:var(--yellow);}
-    nav{display:flex;align-items:center;gap:32px;}
-    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
-    nav a:hover,nav a.active{color:var(--yellow);}
-    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
-    .faq-item{border-bottom:1px solid #e5e5e5;}
-    .faq-question{width:100%;background:none;border:none;text-align:left;padding:24px 0;font-family:var(--font-body);font-size:16px;font-weight:600;color:var(--black);cursor:pointer;display:flex;justify-content:space-between;align-items:center;gap:20px;}
-    .faq-question:hover{color:var(--terracotta);}
-    .faq-question .chevron{font-size:18px;transition:transform 0.3s;flex-shrink:0;}
-    .faq-answer{max-height:0;overflow:hidden;transition:max-height 0.35s ease;}
-    .faq-answer p{font-size:15px;line-height:1.8;color:#444;padding-bottom:24px;max-width:720px;}
-    .faq-item.open .chevron{transform:rotate(180deg);}
-    footer{background:var(--black);color:var(--white);padding:80px 80px 40px;}
-    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;}
-    .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;}
-    .footer-col h5{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;}
-    .footer-col ul{list-style:none;}
-    .footer-col ul li{margin-bottom:10px;}
-    .footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;}
-    .footer-col ul li a:hover{color:var(--white);}
-    .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);}
-    .footer-bottom a{color:rgba(255,255,255,0.32);text-decoration:none;}
-    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}.footer-grid{grid-template-columns:1fr;}}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>FAQ - ipartment Vietnam</title>
+  <meta name="description" content="Frequently asked questions about booking, stays, payment and life at ipartment Thao Dien." />
+  <link rel="canonical" href="https://ipartment.vn/faq.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ipartment Vietnam" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="FAQ - ipartment Vietnam" />
+  <meta property="og:description" content="Everything you need to know about booking, stays, payment and life at ipartment in Thao Dien." />
+  <meta property="og:url" content="https://ipartment.vn/faq.html" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&h=630&fit=crop&q=80" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="ipartment Thao Dien" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="FAQ - ipartment Vietnam" />
+  <meta name="twitter:description" content="Booking, stays, payment and life at ipartment in Thao Dien." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&h=630&fit=crop&q=80" />
+
+  <!-- FAQPage: only questions VISIBLE on this page, worded as shown. Prime material for AI answer engines. -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "FAQPage",
+    "mainEntity": [
+      { "@type": "Question", "name": "How do I book an apartment at ipartment Vietnam?", "acceptedAnswer": { "@type": "Answer", "text": "You can book directly through our website by selecting your preferred apartment category, check-in and check-out dates, and completing your details. For long-stay or corporate bookings, we recommend emailing us at khangle.forwork@gmail.com for a personalised quote." } },
+      { "@type": "Question", "name": "What is included in the price?", "acceptedAnswer": { "@type": "Answer", "text": "All ipartment rates are all-inclusive. Your rate covers 500 Mbps fibre Wi-Fi, housekeeping (frequency varies by category), all utilities (electricity, water, air conditioning), and access to shared amenities. There are no hidden fees or add-ons." } },
+      { "@type": "Question", "name": "What is the minimum stay?", "acceptedAnswer": { "@type": "Answer", "text": "We accept stays from 1 night. However our best rates are available for stays of 7+ nights (18% off), and exclusive corporate rates apply from 28 nights (up to 38% off). The longer you stay the more you save." } },
+      { "@type": "Question", "name": "Do you offer corporate or group rates?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. For corporate clients and groups booking multiple apartments, we offer exclusive monthly pricing, centralized billing, and a dedicated account manager. Contact khangle.forwork@gmail.com to discuss your requirements." } },
+      { "@type": "Question", "name": "What is your cancellation policy?", "acceptedAnswer": { "@type": "Answer", "text": "For stays under 7 nights: free cancellation up to 48 hours before check-in. For stays of 7 to 27 nights: free cancellation up to 7 days before check-in. For stays of 28+ nights: please refer to your corporate agreement or contact us directly." } },
+      { "@type": "Question", "name": "How and when do I pay?", "acceptedAnswer": { "@type": "Answer", "text": "Payment is not collected when you submit your booking request. Our team will contact you within 2 hours to confirm availability and arrange payment via bank transfer, credit card, or cash on arrival (for short stays)." } },
+      { "@type": "Question", "name": "What are the differences between XS, S, M, and L categories?", "acceptedAnswer": { "@type": "Answer", "text": "XS (25-30 m2) is our compact studio, ideal for short stays. S (35-40 m2) adds a seating and dining area. M (45-55 m2) is a spacious apartment with designated living, dining, and home office zones. L (65-75 m2) is our largest, with a separate bedroom, large living room, and family-sized kitchen, built for long-term living." } },
+      { "@type": "Question", "name": "Are the kitchens fully equipped?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. All apartments include a fully functional kitchen with hob, refrigerator, microwave, kettle, toaster, and cooking essentials. Category M and L include a full oven and dishwasher. We provide starter packs of basic cooking items on arrival." } },
+      { "@type": "Question", "name": "Is housekeeping included?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Housekeeping is included in all rates. XS: weekly. S: bi-weekly. M: weekly with linen change. L: twice-weekly with priority service. Additional housekeeping can be arranged on request." } },
+      { "@type": "Question", "name": "How fast is the Wi-Fi?", "acceptedAnswer": { "@type": "Answer", "text": "All apartments come with high-speed fibre Wi-Fi at minimum 300 Mbps (categories M and L: 500 Mbps). Every apartment has a dedicated router. No shared network, no random throttling. Tested across video calls, large uploads, and gaming sessions." } },
+      { "@type": "Question", "name": "Are pets allowed?", "acceptedAnswer": { "@type": "Answer", "text": "Small pets (under 15 kg) are allowed in M and L apartments with prior notice and a pet deposit. Please contact us before booking to confirm. We adore animals but need to plan for them." } },
+      { "@type": "Question", "name": "What time is check-in and check-out?", "acceptedAnswer": { "@type": "Answer", "text": "Standard check-in is from 15:00. Check-out is by 11:00. We offer flexible check-in 24/7 via digital self check-in. You will receive your access code before arrival. Early check-in or late check-out can be arranged subject to availability." } },
+      { "@type": "Question", "name": "Do I need to be there in person to check in?", "acceptedAnswer": { "@type": "Answer", "text": "No. ipartment uses a fully digital self check-in system. You will receive all access details via email and SMS before your arrival. If you prefer a personal welcome, just let us know and our team will be happy to meet you." } },
+      { "@type": "Question", "name": "What documents do I need on arrival?", "acceptedAnswer": { "@type": "Answer", "text": "Vietnamese law requires us to register all guests with the local police. Please upload a photo of your passport (and visa if applicable) via the link we send before arrival. It takes 30 seconds and avoids any check-in delay." } },
+      { "@type": "Question", "name": "Where exactly is ipartment Vietnam located?", "acceptedAnswer": { "@type": "Answer", "text": "We are located on Xuan Thuy Street, Thao Dien, District 2 (Thu Duc City), Ho Chi Minh City. The building is a 3-minute walk from Thao Dien Metro Station (Line 1), 15 minutes from District 1 by car, and 25 minutes from Tan Son Nhat Airport." } },
+      { "@type": "Question", "name": "Is parking available?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Secure underground parking is available for guests with motorbikes and cars. Parking is included in all rates for motorbikes. Car parking is available at a small additional daily or monthly rate." } },
+      { "@type": "Question", "name": "Can you arrange airport pickup?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Airport pickup from Tan Son Nhat International is available as an optional add-on at checkout (450,000 VND one-way). Your driver will meet you at arrivals with a name card." } },
+      { "@type": "Question", "name": "Are there good restaurants and cafes nearby?", "acceptedAnswer": { "@type": "Answer", "text": "Yes. Thao Dien is one of HCMC's best food districts. Within 5 minutes walking you will find international restaurants, riverside cafes, brunch spots, vegan options, and authentic Vietnamese street food. See our Thao Dien guide for curated lists." } }
+    ]
+  }
+  </script>
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ipartment.vn/" },
+      { "@type": "ListItem", "position": 2, "name": "FAQ", "item": "https://ipartment.vn/faq.html" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/advanced.css" />
+  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
+  <link rel="stylesheet" href="assets/css/pages/faq.css" />
+  <link rel="stylesheet" href="assets/css/chatbot.css" />
+  <link rel="stylesheet" href="assets/css/finder.css" />
 </head>
-<body>
-<header>
-  <a href="index.html" class="logo">i<span>partment</span></a>
-  <nav>
-    <a href="about.html">About</a>
-    <a href="accommodation.html">Accommodation</a>
-    <a href="magazine.html">Magazine</a>
-    <a href="career.html">Career</a>
-    <a href="faq.html" class="active">FAQ</a>
-    <a href="my-account.html">My Account</a>
-    <a href="booking.html" class="nav-cta">Book a Stay</a>
-  </nav>
+<body class="has-header lg">
+
+<header class="site-header">
+  <div class="site-header-main">
+    <a href="index.html" class="logo">i<span>partment</span></a>
+    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+    <nav class="site-nav">
+      <a href="about.html">About</a>
+      <a href="accommodation.html">Accommodation</a>
+      <a href="magazine.html">Magazine</a>
+      <a href="career.html">Career</a>
+      <a href="faq.html" class="active">FAQ</a>
+      <a href="my-account.html">My Account</a>
+      <a href="admin.html">Admin</a>
+      <a href="booking.html" class="nav-cta">Book my stay</a>
+    </nav>
+  </div>
+  <div class="site-header-edu">For educational purposes only</div>
 </header>
 
-<div style="margin-top:72px;background:var(--black);min-height:420px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;">
-  <div style="padding:96px 80px 80px;display:flex;flex-direction:column;justify-content:center;">
-    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.8);margin-bottom:16px;">Frequently Asked Questions</span>
-    <h1 style="font-family:'Playfair Display',serif;font-size:clamp(38px,5vw,68px);font-weight:900;color:var(--white);line-height:1.1;max-width:700px;">Everything you<br/><span style="color:var(--yellow);">need to know.</span></h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.68);max-width:520px;margin-top:20px;line-height:1.75;">Can't find what you're looking for? Reach us at <a href="mailto:khangle.forwork@gmail.com" style="color:var(--yellow);">khangle.forwork@gmail.com</a> — we respond within 2 hours.</p>
+<section class="page-hero" style="padding:0;">
+  <div class="page-hero-text">
+    <span class="page-hero-eyebrow reveal">Frequently Asked</span>
+    <h1 class="reveal reveal-delay-1">Everything you<br/><span class="accent">need to know.</span></h1>
+    <p class="reveal reveal-delay-2">Cannot find what you are looking for? Reach us at <a href="mailto:khangle.forwork@gmail.com" style="color:var(--yellow);">khangle.forwork@gmail.com</a>. We respond within 2 hours.</p>
   </div>
-  <div style="background:url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=900&q=80') center/cover no-repeat;position:relative;">
-    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.45),transparent);"></div>
-  </div>
-</div>
+  <div class="page-hero-img page-hero-img-zoom" style="background-image:url('https://images.unsplash.com/photo-1534430480872-3498386e7856?w=1200&q=80');"></div>
+</section>
 
-<div style="padding:80px 80px;max-width:900px;">
+<section class="faq-controls">
+  <div class="faq-search-wrap">
+    <div class="faq-search">
+      <input type="search" id="faq-search" placeholder="Search frequently asked questions..." />
+      <span class="icon">&#x1F50D;</span>
+    </div>
+    <div class="faq-tabs">
+      <button class="faq-tab active" data-cat="all">All Topics</button>
+      <button class="faq-tab" data-cat="booking">Booking and Pricing</button>
+      <button class="faq-tab" data-cat="apartments">The Apartments</button>
+      <button class="faq-tab" data-cat="checkin">Check-in and Out</button>
+      <button class="faq-tab" data-cat="location">Location</button>
+    </div>
+  </div>
+</section>
 
-  <!-- BOOKING -->
-  <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin-bottom:28px;padding-bottom:16px;border-bottom:3px solid var(--yellow);">Booking & Pricing</h2>
-  <div class="faq-item open">
-    <button class="faq-question">How do I book an apartment at ipartment Vietnam? <span class="chevron">▾</span></button>
-    <div class="faq-answer" style="max-height:200px;"><p>You can book directly through our website by selecting your preferred apartment category, check-in/check-out dates, and completing your details in My Account. For long-stay or corporate bookings, we recommend emailing us at <a href="mailto:khangle.forwork@gmail.com" style="color:var(--terracotta);">khangle.forwork@gmail.com</a> for a personalised quote.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">What is included in the price? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>All ipartment rates are all-inclusive. Your rate covers high-speed Wi-Fi, housekeeping (frequency varies by category), all utilities (electricity, water, air conditioning), and access to shared amenities. There are no hidden fees or add-ons.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">What is the minimum stay? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>We accept stays from 1 night. However, our best rates are available for stays of 7+ nights, and exclusive corporate rates apply from 28 nights. The longer you stay, the more you save.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">Do you offer corporate or group rates? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>Yes. For corporate clients and groups booking multiple apartments, we offer exclusive monthly pricing, centralized billing, and a dedicated account manager. Contact <a href="mailto:corporate@ipartment.vn" style="color:var(--terracotta);">corporate@ipartment.vn</a> to discuss your requirements.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">What is your cancellation policy? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>For stays under 7 nights: free cancellation up to 48 hours before check-in. For stays of 7–27 nights: free cancellation up to 7 days before check-in. For stays of 28+ nights: please refer to your corporate agreement or contact us directly for terms.</p></div>
+<section class="faq-list-section">
+  <div class="faq-wrap">
+
+    <div class="faq-category" data-cat="booking">
+      <h2>Booking and Pricing</h2>
+      <div class="faq-item open" data-keywords="book booking process website how to reserve">
+        <button class="faq-question">How do I book an apartment at ipartment Vietnam? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>You can book directly through our website by selecting your preferred apartment category, check-in and check-out dates, and completing your details. For long-stay or corporate bookings, we recommend emailing us at <a href="mailto:khangle.forwork@gmail.com" style="color:var(--terracotta);">khangle.forwork@gmail.com</a> for a personalised quote.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="price include hidden fees what's included">
+        <button class="faq-question">What is included in the price? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>All ipartment rates are all-inclusive. Your rate covers 500 Mbps fibre Wi-Fi, housekeeping (frequency varies by category), all utilities (electricity, water, air conditioning), and access to shared amenities. There are no hidden fees or add-ons.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="minimum stay nights short stay">
+        <button class="faq-question">What is the minimum stay? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>We accept stays from 1 night. However our best rates are available for stays of 7+ nights (18% off), and exclusive corporate rates apply from 28 nights (up to 38% off). The longer you stay the more you save.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="corporate group rates b2b business">
+        <button class="faq-question">Do you offer corporate or group rates? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Yes. For corporate clients and groups booking multiple apartments, we offer exclusive monthly pricing, centralized billing, and a dedicated account manager. Contact <a href="mailto:khangle.forwork@gmail.com" style="color:var(--terracotta);">khangle.forwork@gmail.com</a> to discuss your requirements.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="cancel cancellation refund policy">
+        <button class="faq-question">What is your cancellation policy? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>For stays under 7 nights: free cancellation up to 48 hours before check-in. For stays of 7 to 27 nights: free cancellation up to 7 days before check-in. For stays of 28+ nights: please refer to your corporate agreement or contact us directly.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="payment method credit card transfer when">
+        <button class="faq-question">How and when do I pay? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Payment is not collected when you submit your booking request. Our team will contact you within 2 hours to confirm availability and arrange payment via bank transfer, credit card, or cash on arrival (for short stays).</p></div>
+      </div>
+    </div>
+
+    <div class="faq-category" data-cat="apartments">
+      <h2>The Apartments</h2>
+      <div class="faq-item" data-keywords="difference xs s m l category size compare">
+        <button class="faq-question">What are the differences between XS, S, M, and L categories? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>XS (25-30 m&sup2;) is our compact studio, ideal for short stays. S (35-40 m&sup2;) adds a seating and dining area. M (45-55 m&sup2;) is a spacious apartment with designated living, dining, and home office zones. L (65-75 m&sup2;) is our largest, with a separate bedroom, large living room, and family-sized kitchen, built for long-term living.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="kitchen equipped cooking oven dishwasher fridge">
+        <button class="faq-question">Are the kitchens fully equipped? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Yes. All apartments include a fully functional kitchen with hob, refrigerator, microwave, kettle, toaster, and cooking essentials. Category M and L include a full oven and dishwasher. We provide starter packs of basic cooking items on arrival.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="housekeeping cleaning laundry maid service">
+        <button class="faq-question">Is housekeeping included? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Yes. Housekeeping is included in all rates. XS: weekly. S: bi-weekly. M: weekly with linen change. L: twice-weekly with priority service. Additional housekeeping can be arranged on request.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="wifi internet speed connection network">
+        <button class="faq-question">How fast is the Wi-Fi? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>All apartments come with high-speed fibre Wi-Fi at minimum 300 Mbps (categories M and L: 500 Mbps). Every apartment has a dedicated router. No shared network, no random throttling. Tested across video calls, large uploads, and gaming sessions.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="pet allowed dog cat animal">
+        <button class="faq-question">Are pets allowed? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Small pets (under 15 kg) are allowed in M and L apartments with prior notice and a pet deposit. Please contact us before booking to confirm. We adore animals but need to plan for them.</p></div>
+      </div>
+    </div>
+
+    <div class="faq-category" data-cat="checkin">
+      <h2>Check-in and Check-out</h2>
+      <div class="faq-item" data-keywords="check in time when early late arrival">
+        <button class="faq-question">What time is check-in and check-out? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Standard check-in is from 15:00. Check-out is by 11:00. We offer flexible check-in 24/7 via digital self check-in. You will receive your access code before arrival. Early check-in or late check-out can be arranged subject to availability.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="digital self check-in in-person reception">
+        <button class="faq-question">Do I need to be there in person to check in? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>No. ipartment uses a fully digital self check-in system. You will receive all access details via email and SMS before your arrival. If you prefer a personal welcome, just let us know and our team will be happy to meet you.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="id passport visa document required arrival">
+        <button class="faq-question">What documents do I need on arrival? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Vietnamese law requires us to register all guests with the local police. Please upload a photo of your passport (and visa if applicable) via the link we send before arrival. It takes 30 seconds and avoids any check-in delay.</p></div>
+      </div>
+    </div>
+
+    <div class="faq-category" data-cat="location">
+      <h2>Location</h2>
+      <div class="faq-item" data-keywords="where address location thao dien district 2 xuan thuy metro">
+        <button class="faq-question">Where exactly is ipartment Vietnam located? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>We are located on Xuan Thuy Street, Thao Dien, District 2 (Thu Duc City), Ho Chi Minh City. The building is a 3-minute walk from Thao Dien Metro Station (Line 1), 15 minutes from District 1 by car, and 25 minutes from Tan Son Nhat Airport.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="parking car motorbike garage">
+        <button class="faq-question">Is parking available? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Yes. Secure underground parking is available for guests with motorbikes and cars. Parking is included in all rates for motorbikes. Car parking is available at a small additional daily or monthly rate.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="airport pickup transfer transport tan son nhat">
+        <button class="faq-question">Can you arrange airport pickup? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Yes. Airport pickup from Tan Son Nhat International is available as an optional add-on at checkout (450,000 VND one-way). Your driver will meet you at arrivals with a name card.</p></div>
+      </div>
+      <div class="faq-item" data-keywords="restaurant cafe food eat nearby thao dien">
+        <button class="faq-question">Are there good restaurants and cafes nearby? <span class="chevron">&#9662;</span></button>
+        <div class="faq-answer"><p>Yes. Thao Dien is one of HCMC's best food districts. Within 5 minutes walking you will find international restaurants, riverside cafes, brunch spots, vegan options, and authentic Vietnamese street food. See our <a href="magazine.html" style="color:var(--terracotta);">Thao Dien guide</a> for curated lists.</p></div>
+      </div>
+    </div>
+
   </div>
 
-  <!-- APARTMENTS -->
-  <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin:56px 0 28px;padding-bottom:16px;border-bottom:3px solid var(--yellow);">The Apartments</h2>
-  <div class="faq-item">
-    <button class="faq-question">What are the differences between XS, S, M, and L categories? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>XS (25–30 m²) is our compact studio, ideal for short stays. S (35–40 m²) adds a seating and dining area — great for mid-term stays. M (45–55 m²) is a spacious apartment with designated living, dining, and home office zones. L (65–75 m²) is our largest, with a separate bedroom, large living room, and family-sized kitchen — built for long-term living.</p></div>
+  <div class="faq-empty" id="faq-empty">
+    <h3>No matching questions</h3>
+    <p>Try a different keyword or browse all topics. You can also email us directly.</p>
   </div>
-  <div class="faq-item">
-    <button class="faq-question">Are the kitchens fully equipped? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>Yes. All apartments include a fully functional kitchen with hob, refrigerator, microwave, kettle, toaster, and cooking essentials. Category M and L include a full oven and dishwasher. We provide starter packs of basic cooking items on arrival.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">Is housekeeping included? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>Yes. Housekeeping is included in all rates. XS: weekly. S: bi-weekly. M: weekly with linen change. L: twice-weekly with priority service. Additional housekeeping can be arranged on request.</p></div>
-  </div>
+</section>
 
-  <!-- CHECK-IN -->
-  <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin:56px 0 28px;padding-bottom:16px;border-bottom:3px solid var(--yellow);">Check-in & Check-out</h2>
-  <div class="faq-item">
-    <button class="faq-question">What time is check-in and check-out? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>Standard check-in is from 15:00. Check-out is by 11:00. We offer flexible check-in 24/7 via digital self check-in — you'll receive your access code before arrival. Early check-in or late check-out can be arranged subject to availability.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">Do I need to be there in person to check in? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>No. ipartment uses a fully digital self check-in system. You'll receive all access details via email and SMS before your arrival. If you prefer a personal welcome, just let us know and our team will be happy to meet you.</p></div>
-  </div>
-
-  <!-- LOCATION -->
-  <h2 style="font-family:'Playfair Display',serif;font-size:22px;font-weight:900;margin:56px 0 28px;padding-bottom:16px;border-bottom:3px solid var(--yellow);">Location</h2>
-  <div class="faq-item">
-    <button class="faq-question">Where exactly is ipartment Vietnam located? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>We are located on Xuan Thuy Street, Thao Dien, District 2 (Thu Duc City), Ho Chi Minh City. The building is a 3-minute walk from Thao Dien Metro Station (Line 1), 15 minutes from District 1 by car, and 25 minutes from Tan Son Nhat Airport.</p></div>
-  </div>
-  <div class="faq-item">
-    <button class="faq-question">Is parking available? <span class="chevron">▾</span></button>
-    <div class="faq-answer"><p>Yes. Secure underground parking is available for guests with motorbikes and cars. Parking is included in all rates for motorbikes. Car parking is available at a small additional daily or monthly rate.</p></div>
-  </div>
-
-</div>
-
-<!-- STILL HAVE QUESTIONS -->
-<div style="background:var(--yellow);padding:64px 80px;display:flex;align-items:center;justify-content:space-between;gap:40px;">
+<section class="faq-cta">
   <div>
-    <h2 style="font-family:'Playfair Display',serif;font-size:32px;font-weight:900;color:var(--black);margin-bottom:12px;">Still have questions?</h2>
-    <p style="font-size:16px;color:rgba(0,0,0,0.65);">Our team responds within 2 hours. No chatbots, no queues.</p>
+    <h2>Still have questions?</h2>
+    <p>Our team responds within 2 hours. No chatbots, no queues.</p>
   </div>
-  <a href="mailto:khangle.forwork@gmail.com" style="background:var(--black);color:var(--white);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:18px 40px;text-decoration:none;white-space:nowrap;">Email Us</a>
-</div>
+  <a href="mailto:khangle.forwork@gmail.com" class="btn btn-black btn-lg magnetic">Email Us</a>
+</section>
 
-<footer>
+<section class="page-cta-band">
+  <h2>Ready when you are.</h2>
+  <p>Pick your dates in under a minute. No account needed, no payment until we confirm, free cancellation.</p>
+  <a href="booking.html" class="btn btn-black btn-lg magnetic">Check my dates &#8594;</a>
+</section>
+
+<footer class="site-footer">
   <div class="footer-grid">
-    <div class="footer-brand"><a href="index.html" class="logo">i<span>partment</span></a><p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p></div>
-    <div class="footer-col"><h5>Accommodation</h5><ul><li><a href="accommodation.html#xs">Studio XS</a></li><li><a href="accommodation.html#s">Studio S</a></li><li><a href="accommodation.html#m">Apartment M</a></li><li><a href="accommodation.html#l">Long-Stay Suite L</a></li></ul></div>
-    <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="career.html">Career</a></li><li><a href="magazine.html">Magazine</a></li><li><a href="faq.html">FAQ</a></li></ul></div>
-    <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li><li><a href="tel:+84779488070">+84 779 488 070</a></li><li><a href="#">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="margin-top:28px;">Social</h5><ul><li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li></ul></div>
+    <div class="footer-brand">
+      <a href="index.html" class="logo">i<span>partment</span></a>
+      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.</p>
+    </div>
+    <div class="footer-col">
+      <h5>Accommodation</h5>
+      <ul>
+        <li><a href="accommodation.html#xs">Studio XS</a></li>
+        <li><a href="accommodation.html#s">Studio S</a></li>
+        <li><a href="accommodation.html#m">Apartment M</a></li>
+        <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="career.html">Career</a></li>
+        <li><a href="magazine.html">Magazine</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
+        <li><a href="tel:+84779488070">+84 779 488 070</a></li>
+        <li><a href="about.html#location">Xuan Thuy St, Thao Dien</a></li>
+      </ul>
+      <h5 style="margin-top:28px;">Social</h5>
+      <ul>
+        <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy">Privacy Policy</a><a href="legal.html#terms">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 ipartment Vietnam. All rights reserved.</span>
+    <span class="footer-byline">Penguin &amp; Mun Business Digital Presence</span>
+    <div style="display:flex;gap:24px;">
+      <a href="legal.html#privacy">Privacy Policy</a>
+      <a href="legal.html#terms">Terms</a>
+    </div>
+  </div>
 </footer>
-<script>
-document.querySelectorAll('.faq-question').forEach(btn => {
-  btn.addEventListener('click', () => {
-    const item = btn.parentElement;
-    const answer = item.querySelector('.faq-answer');
-    const isOpen = item.classList.contains('open');
-    document.querySelectorAll('.faq-item').forEach(i => {
-      i.classList.remove('open');
-      i.querySelector('.faq-answer').style.maxHeight = '0';
-    });
-    if(!isOpen) {
-      item.classList.add('open');
-      answer.style.maxHeight = answer.scrollHeight + 'px';
-    }
-  });
-});
-</script>
+
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/advanced.js"></script>
+<script src="assets/js/pages/faq.js"></script>
+<script src="assets/js/chatbot/fuse.min.js"></script>
+<script src="assets/js/chatbot/chatbot-engine.js"></script>
+<script src="assets/js/chatbot/chatbot-capture.js"></script>
+<script src="assets/js/chatbot/chatbot-ui.js"></script>
+<script src="assets/js/finder/finder-quiz.js"></script>
 </body>
 </html>

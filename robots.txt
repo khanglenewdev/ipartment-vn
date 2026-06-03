@@ -1,0 +1,16 @@
+# robots.txt for ipartment Vietnam
+# Lives at the site ROOT (same level as index.html).
+# NOTE: the domain below is a placeholder (ipartment.vn). Swap it for the real
+# domain at deploy, then resubmit in Google Search Console + Bing Webmaster Tools.
+
+User-agent: *
+Allow: /
+Disallow: /admin.html
+Disallow: /my-account.html
+
+# AI crawlers are intentionally allowed - we WANT to be cited by ChatGPT,
+# Perplexity and Gemini. To block one later, add e.g.:
+# User-agent: GPTBot
+# Disallow: /admin.html
+
+Sitemap: https://ipartment.vn/sitemap.xml

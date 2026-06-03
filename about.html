@@ -1,157 +1,278 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-  <meta charset="UTF-8" /><meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>About Us – ipartment Vietnam</title>
-  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;900&family=Playfair+Display:wght@700;900&display=swap" rel="stylesheet" />
-  <style>
-    :root{--black:#000;--white:#fff;--yellow:#FFED00;--gray-light:#f9f9f9;--gray-mid:#9d9d9d;--terracotta:#D8613C;--font-heading:'Playfair Display',Georgia,serif;--font-body:'Inter','Helvetica Neue',Arial,sans-serif;}
-    *,*::before,*::after{box-sizing:border-box;margin:0;padding:0;}
-    html{scroll-behavior:smooth;}
-    body{font-family:var(--font-body);color:var(--black);background:var(--white);font-size:16px;line-height:1.6;}
-    header{position:fixed;top:0;left:0;right:0;z-index:9999;background:var(--black);height:72px;display:flex;align-items:center;padding:0 56px;justify-content:space-between;}
-    .logo{font-family:var(--font-body);font-weight:900;font-size:22px;letter-spacing:0.06em;color:var(--white);text-decoration:none;text-transform:lowercase;}
-    .logo span{color:var(--yellow);}
-    nav{display:flex;align-items:center;gap:32px;}
-    nav a{font-size:11px;font-weight:600;letter-spacing:0.14em;text-transform:uppercase;color:var(--white);text-decoration:none;transition:color 0.2s;}
-    nav a:hover,nav a.active{color:var(--yellow);}
-    .nav-cta{background:var(--yellow)!important;color:var(--black)!important;padding:10px 22px;font-weight:700!important;}
-    section{padding:80px 80px;}
-    .section-eyebrow{display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;}
-    .section-title{font-family:var(--font-heading);font-size:clamp(28px,3.5vw,52px);font-weight:900;line-height:1.15;margin-bottom:20px;}
-    .section-body{font-size:16px;line-height:1.85;color:#444;max-width:680px;}
-    .btn-primary{background:var(--yellow);color:var(--black);font-weight:700;font-size:12px;letter-spacing:0.12em;text-transform:uppercase;padding:16px 36px;text-decoration:none;display:inline-block;transition:background 0.2s;}
-    .btn-primary:hover{background:#e0d500;}
-    footer{background:var(--black);color:var(--white);padding:80px 80px 40px;}
-    .footer-grid{display:grid;grid-template-columns:2fr 1fr 1fr 1fr;gap:56px;margin-bottom:64px;}
-    .footer-brand p{font-size:13px;line-height:1.8;color:rgba(255,255,255,0.52);max-width:280px;margin-top:12px;}
-    .footer-col h5{font-size:11px;font-weight:700;letter-spacing:0.16em;text-transform:uppercase;color:var(--yellow);margin-bottom:20px;}
-    .footer-col ul{list-style:none;}
-    .footer-col ul li{margin-bottom:10px;}
-    .footer-col ul li a{font-size:13px;color:rgba(255,255,255,0.58);text-decoration:none;}
-    .footer-col ul li a:hover{color:var(--white);}
-    .footer-bottom{border-top:1px solid rgba(255,255,255,0.1);padding-top:28px;display:flex;justify-content:space-between;font-size:12px;color:rgba(255,255,255,0.32);}
-    .footer-bottom a{color:rgba(255,255,255,0.32);text-decoration:none;}
-    @media(max-width:768px){header{padding:0 24px;}nav a:not(.nav-cta){display:none;}section{padding:56px 24px;}.footer-grid{grid-template-columns:1fr;}}
-  </style>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>About Us - ipartment Vietnam</title>
+  <meta name="description" content="ipartment, Europe's leading serviced apartment brand, now in Thao Dien, Ho Chi Minh City. Our story, our standards, our location." />
+  <link rel="canonical" href="https://ipartment.vn/about.html" />
+
+  <meta property="og:type" content="website" />
+  <meta property="og:site_name" content="ipartment Vietnam" />
+  <meta property="og:locale" content="en_US" />
+  <meta property="og:title" content="About Us - ipartment Vietnam" />
+  <meta property="og:description" content="Europe's serviced apartment standard, now in Thao Dien, Ho Chi Minh City. Our story, our standards, our location." />
+  <meta property="og:url" content="https://ipartment.vn/about.html" />
+  <meta property="og:image" content="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&h=630&fit=crop&q=80" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="ipartment Vietnam in Thao Dien" />
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:title" content="About Us - ipartment Vietnam" />
+  <meta name="twitter:description" content="Europe's serviced apartment standard, now in Thao Dien, HCMC." />
+  <meta name="twitter:image" content="https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&h=630&fit=crop&q=80" />
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "BreadcrumbList",
+    "itemListElement": [
+      { "@type": "ListItem", "position": 1, "name": "Home", "item": "https://ipartment.vn/" },
+      { "@type": "ListItem", "position": 2, "name": "About", "item": "https://ipartment.vn/about.html" }
+    ]
+  }
+  </script>
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Cormorant+Garamond:wght@400;500;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin="" />
+  <link rel="stylesheet" href="assets/css/main.css" />
+  <link rel="stylesheet" href="assets/css/components.css" />
+  <link rel="stylesheet" href="assets/css/advanced.css" />
+  <link rel="stylesheet" href="assets/css/liquid-glass.css" />
+  <link rel="stylesheet" href="assets/css/pages/about.css" />
+  <link rel="stylesheet" href="assets/css/chatbot.css" />
+  <link rel="stylesheet" href="assets/css/finder.css" />
 </head>
-<body>
-<header>
-  <a href="index.html" class="logo">i<span>partment</span></a>
-  <nav>
-    <a href="about.html" class="active">About</a>
-    <a href="accommodation.html">Accommodation</a>
-    <a href="magazine.html">Magazine</a>
-    <a href="career.html">Career</a>
-    <a href="faq.html">FAQ</a>
-    <a href="my-account.html">My Account</a>
-    <a href="booking.html" class="nav-cta">Book a Stay</a>
-  </nav>
+<body class="has-header lg">
+
+<header class="site-header">
+  <div class="site-header-main">
+    <a href="index.html" class="logo">i<span>partment</span></a>
+    <button class="menu-toggle" aria-label="Toggle menu">&#9776;</button>
+    <nav class="site-nav">
+      <a href="about.html" class="active">About</a>
+      <a href="accommodation.html">Accommodation</a>
+      <a href="magazine.html">Magazine</a>
+      <a href="career.html">Career</a>
+      <a href="faq.html">FAQ</a>
+      <a href="my-account.html">My Account</a>
+      <a href="admin.html">Admin</a>
+      <a href="booking.html" class="nav-cta">Book my stay</a>
+    </nav>
+  </div>
+  <div class="site-header-edu">For educational purposes only</div>
 </header>
 
-<!-- PAGE HERO -->
-<div style="margin-top:72px;background:var(--black);min-height:480px;display:grid;grid-template-columns:1fr 1fr;overflow:hidden;">
-  <div style="padding:96px 80px 80px;display:flex;flex-direction:column;justify-content:center;">
-    <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:rgba(255,237,0,0.8);margin-bottom:16px;">About ipartment Vietnam</span>
-    <h1 style="font-family:var(--font-heading);font-size:clamp(38px,5vw,68px);font-weight:900;color:var(--white);line-height:1.1;max-width:700px;">Europe's leading<br/>serviced apartment brand,<br/><span style="color:var(--yellow);">now in Saigon.</span></h1>
-    <p style="font-size:17px;color:rgba(255,255,255,0.68);max-width:560px;margin-top:20px;line-height:1.75;">Born in Germany. Refined across Switzerland. Now bringing the same standard of intelligent, design-driven living to the heart of Thao Dien.</p>
+<section class="page-hero" style="padding:0;">
+  <div class="page-hero-text">
+    <span class="page-hero-eyebrow reveal">About ipartment Vietnam</span>
+    <h1 class="reveal reveal-delay-1">Europe's leading<br/>serviced apartment brand,<br/><span class="accent">now in Saigon.</span></h1>
+    <p class="reveal reveal-delay-2">Born in Germany. Refined across Switzerland. Now bringing the same standard of intelligent, design-driven living to the heart of Thao Dien.</p>
   </div>
-  <div style="background:url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=900&q=80') center/cover no-repeat;position:relative;">
-    <div style="position:absolute;inset:0;background:linear-gradient(to right,rgba(0,0,0,0.45),transparent);"></div>
-  </div>
-</div>
+  <div class="page-hero-img page-hero-img-zoom" style="background-image:url('https://images.unsplash.com/photo-1486325212027-8081e485255e?w=1200&q=80');"></div>
+</section>
 
-<!-- BRAND STORY -->
-<section id="story" style="background:var(--white);">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
-    <div>
-      <span class="section-eyebrow">Brand Story & German Standard</span>
+<section id="story" class="story-section">
+  <div class="tldr-box reveal">
+    <div class="tldr-label">In short</div>
+    <p class="tldr-body">ipartment Vietnam is a premium serviced-apartment brand in Thao Dien, District 2, Ho Chi Minh City. Four apartment sizes (XS to L), flexible stays from 1 night to 6 months, all-inclusive rates with 500 Mbps Wi-Fi, a full kitchen and 24/7 self check-in. You book direct, with no account required.</p>
+    <p class="tldr-meta">By the ipartment Vietnam team &middot; Thao Dien, HCMC &middot; Updated June 2026</p>
+  </div>
+  <div class="story-grid">
+    <div class="reveal reveal-left">
+      <span class="section-eyebrow">Brand Story, German Standard</span>
       <h2 class="section-title">Fifteen years of<br/>knowing what home means.</h2>
-      <p class="section-body">ipartment was founded in Germany with a simple but powerful idea: business travel and relocation don't have to feel like living out of a suitcase. We built apartments that feel like home — thoughtfully designed, fully equipped, and service-oriented from day one.</p>
-      <p class="section-body" style="margin-top:20px;">Over 15 years, that idea grew into 1,200+ apartments across Germany and Switzerland. Now, we bring that same DNA to Vietnam. ipartment Thao Dien is not a copy-paste — it's a careful translation of German precision into Vietnamese warmth, built specifically for the expat and professional community of Ho Chi Minh City.</p>
+      <p class="section-body">ipartment was founded in Germany with a simple but powerful idea. Business travel and relocation should not feel like living out of a suitcase. We built apartments that feel like home, thoughtfully designed, fully equipped, and service-oriented from day one.</p>
+      <p class="section-body" style="margin-top:20px;">Over 15 years that idea grew into 1,200+ apartments across Germany and Switzerland. Now we bring that same DNA to Vietnam. ipartment Thao Dien is not a copy-paste. It is a careful translation of German precision into Vietnamese warmth, built for the expat and professional community of Ho Chi Minh City.</p>
     </div>
-    <img src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=700&q=80" alt="ipartment story" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;" />
+    <img loading="lazy" src="https://images.unsplash.com/photo-1600566752355-35792bedcfea?w=900&q=80" alt="ipartment story" class="story-img reveal reveal-right" />
   </div>
 </section>
 
-<!-- REVIEW HIGHLIGHTS -->
-<section style="background:var(--gray-light);padding:80px 80px;">
-  <span class="section-eyebrow">What Guests Say</span>
-  <h2 class="section-title">Review highlights.</h2>
-  <div style="display:grid;grid-template-columns:repeat(3,1fr);gap:24px;margin-top:16px;">
-    <div style="background:var(--white);padding:36px 32px;">
-      <div style="font-size:22px;color:var(--yellow);margin-bottom:16px;">★★★★★</div>
-      <p style="font-family:var(--font-heading);font-size:17px;line-height:1.55;font-weight:700;margin-bottom:16px;">"Exactly what long-term business travel should feel like. A real home, not a hotel room."</p>
-      <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);">— Michael S., Consultant · 3-month stay</p>
-    </div>
-    <div style="background:var(--white);padding:36px 32px;">
-      <div style="font-size:22px;color:var(--yellow);margin-bottom:16px;">★★★★★</div>
-      <p style="font-family:var(--font-heading);font-size:17px;line-height:1.55;font-weight:700;margin-bottom:16px;">"The location in Thao Dien is unbeatable. International schools, cafés, the river — all within walking distance."</p>
-      <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);">— Anna K., Expat Relocator · 6-month stay</p>
-    </div>
-    <div style="background:var(--white);padding:36px 32px;">
-      <div style="font-size:22px;color:var(--yellow);margin-bottom:16px;">★★★★★</div>
-      <p style="font-family:var(--font-heading);font-size:17px;line-height:1.55;font-weight:700;margin-bottom:16px;">"Our entire team relocated to HCMC — ipartment handled everything. Corporate rates, multiple units, zero hassle."</p>
-      <p style="font-size:12px;font-weight:600;letter-spacing:0.1em;text-transform:uppercase;color:var(--gray-mid);">— Regional HR Lead, Tech Company · Group booking</p>
+<section class="stats-banner">
+  <div class="stat-block reveal"><div class="stat-big"><span data-count="15" data-suffix="+">0</span></div><div class="stat-lbl">Years of Experience</div></div>
+  <div class="stat-block reveal reveal-delay-1"><div class="stat-big"><span data-count="1200" data-suffix="+">0</span></div><div class="stat-lbl">Apartments in Europe</div></div>
+  <div class="stat-block reveal reveal-delay-2"><div class="stat-big"><span data-count="38" data-suffix="%">0</span></div><div class="stat-lbl">Long-Stay Savings</div></div>
+  <div class="stat-block reveal reveal-delay-3"><div class="stat-big"><span data-count="4.8">0</span></div><div class="stat-lbl">Avg. Guest Rating</div></div>
+</section>
+
+<section class="journey-section">
+  <div class="tech-grid"></div>
+  <div class="journey-inner">
+    <span class="section-eyebrow reveal">Our Journey</span>
+    <h2 class="section-title journey-title reveal reveal-delay-1">From Cologne to Saigon,<br/>fifteen years in five chapters.</h2>
+    <div class="timeline">
+      <div class="timeline-item reveal reveal-left">
+        <div class="timeline-year">2011</div>
+        <h3 class="timeline-title">Founded in Cologne, Germany</h3>
+        <p class="timeline-text">ipartment opens its first 28 units in Cologne, designed for visiting consultants and pharma execs tired of bland hotel chains. The "apartment that thinks like a hotel" idea is born.</p>
+      </div>
+      <div class="timeline-item reveal reveal-left reveal-delay-1">
+        <div class="timeline-year">2015</div>
+        <h3 class="timeline-title">Expansion across Germany</h3>
+        <p class="timeline-text">300+ apartments live across Berlin, Frankfurt, Munich and Hamburg. The corporate B2B programme launches, signing global enterprise contracts.</p>
+      </div>
+      <div class="timeline-item reveal reveal-left reveal-delay-2">
+        <div class="timeline-year">2019</div>
+        <h3 class="timeline-title">Crossing into Switzerland</h3>
+        <p class="timeline-text">First Swiss locations open in Zurich and Basel. Applying the German playbook with Swiss precision. 1,000+ apartments mark.</p>
+      </div>
+      <div class="timeline-item reveal reveal-left reveal-delay-3">
+        <div class="timeline-year">2024</div>
+        <h3 class="timeline-title">Plans for Asia announced</h3>
+        <p class="timeline-text">After two years of research, Saigon is selected as the first Southeast Asia market. Chosen for its expat density, growing tech sector and Thao Dien sweet spot.</p>
+      </div>
+      <div class="timeline-item reveal reveal-left reveal-delay-4">
+        <div class="timeline-year">2026</div>
+        <h3 class="timeline-title">ipartment Vietnam opens</h3>
+        <p class="timeline-text">We open our doors on Xuan Thuy Street, Thao Dien. The same standards, translated for Saigon. This is just the beginning.</p>
+      </div>
     </div>
   </div>
 </section>
 
-<!-- CORPORATE -->
-<section id="corporate" style="background:var(--black);padding:96px 80px;">
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:80px;align-items:center;">
-    <div>
-      <span style="display:inline-block;font-size:11px;font-weight:700;letter-spacing:0.18em;text-transform:uppercase;color:var(--terracotta);margin-bottom:16px;">Corporate Solutions</span>
-      <h2 class="section-title" style="color:var(--white);">Built for B2B.<br/>Designed for people.</h2>
-      <p class="section-body" style="color:rgba(255,255,255,0.68);">Whether you're relocating a team, managing a project in HCMC, or sourcing accommodation for recurring business travel — ipartment has a dedicated B2B programme tailored to your company's needs.</p>
-      <ul style="margin-top:28px;list-style:none;display:flex;flex-direction:column;gap:16px;">
-        <li style="display:flex;gap:14px;align-items:flex-start;"><span style="background:var(--yellow);color:var(--black);font-size:11px;font-weight:800;padding:4px 10px;white-space:nowrap;">01</span><span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">Exclusive monthly corporate rates for stays of 28+ nights</span></li>
-        <li style="display:flex;gap:14px;align-items:flex-start;"><span style="background:var(--yellow);color:var(--black);font-size:11px;font-weight:800;padding:4px 10px;white-space:nowrap;">02</span><span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">Dedicated account manager and centralized billing</span></li>
-        <li style="display:flex;gap:14px;align-items:flex-start;"><span style="background:var(--yellow);color:var(--black);font-size:11px;font-weight:800;padding:4px 10px;white-space:nowrap;">03</span><span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">Group booking of multiple apartments simultaneously</span></li>
-        <li style="display:flex;gap:14px;align-items:flex-start;"><span style="background:var(--yellow);color:var(--black);font-size:11px;font-weight:800;padding:4px 10px;white-space:nowrap;">04</span><span style="font-size:14px;color:rgba(255,255,255,0.7);line-height:1.6;">24/7 on-site support, flexible check-in, and priority upgrades</span></li>
+<section class="about-reviews">
+  <span class="section-eyebrow reveal">What Guests Say</span>
+  <h2 class="section-title reveal reveal-delay-1">Review highlights.</h2>
+  <div class="about-review-grid">
+    <div class="about-review-card reveal">
+      <div class="about-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="about-review-quote">"Exactly what long-term business travel should feel like. A real home, not a hotel room."</p>
+      <p class="about-review-author">Michael S., Consultant. 3-month stay</p>
+      <p class="about-review-source">via Booking.com</p>
+    </div>
+    <div class="about-review-card reveal reveal-delay-1">
+      <div class="about-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="about-review-quote">"The location in Thao Dien is unbeatable. International schools, cafes, the river, all walkable."</p>
+      <p class="about-review-author">Anna K., Expat Relocator. 6-month stay</p>
+      <p class="about-review-source">via Traveloka</p>
+    </div>
+    <div class="about-review-card reveal reveal-delay-2">
+      <div class="about-review-stars">&#9733;&#9733;&#9733;&#9733;&#9733;</div>
+      <p class="about-review-quote">"Our entire team relocated to HCMC. ipartment handled everything. Zero hassle."</p>
+      <p class="about-review-author">Regional HR Lead, Tech Company. Group booking</p>
+      <p class="about-review-source">via direct corporate review</p>
+    </div>
+  </div>
+</section>
+
+<section id="corporate" class="corp-section">
+  <div class="corp-grid">
+    <div class="reveal reveal-left">
+      <span class="section-eyebrow corp-eyebrow">Corporate Solutions</span>
+      <h2 class="section-title">Built for B2B.<br/>Designed for people.</h2>
+      <p class="section-body">Whether you are relocating a team, managing a project in HCMC, or sourcing accommodation for recurring business travel. ipartment has a dedicated B2B programme tailored to your company's needs.</p>
+      <ul class="corp-list">
+        <li><span class="corp-num">01</span><span class="corp-txt">Exclusive monthly corporate rates for stays of 28+ nights</span></li>
+        <li><span class="corp-num">02</span><span class="corp-txt">Dedicated account manager and centralized billing</span></li>
+        <li><span class="corp-num">03</span><span class="corp-txt">Group booking of multiple apartments simultaneously</span></li>
+        <li><span class="corp-num">04</span><span class="corp-txt">24/7 on-site support, flexible check-in, priority upgrades</span></li>
       </ul>
-      <a href="mailto:corporate@ipartment.vn" class="btn-primary" style="margin-top:36px;">Contact Our Corporate Team</a>
+      <a href="mailto:khangle.forwork@gmail.com" class="btn btn-primary magnetic corp-cta">Contact Our Corporate Team</a>
     </div>
-    <img src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=700&q=80" alt="Corporate Solutions" style="width:100%;aspect-ratio:4/3;object-fit:cover;display:block;" />
+    <img loading="lazy" src="https://images.unsplash.com/photo-1521791136064-7986c2920216?w=900&q=80" alt="Corporate Solutions" class="corp-img reveal reveal-right" />
   </div>
 </section>
 
-<!-- LOCATION -->
-<section id="location" style="background:var(--white);">
-  <span class="section-eyebrow">Location & Map</span>
-  <h2 class="section-title">Thao Dien — where<br/>Saigon slows down, beautifully.</h2>
-  <div style="display:grid;grid-template-columns:1fr 1fr;gap:60px;align-items:start;margin-top:8px;">
-    <div>
-      <p class="section-body">Thao Dien is District 2's most sought-after expat enclave — known for its tree-lined streets, international dining scene, boutique cafés, and riverfront lifestyle. It's Saigon at its most liveable.</p>
-      <p class="section-body" style="margin-top:20px;">ipartment is located on Xuan Thuy Street — a quiet, walkable address that puts you 15 minutes from the buzz of District 1, steps from Metro Line 1, and surrounded by international schools (BVIS, BIS, ISHCMC) and co-working spaces.</p>
-      <div style="margin-top:36px;display:flex;flex-direction:column;gap:16px;">
-        <div style="display:flex;gap:14px;align-items:center;"><span style="font-size:20px;">🚇</span><span style="font-size:14px;color:#444;"><strong>Metro Line 1</strong> — 3 minute walk to Thao Dien Station</span></div>
-        <div style="display:flex;gap:14px;align-items:center;"><span style="font-size:20px;">🏙️</span><span style="font-size:14px;color:#444;"><strong>District 1</strong> — 15 minutes by car or Grab</span></div>
-        <div style="display:flex;gap:14px;align-items:center;"><span style="font-size:20px;">✈️</span><span style="font-size:20px;font-size:14px;color:#444;"><strong>Tan Son Nhat Airport</strong> — 25 minutes</span></div>
-        <div style="display:flex;gap:14px;align-items:center;"><span style="font-size:20px;">🏫</span><span style="font-size:14px;color:#444;"><strong>International schools</strong> — BVIS, BIS, ISHCMC all nearby</span></div>
+<section id="location" class="location-section">
+  <div class="location-head">
+    <span class="section-eyebrow reveal">Location and Map</span>
+    <h2 class="section-title reveal reveal-delay-1">Thao Dien, where<br/>Saigon slows down beautifully.</h2>
+  </div>
+  <div class="about-location-grid">
+    <div class="reveal reveal-left">
+      <p class="section-body">Thao Dien is District 2's most sought-after expat enclave. Known for its tree-lined streets, international dining scene, boutique cafes, and riverfront lifestyle. It is Saigon at its most liveable.</p>
+      <p class="section-body" style="margin-top:20px;">ipartment is located on Xuan Thuy Street. A quiet, walkable address that puts you 15 minutes from the buzz of District 1, steps from Metro Line 1, surrounded by international schools (BVIS, BIS, ISHCMC) and co-working spaces.</p>
+      <div style="margin-top:32px;">
+        <div class="location-tile"><span class="icon">&#x1F687;</span><span class="txt"><strong>Metro Line 1</strong>, 3 minute walk to Thao Dien Station</span></div>
+        <div class="location-tile"><span class="icon">&#x1F3D9;</span><span class="txt"><strong>District 1</strong>, 15 minutes by car or Grab</span></div>
+        <div class="location-tile"><span class="icon">&#x2708;</span><span class="txt"><strong>Tan Son Nhat Airport</strong>, 25 minutes</span></div>
+        <div class="location-tile"><span class="icon">&#x1F3EB;</span><span class="txt"><strong>International schools</strong>, BVIS, BIS, ISHCMC nearby</span></div>
+        <div class="location-tile"><span class="icon">&#x2615;</span><span class="txt"><strong>Riverside cafes</strong>, within 5 minutes walking</span></div>
       </div>
     </div>
-    <div style="background:var(--gray-light);aspect-ratio:4/3;display:flex;align-items:center;justify-content:center;position:relative;overflow:hidden;">
-      <img src="https://images.unsplash.com/photo-1555396273-367ea4eb4db5?w=700&q=80" alt="Thao Dien neighbourhood" style="width:100%;height:100%;object-fit:cover;display:block;" />
-      <div style="position:absolute;bottom:0;left:0;right:0;background:rgba(0,0,0,0.72);padding:20px 24px;">
-        <p style="font-size:12px;font-weight:700;letter-spacing:0.1em;text-transform:uppercase;color:var(--yellow);">ipartment Vietnam</p>
-        <p style="font-size:14px;color:rgba(255,255,255,0.8);margin-top:4px;">Xuan Thuy Street, Thao Dien, District 2, HCMC</p>
+    <div class="about-map-wrap reveal reveal-right">
+      <div id="about-map" class="map"></div>
+      <div class="map-pin-card">
+        <div class="label">Our Location</div>
+        <div class="name">ipartment Vietnam</div>
+        <div class="address">Xuan Thuy Street, Thao Dien<br/>District 2, Ho Chi Minh City</div>
+        <a href="https://www.openstreetmap.org/?mlat=10.8027&mlon=106.7361#map=16/10.8027/106.7361" target="_blank" rel="noopener" class="directions">Get Directions</a>
       </div>
     </div>
   </div>
 </section>
 
-<footer>
+<section class="about-cta-band">
+  <div class="about-cta-text">
+    <h2 class="about-cta-title">Want to see the apartments yourself?</h2>
+    <p class="about-cta-sub">No account needed, no payment until we confirm, free cancellation.</p>
+  </div>
+  <a href="booking.html" class="btn btn-black btn-lg magnetic">Book my stay</a>
+</section>
+
+<footer class="site-footer">
   <div class="footer-grid">
     <div class="footer-brand">
       <a href="index.html" class="logo">i<span>partment</span></a>
-      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments — designed to live in, not just stay in.</p>
+      <p>Your second home in Thao Dien, Ho Chi Minh City. Premium serviced apartments, designed to live in.</p>
     </div>
-    <div class="footer-col"><h5>Accommodation</h5><ul><li><a href="accommodation.html#xs">Studio XS</a></li><li><a href="accommodation.html#s">Studio S</a></li><li><a href="accommodation.html#m">Apartment M</a></li><li><a href="accommodation.html#l">Long-Stay Suite L</a></li><li><a href="accommodation.html#corporate">Corporate Rates</a></li></ul></div>
-    <div class="footer-col"><h5>Company</h5><ul><li><a href="about.html">About Us</a></li><li><a href="about.html#story">Brand Story</a></li><li><a href="about.html#location">Location & Map</a></li><li><a href="career.html">Career</a></li><li><a href="magazine.html">Magazine</a></li></ul></div>
-    <div class="footer-col"><h5>Contact</h5><ul><li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li><li><a href="tel:+84779488070">+84 779 488 070</a></li><li><a href="#">Xuan Thuy St, Thao Dien</a></li><li style="margin-top:10px;font-size:11px;color:rgba(255,255,255,0.35);font-style:italic;">Penguin &amp; Mun SEO and Website services</li></ul><h5 style="margin-top:28px;">Social</h5><ul><li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li></ul></div>
+    <div class="footer-col">
+      <h5>Accommodation</h5>
+      <ul>
+        <li><a href="accommodation.html#xs">Studio XS</a></li>
+        <li><a href="accommodation.html#s">Studio S</a></li>
+        <li><a href="accommodation.html#m">Apartment M</a></li>
+        <li><a href="accommodation.html#l">Long-Stay Suite L</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Company</h5>
+      <ul>
+        <li><a href="about.html">About Us</a></li>
+        <li><a href="about.html#story">Brand Story</a></li>
+        <li><a href="career.html">Career</a></li>
+        <li><a href="magazine.html">Magazine</a></li>
+        <li><a href="faq.html">FAQ</a></li>
+      </ul>
+    </div>
+    <div class="footer-col">
+      <h5>Contact</h5>
+      <ul>
+        <li><a href="mailto:khangle.forwork@gmail.com">khangle.forwork@gmail.com</a></li>
+        <li><a href="tel:+84779488070">+84 779 488 070</a></li>
+        <li><a href="#location">Xuan Thuy St, Thao Dien</a></li>
+      </ul>
+      <h5 style="margin-top:28px;">Social</h5>
+      <ul>
+        <li><a href="https://www.facebook.com/profile.php?id=61577261575118" target="_blank" rel="noopener">Our Facebook</a></li>
+      </ul>
+    </div>
   </div>
-  <div class="footer-bottom"><span>© 2026 ipartment Vietnam. All rights reserved.</span><div style="display:flex;gap:24px;"><a href="legal.html#privacy">Privacy Policy</a><a href="legal.html#terms">Terms</a></div><span style="color:rgba(255,255,255,0.22);font-style:italic;">This website is only used for educational purposes</span></div>
+  <div class="footer-bottom">
+    <span>&copy; 2026 ipartment Vietnam. All rights reserved.</span>
+    <span class="footer-byline">Penguin &amp; Mun Business Digital Presence</span>
+    <div style="display:flex;gap:24px;">
+      <a href="legal.html#privacy">Privacy Policy</a>
+      <a href="legal.html#terms">Terms</a>
+    </div>
+  </div>
 </footer>
+
+<button class="back-to-top" aria-label="Back to top">&uarr;</button>
+
+<script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
+<script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+<script src="assets/js/supabase-client.js"></script>
+<script src="assets/js/main.js"></script>
+<script src="assets/js/advanced.js"></script>
+<script src="assets/js/pages/about.js"></script>
+<script src="assets/js/chatbot/fuse.min.js"></script>
+<script src="assets/js/chatbot/chatbot-engine.js"></script>
+<script src="assets/js/chatbot/chatbot-capture.js"></script>
+<script src="assets/js/chatbot/chatbot-ui.js"></script>
+<script src="assets/js/finder/finder-quiz.js"></script>
 </body>
 </html>

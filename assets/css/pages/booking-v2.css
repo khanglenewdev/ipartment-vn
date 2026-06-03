@@ -1,0 +1,405 @@
+/* ============================================================
+   BOOKING - CINEMATIC (v2)
+   The chosen direction (Mun, 06.2026). Fullscreen scenes, a sticky
+   glass receipt on the right, and a bottom control bar. This file
+   wraps the LIVE booking logic (booking.js) in the cinematic shell.
+   The original booking.css is kept as a fallback and is no longer
+   linked from booking.html.
+   ============================================================ */
+
+:root {
+  --black: #0a0a0a; --black-deep: #0c0404; --white: #fff;
+  --yellow: #FFED00; --terracotta: #D8613C; --green: #22c55e; --red: #e53935;
+  --font-heading: 'Cormorant Garamond', Georgia, serif;
+  --font-body: 'Inter', sans-serif; --font-mono: 'JetBrains Mono', monospace;
+  --ease: cubic-bezier(0.22, 1, 0.36, 1);
+  --nav-h: 60px;
+  --footer-h: 84px;
+  --receipt-w: 340px;
+}
+
+/* The cinematic booking is designed for the full real viewport, so undo the
+   global zoom that scales down the marketing pages. */
+html { zoom: 1 !important; }
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+html, body { height: 100%; overflow: hidden; }
+body { background: var(--black-deep); color: var(--white); font-family: var(--font-body); font-size: 14px; line-height: 1.5; -webkit-font-smoothing: antialiased; padding-top: 0; }
+
+/* NOISE OVERLAY */
+.grain { position: fixed; inset: 0; z-index: 5; pointer-events: none; mix-blend-mode: overlay; opacity: 0.13; background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3' /%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)' /%3E%3C/svg%3E"); }
+
+/* ============================================================
+   TOP NAV
+   ============================================================ */
+.bnav {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 50;
+  height: var(--nav-h);
+  padding: 0 32px;
+  display: flex; justify-content: space-between; align-items: center;
+  background: linear-gradient(to bottom, rgba(0,0,0,0.7), rgba(0,0,0,0.2) 80%, transparent);
+}
+.bnav-left { display: flex; align-items: center; gap: 18px; }
+.bnav .logo { font-family: var(--font-body); font-weight: 900; font-size: 20px; letter-spacing: -0.02em; color: var(--white); text-decoration: none; }
+.bnav .logo em { font-style: normal; color: var(--yellow); }
+.bnav .back-home { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.65); text-decoration: none; transition: color 0.2s; padding: 6px 10px; border-left: 1px solid rgba(255,255,255,0.15); }
+.bnav .back-home:hover { color: var(--yellow); }
+.bnav .nav-edu { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,237,0,0.55); font-style: italic; }
+.bnav .chapter-pill { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: rgba(255,255,255,0.65); background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.1); padding: 8px 16px; border-radius: 999px; }
+.bnav .chapter-pill b { color: var(--yellow); font-weight: 700; }
+
+/* ============================================================
+   STAGE + SCENES
+   ============================================================ */
+.stage { position: relative; height: 100vh; }
+.scene { position: absolute; inset: 0; opacity: 0; pointer-events: none; transition: opacity 0.7s var(--ease); display: flex; align-items: center; }
+.scene.active { opacity: 1; pointer-events: auto; }
+.scene-bg { position: absolute; inset: 0; background-size: cover; background-position: center; z-index: 1; transform: scale(1.06); transition: transform 8s ease-out; }
+.scene.active .scene-bg { transform: scale(1); }
+.scene-bg::after { content: ''; position: absolute; inset: 0; background: linear-gradient(to right, rgba(0,0,0,0.88) 0%, rgba(0,0,0,0.55) 55%, rgba(0,0,0,0.85) 100%); }
+
+.scene-inner {
+  position: relative; z-index: 10;
+  width: 100%; max-width: 1320px; margin: 0 auto;
+  padding: calc(var(--nav-h) + 28px) calc(var(--receipt-w) + 96px) calc(var(--footer-h) + 24px) 64px;
+  display: grid; grid-template-columns: 1.1fr 1fr; gap: 56px;
+  align-items: center;
+  height: 100vh;
+}
+
+.chapter-num { font-family: var(--font-mono); font-size: 11px; letter-spacing: 0.3em; text-transform: uppercase; color: var(--yellow); margin-bottom: 18px; display: inline-flex; align-items: center; gap: 14px; }
+.chapter-num::before { content: ''; width: 36px; height: 1px; background: var(--yellow); }
+.scene h2 { font-family: var(--font-heading); font-weight: 500; font-size: clamp(40px, 5.5vw, 84px); line-height: 0.95; letter-spacing: -0.025em; margin-bottom: 20px; }
+.scene h2 em { font-style: italic; color: var(--yellow); }
+.scene .deck { font-family: var(--font-heading); font-style: italic; font-size: 18px; line-height: 1.45; color: rgba(255,255,255,0.82); max-width: 480px; }
+
+/* ============================================================
+   FORM PANEL (right column of each scene)
+   ============================================================ */
+.panel {
+  background: rgba(255,255,255,0.05);
+  backdrop-filter: blur(24px) saturate(180%); -webkit-backdrop-filter: blur(24px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.12);
+  border-radius: 20px;
+  padding: 20px 22px;
+  box-shadow: 0 30px 80px -20px rgba(0,0,0,0.5);
+  max-height: calc(100vh - var(--nav-h) - var(--footer-h) - 48px);
+  overflow: hidden auto;
+}
+.panel .label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); margin-bottom: 12px; }
+.panel .sub-note { font-size: 11px; color: rgba(255,255,255,0.5); margin: -6px 0 12px; line-height: 1.5; }
+
+/* ROOM picker (live .room-btn buttons, cinematic look) */
+.room-list { display: flex; flex-direction: column; gap: 8px; }
+.room-btn { display: flex; align-items: center; gap: 14px; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1.5px solid transparent; cursor: pointer; transition: all 0.25s; width: 100%; text-align: left; font-family: var(--font-body); color: var(--white); }
+.room-btn:hover { background: rgba(255,255,255,0.08); transform: translateX(3px); }
+.room-btn.selected { background: var(--yellow); border-color: var(--yellow); color: var(--black); transform: translateX(3px); }
+.room-btn .b { width: 42px; height: 42px; background: var(--yellow); color: var(--black); display: flex; align-items: center; justify-content: center; font-family: var(--font-heading); font-weight: 700; font-size: 19px; border-radius: 9px; flex-shrink: 0; }
+.room-btn.selected .b { background: var(--black); color: var(--yellow); }
+.room-btn .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 3px; }
+.room-btn .nm { font-family: var(--font-heading); font-weight: 600; font-size: 20px; line-height: 1; }
+.room-btn .nm em { font-style: italic; }
+.room-btn .meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.55); margin-top: 4px; }
+.room-btn.selected .meta { color: rgba(0,0,0,0.6); }
+.room-btn .p { font-family: var(--font-mono); font-weight: 600; font-size: 13px; }
+
+/* CALENDAR (single month, cinematic) - classes emitted by booking.js buildMonth */
+#calendar-container .cal-month { width: 100%; }
+.cal-head { display: flex; justify-content: space-between; align-items: baseline; padding-bottom: 10px; border-bottom: 1px solid rgba(255,255,255,0.1); margin-bottom: 10px; }
+.cal-head .m { font-family: var(--font-heading); font-weight: 600; font-size: 19px; letter-spacing: -0.01em; }
+.cal-head .m em { font-style: italic; color: var(--yellow); }
+.cal-head .arrows { display: flex; gap: 10px; }
+.cal-head .arrows span { font-family: var(--font-mono); color: var(--yellow); font-size: 16px; cursor: pointer; user-select: none; padding: 2px 8px; border-radius: 6px; transition: background 0.15s; }
+.cal-head .arrows span:hover { background: rgba(255,237,0,0.12); }
+.cal { display: grid; grid-template-columns: repeat(7, minmax(0, 1fr)); gap: 3px; }
+.cal-lbl { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-align: center; color: rgba(255,255,255,0.4); text-transform: uppercase; padding: 2px 0; }
+.cal-day { min-width: 0; height: 40px; display: flex; align-items: center; justify-content: center; font-size: 12px; font-weight: 500; cursor: pointer; border-radius: 7px; transition: background 0.15s; color: rgba(255,255,255,0.8); }
+.cal-day:hover:not(.cal-empty):not(.dis):not(.booked) { background: rgba(255,255,255,0.1); }
+.cal-day.cal-empty, .cal-day.dis { color: rgba(255,255,255,0.2); cursor: default; }
+.cal-day.cal-empty { pointer-events: none; }
+.cal-day.booked { color: rgba(255,255,255,0.2); cursor: not-allowed; text-decoration: line-through; }
+.cal-day.in, .cal-day.out { background: var(--yellow); color: var(--black); font-weight: 700; }
+.cal-day.range { background: rgba(255,237,0,0.15); color: var(--white); border-radius: 0; }
+.cal-day.in { border-radius: 7px 0 0 7px; }
+.cal-day.out { border-radius: 0 7px 7px 0; }
+.cal-day.in.out { border-radius: 7px; }
+.cal-day.today { box-shadow: inset 0 0 0 1.5px var(--yellow); }
+
+#avail-notice { display: none; background: rgba(229,57,53,0.12); border: 1px solid rgba(229,57,53,0.4); border-radius: 10px; padding: 10px 14px; font-size: 12px; color: #fca5a5; margin-top: 12px; }
+
+/* GUEST stepper */
+.guest-line { display: flex; align-items: center; gap: 12px; padding: 10px 0 12px; margin-bottom: 6px; border-bottom: 1px solid rgba(255,255,255,0.1); }
+.guest-line .lbl { font-family: var(--font-heading); font-style: italic; font-size: 18px; flex: 1; }
+.guest-line button { width: 32px; height: 32px; background: rgba(255,255,255,0.06); border: 1.5px solid rgba(255,255,255,0.18); color: var(--white); cursor: pointer; font-size: 18px; border-radius: 9px; font-family: var(--font-body); display: flex; align-items: center; justify-content: center; }
+.guest-line button:hover { background: var(--yellow); color: var(--black); border-color: var(--yellow); }
+.guest-line .val { font-family: var(--font-heading); font-weight: 700; font-size: 24px; min-width: 32px; text-align: center; }
+.guest-max-hint { font-family: var(--font-mono); font-size: 9px; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.45); margin-bottom: 14px; }
+
+/* EXTRAS (live .extra-card cards, cinematic look) */
+.extras { display: flex; flex-direction: column; gap: 8px; }
+.extra-card { display: flex; align-items: center; gap: 12px; padding: 13px 16px; border-radius: 12px; background: rgba(255,255,255,0.04); border: 1.5px solid transparent; cursor: pointer; transition: all 0.25s; }
+.extra-card:hover { background: rgba(255,255,255,0.08); }
+.extra-card.selected { background: rgba(255,237,0,0.1); border-color: var(--yellow); }
+.extra-card .ico { width: 36px; height: 36px; border-radius: 9px; background: rgba(255,255,255,0.08); display: flex; align-items: center; justify-content: center; font-size: 16px; flex-shrink: 0; }
+.extra-card.selected .ico { background: var(--yellow); color: var(--black); }
+.extra-card .info { flex: 1; min-width: 0; display: flex; flex-direction: column; gap: 2px; }
+.extra-card .nm { font-family: var(--font-heading); font-weight: 600; font-size: 18px; line-height: 1.1; }
+.extra-card .desc { font-size: 11px; color: rgba(255,255,255,0.6); margin-top: 2px; }
+.extra-card .p { font-family: var(--font-mono); font-weight: 600; font-size: 12px; color: var(--yellow); }
+.extra-card .toggle { width: 20px; height: 20px; border-radius: 5px; border: 2px solid rgba(255,255,255,0.3); display: flex; align-items: center; justify-content: center; font-size: 12px; color: transparent; transition: all 0.2s; flex-shrink: 0; }
+.extra-card.selected .toggle { background: var(--yellow); border-color: var(--yellow); color: var(--black); }
+
+/* FORM fields (live #guest-* inputs) */
+.fg { margin-bottom: 12px; }
+.fg label { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: var(--yellow); display: block; margin-bottom: 5px; }
+.fg input, .fg select, .fg textarea { width: 100%; background: rgba(255,255,255,0.04); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 10px; padding: 11px 14px; color: var(--white); font-family: var(--font-body); font-size: 14px; font-weight: 500; transition: all 0.2s; }
+.fg input:focus, .fg select:focus, .fg textarea:focus { outline: none; background: rgba(255,255,255,0.08); border-color: var(--yellow); }
+.fg input::placeholder { color: rgba(255,255,255,0.35); }
+.fg select option { background: var(--black); color: var(--white); }
+.fg input.invalid, .form-input.invalid { border-color: var(--red) !important; }
+@keyframes fieldShake { 0%,100% { transform: translateX(0); } 20%,60% { transform: translateX(-6px); } 40%,80% { transform: translateX(6px); } }
+.shake { animation: fieldShake 0.4s ease; }
+
+.promo-row { display: flex; gap: 8px; }
+.promo-row input { flex: 1; }
+.promo-apply { background: var(--yellow); color: var(--black); border: none; border-radius: 10px; padding: 0 18px; font-family: var(--font-mono); font-weight: 700; font-size: 11px; letter-spacing: 0.1em; text-transform: uppercase; cursor: pointer; flex-shrink: 0; }
+.promo-apply:hover { background: var(--white); }
+#promo-msg { display: none; font-size: 11px; margin-top: 8px; padding: 8px 11px; border-radius: 8px; line-height: 1.45; }
+#promo-msg.promo-err { color: var(--yellow); border: 1px solid rgba(255,237,0,0.45); background: rgba(255,237,0,0.07); }
+#promo-msg.promo-ok { color: #bbf7d0; border: 1px solid rgba(34,197,94,0.4); background: rgba(34,197,94,0.1); }
+#promo-msg a { color: var(--yellow); font-weight: 700; text-decoration: underline; }
+#promo-chips { margin-bottom: 10px; }
+
+.terms { display: flex; gap: 10px; align-items: flex-start; font-size: 11px; color: rgba(255,255,255,0.65); line-height: 1.5; margin-top: 8px; }
+.terms input { margin-top: 2px; accent-color: var(--yellow); flex-shrink: 0; }
+.terms a { color: var(--yellow); }
+
+#guest-known { display: none; background: rgba(34,197,94,0.12); border: 1px solid rgba(34,197,94,0.35); border-radius: 10px; padding: 11px 14px; font-size: 13px; color: #bbf7d0; margin-bottom: 12px; }
+#guest-msg { font-size: 12px; margin-top: 8px; }
+
+#guest-account-nudge { margin-top: 10px; }
+#guest-account-nudge .acct-label { display: flex; gap: 10px; align-items: flex-start; background: rgba(255,237,0,0.06); border: 1px solid rgba(255,237,0,0.22); border-radius: 10px; padding: 11px 13px; font-size: 12px; color: rgba(255,255,255,0.75); line-height: 1.45; cursor: pointer; }
+#guest-account-nudge .acct-label input { margin-top: 2px; accent-color: var(--yellow); flex-shrink: 0; }
+#guest-pass-wrap { display: none; margin-top: 10px; }
+
+.booking-trust-row { display: flex; flex-wrap: wrap; gap: 8px 16px; margin-top: 12px; }
+.booking-trust-row span { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.06em; color: rgba(255,255,255,0.55); }
+
+/* ============================================================
+   STICKY GLASS RECEIPT (right edge)
+   ============================================================ */
+.receipt {
+  position: fixed;
+  top: 50%;
+  transform: translateY(-50%);
+  right: 32px;
+  width: var(--receipt-w);
+  z-index: 30;
+  background:
+    linear-gradient(160deg, rgba(216,97,60,0.22) 0%, rgba(216,97,60,0.08) 45%, rgba(10,10,10,0.4) 100%),
+    rgba(255,255,255,0.04);
+  backdrop-filter: blur(28px) saturate(180%);
+  -webkit-backdrop-filter: blur(28px) saturate(180%);
+  border: 1px solid rgba(255,255,255,0.14);
+  border-radius: 22px;
+  padding: 20px 22px;
+  box-shadow: 0 40px 100px -30px rgba(0,0,0,0.7), 0 0 0 1px rgba(255,237,0,0.04) inset;
+  animation: receiptFloat 5s ease-in-out infinite alternate;
+  max-height: calc(100vh - var(--nav-h) - var(--footer-h) - 40px);
+  overflow: hidden;
+}
+@keyframes receiptFloat { from { transform: translateY(calc(-50% - 5px)); } to { transform: translateY(calc(-50% + 5px)); } }
+
+.receipt .h { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.2em; text-transform: uppercase; color: var(--yellow); margin-bottom: 10px; display: flex; align-items: center; gap: 8px; }
+.receipt .h::before { content: ''; width: 7px; height: 7px; background: var(--yellow); border-radius: 50%; box-shadow: 0 0 10px var(--yellow); animation: livePulse 1.8s infinite; }
+@keyframes livePulse { 0%,100% { opacity: 1; } 50% { opacity: 0.35; } }
+
+.receipt h3 { font-family: var(--font-heading); font-weight: 600; font-size: 26px; line-height: 1; letter-spacing: -0.01em; color: var(--white); }
+.receipt h3 em { font-style: italic; color: var(--yellow); }
+.receipt .meta { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 4px; }
+
+.itin { padding: 12px 0; margin: 12px 0; border-top: 1px solid rgba(255,255,255,0.1); border-bottom: 1px solid rgba(255,255,255,0.1); }
+.itin-row { display: flex; justify-content: space-between; align-items: baseline; padding: 4px 0; }
+.itin-row .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.itin-row .v { font-family: var(--font-heading); font-size: 15px; font-weight: 600; color: var(--white); }
+.itin-row .v em { font-style: italic; color: var(--yellow); }
+
+.lines { display: flex; flex-direction: column; gap: 4px; margin-bottom: 10px; }
+.lines .l { display: flex; justify-content: space-between; font-size: 12px; color: rgba(255,255,255,0.7); gap: 12px; }
+.lines .l .v { font-family: var(--font-mono); font-weight: 500; white-space: nowrap; }
+.lines .l.disc .v { color: var(--green); font-weight: 600; }
+
+.total { display: flex; justify-content: space-between; align-items: center; padding-top: 12px; border-top: 1px solid rgba(255,255,255,0.18); }
+.total .k { font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.7); line-height: 1; }
+.total .v { font-family: var(--font-heading); font-weight: 600; font-size: 30px; letter-spacing: -0.01em; color: var(--yellow); transition: transform 0.3s; line-height: 1; font-variant-numeric: lining-nums tabular-nums; display: inline-block; }
+.total .v.pulse { transform: scale(1.08); }
+
+/* ============================================================
+   BOTTOM CONTROL BAR
+   ============================================================ */
+.controls {
+  position: fixed; bottom: 0; left: 0; right: 0; z-index: 40;
+  height: var(--footer-h);
+  background: linear-gradient(to top, rgba(0,0,0,0.85), rgba(0,0,0,0.3) 80%, transparent);
+  display: flex; align-items: center; justify-content: center;
+  padding: 0 40px 18px;
+}
+.controls-inner { display: flex; align-items: center; gap: 24px; width: 100%; max-width: 1100px; }
+
+.nav-btn {
+  display: inline-flex; align-items: center; gap: 10px;
+  font-family: var(--font-mono); font-weight: 700; font-size: 12px;
+  letter-spacing: 0.16em; text-transform: uppercase;
+  padding: 14px 22px; border-radius: 999px;
+  cursor: pointer; text-decoration: none;
+  border: 1.5px solid rgba(255,255,255,0.25); background: rgba(255,255,255,0.06);
+  color: var(--white); backdrop-filter: blur(12px); -webkit-backdrop-filter: blur(12px);
+  transition: all 0.25s var(--ease);
+  flex-shrink: 0;
+}
+.nav-btn:hover:not(:disabled) { background: rgba(255,255,255,0.12); border-color: rgba(255,255,255,0.4); }
+.nav-btn:disabled { opacity: 0.35; cursor: not-allowed; }
+.nav-btn.primary { background: var(--yellow); color: var(--black); border-color: var(--yellow); box-shadow: 0 12px 36px -8px rgba(255,237,0,0.45); }
+.nav-btn.primary:hover:not(:disabled) { background: var(--white); border-color: var(--white); transform: translateY(-2px); box-shadow: 0 16px 44px -8px rgba(255,237,0,0.65); }
+
+.progress { flex: 1; display: flex; align-items: center; gap: 12px; font-family: var(--font-mono); font-size: 10px; letter-spacing: 0.18em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.progress .step-count b { color: var(--yellow); font-weight: 700; }
+.progress-bar { flex: 1; height: 2px; background: rgba(255,255,255,0.15); position: relative; overflow: hidden; }
+.progress-bar::after { content: ''; position: absolute; left: 0; top: 0; bottom: 0; width: var(--p, 20%); background: var(--yellow); transition: width 0.5s var(--ease); box-shadow: 0 0 12px rgba(255,237,0,0.5); }
+
+/* ============================================================
+   CONFIRMATION SCENE
+   ============================================================ */
+.scene[data-scene="5"] { overflow-y: auto; }
+.scene[data-scene="5"] .scene-inner { grid-template-columns: 1fr; padding-right: 64px; align-items: start; height: auto; min-height: 100vh; }
+.conf { text-align: center; width: 100%; max-width: 620px; margin: 0 auto; }
+.conf .stamp { display: inline-flex; align-items: center; justify-content: center; width: 56px; height: 56px; background: var(--yellow); color: var(--black); border-radius: 50%; font-size: 28px; margin: 0 auto 24px; animation: pop 0.8s var(--ease); }
+@keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
+.conf h2 { font-size: clamp(50px, 8vw, 110px); margin-bottom: 14px; }
+.conf .ref { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.24em; color: var(--yellow); margin-bottom: 24px; }
+.conf-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 20px 0 8px; }
+
+#conf-details { text-align: left; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 16px 20px; margin: 0 auto 8px; max-width: 520px; }
+.conf-row { display: flex; justify-content: space-between; gap: 16px; padding: 7px 0; border-bottom: 1px solid rgba(255,255,255,0.08); font-size: 13px; }
+.conf-row:last-child { border-bottom: none; }
+.conf-row .cl { color: rgba(255,255,255,0.5); }
+.conf-row .cv { font-weight: 600; text-align: right; color: var(--white); }
+
+#post-booking-form { text-align: left; max-width: 540px; margin: 18px auto 40px; background: rgba(255,255,255,0.04); border: 1px solid rgba(255,255,255,0.1); border-radius: 14px; padding: 22px 24px; }
+#post-booking-form h3 { font-family: var(--font-heading); font-size: 24px; font-weight: 600; margin-bottom: 4px; }
+#post-booking-form .intro { font-size: 12px; color: rgba(255,255,255,0.55); margin-bottom: 16px; }
+#pref-wishlist { display: flex; flex-wrap: wrap; gap: 8px; margin-top: 8px; }
+.pref-chip { display: inline-flex; align-items: center; gap: 7px; background: rgba(255,255,255,0.05); border: 1px solid rgba(255,255,255,0.15); border-radius: 8px; padding: 8px 12px; font-size: 12px; color: rgba(255,255,255,0.8); cursor: pointer; }
+.pref-chip:hover { background: rgba(255,255,255,0.1); border-color: var(--yellow); }
+.pref-chip input { accent-color: var(--yellow); }
+.pref-submit { background: var(--yellow); color: var(--black); border: none; border-radius: 999px; padding: 12px 28px; font-family: var(--font-mono); font-weight: 700; font-size: 11px; letter-spacing: 0.14em; text-transform: uppercase; cursor: pointer; margin-top: 6px; }
+.pref-submit:hover { background: var(--white); }
+#pref-msg { display: none; font-size: 13px; margin-top: 12px; color: #bbf7d0; }
+
+/* ============================================================
+   SCENE 4 (Guest details) - the panel carries the most content, so the
+   headline is shrunk and raised to the top-left, the panel stays centered
+   (aligned with the receipt) and is condensed so it never reaches the controls.
+   ============================================================ */
+.scene[data-scene="4"] .scene-inner > div:first-child { align-self: start; }
+.scene[data-scene="4"] h2 { margin-bottom: 14px; }
+.scene[data-scene="4"] .deck { font-size: 16px; }
+.scene[data-scene="4"] .panel .label { margin-bottom: 8px; }
+.scene[data-scene="4"] .sub-note { margin: -4px 0 10px; }
+.scene[data-scene="4"] .fg { margin-bottom: 9px; }
+.scene[data-scene="4"] #guest-account-nudge { margin-top: 8px; }
+.scene[data-scene="4"] .booking-trust-row { margin-top: 10px; gap: 6px 14px; }
+
+/* ============================================================
+   TABLET / SMALLER LAPTOPS (1200px and down)
+   ============================================================ */
+@media (max-width: 1200px) {
+  :root { --receipt-w: 300px; }
+  .scene-inner { padding-right: calc(var(--receipt-w) + 60px); }
+  .receipt { right: 20px; }
+}
+
+/* ============================================================
+   MOBILE / TABLET PORTRAIT (1000px and down) - vertical scroll
+   ============================================================ */
+@media (max-width: 1000px) {
+  html, body { overflow-y: auto; height: auto; }
+  .stage { height: auto; }
+  .scene { position: relative; opacity: 1; pointer-events: auto; min-height: auto; padding: 80px 0 24px; }
+  .scene-inner { grid-template-columns: 1fr; padding: 0 20px; gap: 24px; height: auto; }
+  .scene[data-scene="5"] .scene-inner { padding: 0 20px; min-height: 0; }
+  .panel { overflow: visible; }
+  .receipt { position: relative; top: 0; right: 0; width: auto; max-width: none; margin: 0 20px 110px; animation: none; overflow: visible; max-height: none; }
+  .bnav { padding: 0 16px; }
+  .bnav .chapter-pill { display: none; }
+  .bnav .nav-edu { display: none; }
+  .controls { padding: 0 16px 12px; height: 72px; }
+  .controls-inner { gap: 10px; }
+  .nav-btn { padding: 12px 14px; font-size: 10px; letter-spacing: 0.12em; gap: 6px; }
+  .progress .step-count { display: none; }
+}
+
+/* ============================================================
+   PHONE (640px and down)
+   ============================================================ */
+@media (max-width: 640px) {
+  :root { --nav-h: 54px; --footer-h: 80px; }
+  body { font-size: 13px; }
+  .bnav { padding: 0 14px; }
+  .bnav-left { gap: 10px; }
+  .bnav .logo { font-size: 17px; }
+  .bnav .back-home { font-size: 9px; letter-spacing: 0.14em; padding: 4px 6px; }
+  .scene { padding: 70px 0 20px; }
+  .scene-inner { padding: 0 16px; gap: 20px; }
+  .scene h2 { font-size: clamp(34px, 9vw, 52px); margin-bottom: 14px; }
+  .scene .deck { font-size: 15px; line-height: 1.4; }
+  .chapter-num { font-size: 10px; letter-spacing: 0.22em; margin-bottom: 14px; }
+  .chapter-num::before { width: 24px; }
+  .panel { padding: 18px; border-radius: 16px; }
+  .panel .label { font-size: 9px; letter-spacing: 0.16em; margin-bottom: 10px; }
+  .room-list { gap: 8px; }
+  .room-btn { padding: 11px 14px; gap: 12px; border-radius: 11px; }
+  .room-btn .b { width: 38px; height: 38px; font-size: 17px; border-radius: 8px; }
+  .room-btn .nm { font-size: 18px; }
+  .room-btn .meta { font-size: 9px; }
+  .room-btn .p { font-size: 12px; }
+  .cal-head .m { font-size: 17px; }
+  .cal-day { font-size: 12px; border-radius: 6px; }
+  .x-row, .extra-card { padding: 11px 14px; gap: 11px; border-radius: 11px; }
+  .extra-card .ico { width: 32px; height: 32px; font-size: 14px; border-radius: 8px; }
+  .extra-card .nm { font-size: 16px; }
+  .extra-card .desc { font-size: 10px; }
+  .extra-card .p { font-size: 11px; }
+  .guest-line .lbl { font-size: 16px; }
+  .guest-line button { width: 30px; height: 30px; font-size: 16px; }
+  .guest-line .val { font-size: 22px; min-width: 28px; }
+  .fg { margin-bottom: 10px; }
+  .fg input, .fg select { padding: 10px 12px; font-size: 14px; }
+  .receipt { margin: 0 16px 96px; padding: 18px; border-radius: 18px; }
+  .receipt h3 { font-size: 24px; }
+  .total .v { font-size: 28px; }
+  .controls { padding: 0 12px 10px; height: 70px; }
+  .controls-inner { gap: 8px; }
+  .nav-btn { padding: 11px 14px; font-size: 10px; letter-spacing: 0.1em; gap: 4px; }
+  .progress { gap: 6px; }
+  .progress-bar { display: none; }
+  .progress .step-count:first-child { display: block; font-size: 9px; }
+  .progress .step-count:last-child { display: none; }
+  .conf .stamp { width: 48px; height: 48px; font-size: 24px; margin-bottom: 20px; }
+  .conf h2 { font-size: clamp(42px, 12vw, 64px); }
+  .conf .ref { font-size: 11px; letter-spacing: 0.18em; margin-bottom: 20px; }
+  .conf-actions .nav-btn { flex: 1; min-width: 130px; }
+}
+
+/* ============================================================
+   SMALL PHONE (380px and down)
+   ============================================================ */
+@media (max-width: 380px) {
+  .scene h2 { font-size: 30px; }
+  .scene .deck { font-size: 14px; }
+  .panel { padding: 16px; }
+  .room-btn .nm, .extra-card .nm { font-size: 16px; }
+  .cal { gap: 2px; }
+  .cal-day { font-size: 11px; }
+  .nav-btn { padding: 10px 12px; font-size: 9px; }
+}

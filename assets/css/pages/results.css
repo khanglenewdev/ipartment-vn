@@ -1,0 +1,149 @@
+/* ============================================================
+   Results (Liquid Glass). body.lg sets the dark canvas + glass
+   chrome; this file lays out search results on dark glass.
+   Cards are injected by assets/js/pages/results.js into #results-list,
+   so every .room-* / .rate-* / .btn-book / .btn-details class here
+   must match what the JS emits.
+   ============================================================ */
+
+/* ===== SUMMARY STRIP (dates / guests / nights) ========================== */
+/* Sticky glass bar. Sits below the floating nav: top offset clears it and
+   the first paint pushes content out from under the fixed pill. */
+/* On the results page the search summary is the TOP bar; the floating nav
+   sits BELOW it (per request). Both are fixed; content clears them. */
+.summary-strip {
+  position: fixed; top: 0; left: 0; right: 0; z-index: 10000;
+  display: flex; align-items: center; gap: 24px; flex-wrap: wrap;
+  padding: 16px 56px;
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+  -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+  border-bottom: 1px solid var(--glass-border-hi);
+  box-shadow: var(--shadow-glass-sm);
+}
+/* push the floating nav pill down so it lands under the search bar */
+body.lg .site-header { top: 66px; }
+.summary-item { display: flex; flex-direction: column; gap: 3px; padding-right: 24px; border-right: 1px solid rgba(255,255,255,0.1); }
+.summary-item:last-of-type { border-right: none; }
+.summary-item .lbl { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.16em; text-transform: uppercase; color: rgba(255,255,255,0.5); }
+.summary-item .val { font-size: 14px; font-weight: 600; color: #fff; }
+.summary-nights { background: var(--yellow); color: #0a0a0a; font-family: var(--font-mono); font-size: 11px; font-weight: 700; letter-spacing: 0.08em; padding: 6px 16px; border-radius: 999px; margin-left: auto; }
+.summary-edit {
+  background: var(--glass-base); color: #fff;
+  border: 1px solid var(--glass-border-hi); border-radius: 999px;
+  backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm));
+  padding: 8px 18px; cursor: pointer; text-decoration: none;
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
+  transition: background 0.2s, border-color 0.2s, color 0.2s;
+}
+.summary-edit:hover { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); }
+
+/* ===== LAYOUT ========================================================== */
+.results-wrap { max-width: 1200px; margin: 0 auto; padding: 150px 40px 80px; }
+.results-header { display: flex; justify-content: space-between; align-items: flex-end; margin-bottom: 28px; flex-wrap: wrap; gap: 16px; }
+.results-title { font-family: var(--font-heading); font-weight: 500; font-size: clamp(30px, 3.4vw, 44px); line-height: 1.05; letter-spacing: -0.02em; color: #fff; }
+.results-title em { font-style: italic; color: var(--yellow); }
+.results-sub { font-size: 13px; color: rgba(255,255,255,0.55); margin-top: 8px; }
+
+/* ===== SORT (glass pill toggles) ======================================= */
+.sort-wrap { display: flex; align-items: center; gap: 8px; flex-wrap: wrap; }
+.sort-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.14em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-right: 2px; }
+.sort-btn {
+  padding: 8px 16px; border-radius: 999px; cursor: pointer;
+  background: var(--glass-base-soft); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase;
+  color: rgba(255,255,255,0.7); transition: all 0.2s;
+}
+.sort-btn:hover { color: #fff; border-color: var(--glass-border-hi); }
+.sort-btn.active { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); font-weight: 700; }
+
+/* ===== TIER INFO + NO-DATES banners ==================================== */
+.tier-info {
+  display: flex; gap: 18px; align-items: center; flex-wrap: wrap;
+  padding: 16px 22px; margin-bottom: 28px;
+  background: var(--glass-base); border: 1px solid var(--glass-border);
+  border-left: 3px solid var(--yellow); border-radius: 0 14px 14px 0;
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+}
+.tier-info-icon { font-size: 22px; flex-shrink: 0; }
+.tier-info-text { flex: 1; font-size: 14px; line-height: 1.55; color: rgba(255,255,255,0.78); }
+.tier-info-text strong { color: var(--yellow); }
+
+.no-dates-banner {
+  display: flex; align-items: center; gap: 16px; flex-wrap: wrap;
+  padding: 18px 26px; margin-bottom: 28px;
+  background: var(--glass-base); border: 1px solid var(--glass-border-hi); border-radius: 14px;
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+}
+.no-dates-banner p { flex: 1; font-size: 13px; color: rgba(255,255,255,0.78); line-height: 1.55; }
+.no-dates-banner p strong { color: var(--yellow); }
+.no-dates-banner a { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: var(--yellow); text-decoration: none; white-space: nowrap; border-bottom: 1px solid rgba(255,237,0,0.4); padding-bottom: 2px; transition: color 0.2s, border-color 0.2s; }
+.no-dates-banner a:hover { color: #fff; border-color: #fff; }
+
+/* ===== ROOM RESULT CARDS (glass cards, vertical stack) ================= */
+/* Injected by results.js. Image block left, body right; stacks on mobile. */
+.room-result-card {
+  display: grid; grid-template-columns: 360px 1fr; overflow: hidden;
+  margin-bottom: 20px; border-radius: 18px;
+  background: var(--glass-base); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-md)) saturate(150%); -webkit-backdrop-filter: blur(var(--blur-md)) saturate(150%);
+  box-shadow: var(--shadow-glass-md);
+  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease), box-shadow 0.3s var(--ease);
+}
+.room-result-card:hover { transform: translateY(-4px); border-color: rgba(255,237,0,0.4); box-shadow: var(--shadow-glass-lg); }
+
+.room-img-block { position: relative; overflow: hidden; min-height: 280px; background: #160c0c; }
+.room-img-block img { width: 100%; height: 100%; object-fit: cover; display: block; transition: transform 0.6s var(--ease); }
+.room-result-card:hover .room-img-block img { transform: scale(1.06); }
+.room-img-badge { position: absolute; top: 14px; left: 14px; background: var(--yellow); color: #0a0a0a; font-family: var(--font-mono); font-size: 10px; font-weight: 700; letter-spacing: 0.12em; text-transform: uppercase; padding: 5px 11px; border-radius: 999px; }
+.room-img-size { position: absolute; bottom: 0; left: 0; right: 0; background: linear-gradient(to top, rgba(0,0,0,0.8), transparent); padding: 24px 18px 14px; color: #fff; font-size: 13px; font-weight: 600; }
+
+.room-body { padding: 28px 32px; display: flex; flex-direction: column; }
+.room-cat { font-family: var(--font-heading); font-size: 52px; font-weight: 700; color: var(--yellow); line-height: 1; letter-spacing: -0.02em; margin-bottom: 2px; }
+.room-name { font-family: var(--font-heading); font-size: 26px; font-weight: 600; color: #fff; line-height: 1.1; margin-bottom: 10px; }
+.room-promo-line { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; color: var(--green); margin-bottom: 12px; }
+.room-desc { font-size: 14px; color: rgba(255,255,255,0.7); line-height: 1.7; margin-bottom: 18px; flex: 1; }
+.room-amenities { display: flex; flex-wrap: wrap; gap: 7px; margin-bottom: 20px; }
+.amenity-tag {
+  font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
+  padding: 5px 11px; border-radius: 999px;
+  background: var(--glass-base-soft); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.72);
+}
+.room-footer { display: flex; align-items: flex-end; justify-content: space-between; gap: 18px; flex-wrap: wrap; padding-top: 18px; border-top: 1px solid rgba(255,255,255,0.1); }
+
+.room-pricing { display: flex; flex-direction: column; }
+.rate-label { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-bottom: 6px; }
+.rate-main { font-family: var(--font-heading); font-size: 30px; font-weight: 700; color: #fff; line-height: 1; font-variant-numeric: lining-nums tabular-nums; }
+.rate-unit { font-size: 12px; color: rgba(255,255,255,0.5); margin-top: 4px; }
+.rate-total { font-size: 13px; font-weight: 600; color: #fff; margin-top: 6px; font-variant-numeric: lining-nums tabular-nums; }
+.rate-original { font-size: 12px; color: rgba(255,255,255,0.4); text-decoration: line-through; margin-top: 2px; font-variant-numeric: lining-nums tabular-nums; }
+.rate-discount { display: inline-block; background: rgba(34,197,94,0.16); color: #4ade80; border: 1px solid rgba(34,197,94,0.3); font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; padding: 3px 9px; border-radius: 999px; margin-top: 8px; }
+
+.btn-book {
+  display: inline-block; white-space: nowrap; cursor: pointer; text-decoration: none;
+  background: var(--yellow); color: #0a0a0a;
+  font-family: var(--font-body); font-size: 13px; font-weight: 600; letter-spacing: 0.02em;
+  padding: 15px 28px; border: none; border-radius: 999px;
+  box-shadow: 0 12px 36px -10px rgba(255,237,0,0.4);
+  transition: transform 0.25s var(--ease), background 0.25s, box-shadow 0.25s;
+}
+.btn-book:hover { background: #fff; color: #0a0a0a; transform: translateY(-2px); box-shadow: 0 16px 48px -10px rgba(255,237,0,0.5); }
+.btn-details { display: block; text-align: center; margin-top: 11px; text-decoration: none; font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.55); transition: color 0.2s; }
+.btn-details:hover { color: var(--yellow); }
+
+/* ===== RESPONSIVE ====================================================== */
+@media (max-width: 900px) {
+  .summary-strip { padding: 12px 16px; gap: 10px 12px; }
+  body.lg .site-header { top: 60px; }
+  .summary-item { padding-right: 12px; }
+  .summary-item .lbl { font-size: 9px; }
+  .summary-item .val { font-size: 12px; }
+  .summary-edit { padding: 6px 14px; }
+  .results-wrap { padding: 132px 16px 60px; }
+  .room-result-card { grid-template-columns: 1fr; }
+  .room-img-block { min-height: 200px; }
+  .results-header { flex-direction: column; align-items: flex-start; }
+  .room-cat { font-size: 40px; }
+  .room-body { padding: 22px 20px; }
+}

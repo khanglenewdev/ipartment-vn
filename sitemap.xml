@@ -1,0 +1,43 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- sitemap.xml for ipartment Vietnam. Lives at the site ROOT.
+     Domain is a placeholder (ipartment.vn) - swap at deploy, then submit in
+     Google Search Console AND Bing Webmaster Tools.
+     Lists PUBLIC indexable pages only. Excludes admin, my-account (private),
+     results (dynamic) and legal by design. -->
+<urlset xmlns="http://www.sitemaps.org/schemas/sitemap/0.9">
+  <url>
+    <loc>https://ipartment.vn/</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>1.0</priority>
+  </url>
+  <url>
+    <loc>https://ipartment.vn/accommodation.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ipartment.vn/booking.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>0.9</priority>
+  </url>
+  <url>
+    <loc>https://ipartment.vn/about.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipartment.vn/magazine.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>0.7</priority>
+  </url>
+  <url>
+    <loc>https://ipartment.vn/faq.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>0.6</priority>
+  </url>
+  <url>
+    <loc>https://ipartment.vn/career.html</loc>
+    <lastmod>2026-06-02</lastmod>
+    <priority>0.5</priority>
+  </url>
+</urlset>

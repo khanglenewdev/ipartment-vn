@@ -1,0 +1,109 @@
+/* ============================================================
+   Career (Liquid Glass). body.lg sets the dark canvas + glass
+   chrome; this file lays out the page on dark glass: glass value
+   tiles, glass open-position rows, and a glass application modal
+   with dark-glass form controls.
+   ============================================================ */
+section { padding: 80px 64px; }
+
+/* Section backgrounds on the dark canvas */
+.career-values { background: linear-gradient(180deg, var(--black-deep), #160c0c); }
+.career-culture { background: var(--black-deep); }
+.career-positions { background: linear-gradient(180deg, #160c0c, var(--black-deep)); }
+
+/* Why Join Us - glass value tiles */
+.values-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 18px; }
+.value-card {
+  background: var(--glass-base-soft);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border); border-top: 3px solid var(--yellow);
+  border-radius: 16px; padding: 36px 32px;
+  transition: transform 0.3s var(--ease), border-color 0.3s var(--ease);
+}
+.value-card:hover { transform: translateY(-6px); border-color: var(--glass-border-hi); border-top-color: var(--yellow); }
+.value-icon {
+  font-size: 32px; margin-bottom: 20px;
+  display: inline-flex; align-items: center; justify-content: center;
+  width: 64px; height: 64px; border-radius: 14px;
+  background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border);
+}
+.value-card h3 { font-family: var(--font-heading); font-size: 22px; font-weight: 600; margin-bottom: 12px; color: #fff; }
+.value-card p { font-size: 14px; color: rgba(255,255,255,0.72); line-height: 1.7; }
+
+/* Our Culture - two-column split */
+.career-culture-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 80px; align-items: center; }
+.career-culture-img { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 18px; border: 1px solid var(--glass-border); }
+.career-culture .section-body { color: rgba(255,255,255,0.72); }
+
+/* Open positions - glass rows */
+.positions-list { display: flex; flex-direction: column; gap: 12px; }
+.position {
+  background: var(--glass-base);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border); border-radius: 16px;
+  padding: 26px 32px; display: flex; justify-content: space-between; align-items: center;
+  gap: 24px; flex-wrap: wrap;
+  transition: transform 0.25s var(--ease), border-color 0.25s, background 0.25s, box-shadow 0.25s;
+}
+.position:hover { transform: translateY(-3px); border-color: var(--glass-border-hi); background: var(--glass-base-strong); box-shadow: var(--shadow-glass-md); }
+.position h3 { font-family: var(--font-heading); font-size: 22px; font-weight: 600; color: #fff; margin-bottom: 6px; }
+.position p { font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.1em; text-transform: uppercase; color: rgba(255,255,255,0.55); }
+.position .btn { flex-shrink: 0; }
+
+/* Open application callout - glass alert tile */
+.career-open-note {
+  margin-top: 40px; padding: 28px 32px;
+  background: var(--glass-base);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border); border-left: 3px solid var(--yellow);
+  border-radius: 0 14px 14px 0;
+}
+.career-open-note p { font-size: 14px; color: rgba(255,255,255,0.75); line-height: 1.7; }
+.career-open-note a { color: var(--yellow); text-decoration: underline; font-weight: 600; }
+.career-open-note a:hover { color: #fff; }
+
+/* ===== APPLICATION MODAL (glass panel) ================================== */
+.app-modal {
+  display: none; position: fixed; inset: 0;
+  background: rgba(12,4,4,0.72);
+  backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px);
+  z-index: 99999; align-items: center; justify-content: center; padding: 24px;
+}
+.app-modal.open { display: flex; }
+.app-modal-content {
+  background: var(--glass-base-strong);
+  backdrop-filter: blur(var(--blur-xl)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-xl)) saturate(180%);
+  border: 1px solid var(--glass-border-hi); border-radius: 22px;
+  box-shadow: var(--shadow-glass-lg);
+  max-width: 600px; width: 100%; max-height: 90vh; overflow-y: auto;
+  position: relative; padding: 48px 44px;
+}
+.app-modal-content h2 { font-family: var(--font-heading); font-size: 30px; font-weight: 600; margin-bottom: 6px; color: #fff; }
+.app-modal-content h2 em { font-style: italic; color: var(--yellow); }
+.app-modal-content .role-name {
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.16em; text-transform: uppercase; color: var(--yellow); margin-bottom: 22px;
+}
+.app-modal-content .app-intro { font-size: 14px; color: rgba(255,255,255,0.65); margin-bottom: 28px; line-height: 1.6; }
+.app-close {
+  position: absolute; top: 16px; right: 16px; width: 36px; height: 36px;
+  background: rgba(255,255,255,0.1); border: 1px solid var(--glass-border);
+  color: #fff; border-radius: 50%; cursor: pointer; font-size: 18px;
+  display: flex; align-items: center; justify-content: center; transition: background 0.2s;
+}
+.app-close:hover { background: rgba(255,255,255,0.2); }
+.app-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 16px; margin-bottom: 14px; }
+.app-grid .full { grid-column: 1 / -1; }
+.app-grid label { display: block; margin-bottom: 7px; }
+.app-grid .form-input, .app-grid .form-select, .app-grid .form-textarea { width: 100%; }
+
+@media (max-width: 1000px) {
+  section { padding: 64px 24px; }
+  .values-grid { grid-template-columns: 1fr; }
+  .career-culture-grid { grid-template-columns: 1fr; gap: 32px; }
+}
+@media (max-width: 900px) {
+  .position { flex-direction: column; align-items: flex-start; }
+  .app-modal-content { padding: 32px 24px; }
+  .app-grid { grid-template-columns: 1fr; }
+}

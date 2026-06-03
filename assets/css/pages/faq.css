@@ -1,0 +1,115 @@
+/* ============================================================
+   FAQ (Liquid Glass). body.lg sets the dark canvas + glass chrome;
+   this file lays out search, category tabs, and the glass accordion.
+   Open/close mechanism unchanged: JS toggles .open on .faq-item and
+   animates .faq-answer max-height. Filter toggles .hide / #faq-empty.show.
+   ============================================================ */
+section { padding: 64px 64px; }
+
+/* Search + category tabs strip */
+.faq-controls { background: linear-gradient(180deg, var(--black-deep), #160c0c); padding: 48px 40px; }
+.faq-search-wrap { max-width: 720px; margin: 0 auto; }
+.faq-search { position: relative; }
+.faq-search input {
+  width: 100%; padding: 17px 52px 17px 22px;
+  background: var(--glass-base-soft); color: #fff;
+  border: 1px solid var(--glass-border); border-radius: 14px;
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  font-size: 15px; font-family: var(--font-body); outline: none;
+  transition: border-color 0.2s, background 0.2s;
+}
+.faq-search input::placeholder { color: rgba(255,255,255,0.4); }
+.faq-search input:focus { border-color: var(--yellow); background: rgba(255,255,255,0.06); }
+.faq-search .icon { position: absolute; right: 20px; top: 50%; transform: translateY(-50%); color: rgba(255,255,255,0.45); font-size: 17px; pointer-events: none; }
+
+.faq-tabs { display: flex; flex-wrap: wrap; gap: 10px; justify-content: center; margin-top: 28px; }
+.faq-tab {
+  padding: 9px 18px; border-radius: 999px;
+  background: var(--glass-base-soft); border: 1px solid var(--glass-border);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  cursor: pointer; font-family: var(--font-mono); font-size: 11px; font-weight: 600;
+  letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.7); transition: all 0.2s;
+}
+.faq-tab:hover { color: #fff; border-color: var(--glass-border-hi); }
+.faq-tab.active { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); font-weight: 700; }
+
+/* Accordion list */
+.faq-list-section { background: var(--black-deep); }
+.faq-wrap { max-width: 880px; margin: 0 auto; }
+.faq-category { margin-bottom: 48px; }
+.faq-category:last-child { margin-bottom: 0; }
+.faq-category h2 {
+  font-family: var(--font-heading); font-size: 26px; font-weight: 600; color: #fff;
+  margin-bottom: 22px; padding-bottom: 14px; border-bottom: 2px solid var(--yellow);
+}
+.faq-category.hide { display: none; }
+
+/* Each accordion item is a glass card */
+.faq-item {
+  background: var(--glass-base-soft);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border); border-radius: 14px;
+  margin-bottom: 10px; overflow: hidden;
+  transition: border-color 0.2s, background 0.2s;
+}
+.faq-item:hover { border-color: var(--glass-border-hi); }
+.faq-item.open { border-color: var(--glass-border-hi); background: var(--glass-base); }
+.faq-item.hide { display: none; }
+
+.faq-question {
+  width: 100%; background: none; border: none; text-align: left;
+  padding: 20px 22px; font-family: var(--font-heading); font-size: 19px; font-weight: 600;
+  color: #fff; cursor: pointer; display: flex; justify-content: space-between;
+  align-items: center; gap: 20px; transition: color 0.2s;
+}
+.faq-question:hover { color: var(--yellow); }
+.faq-question .chevron {
+  width: 32px; height: 32px; border-radius: 50%; flex-shrink: 0;
+  display: flex; align-items: center; justify-content: center;
+  background: rgba(255,255,255,0.08); color: rgba(255,255,255,0.7); font-size: 13px;
+  transition: background 0.25s, color 0.25s, transform 0.3s var(--ease);
+}
+.faq-question:hover .chevron { background: rgba(255,237,0,0.16); color: var(--yellow); }
+
+.faq-answer { max-height: 0; overflow: hidden; transition: max-height 0.45s var(--ease); }
+.faq-answer p {
+  font-size: 15px; line-height: 1.8; color: rgba(255,255,255,0.7);
+  padding: 0 22px 22px; max-width: 720px;
+}
+.faq-answer a { color: var(--terracotta); }
+.faq-answer a:hover { color: var(--yellow); }
+
+.faq-item.open .chevron { transform: rotate(180deg); background: var(--yellow); color: #0a0a0a; }
+.faq-item.open .faq-question { color: var(--yellow); }
+
+/* Empty state */
+.faq-empty {
+  display: none; text-align: center; margin: 0 auto; max-width: 720px;
+  padding: 56px 40px; border-radius: 18px;
+  background: var(--glass-base-soft);
+  backdrop-filter: blur(var(--blur-md)); -webkit-backdrop-filter: blur(var(--blur-md));
+  border: 1px solid var(--glass-border);
+}
+.faq-empty.show { display: block; }
+.faq-empty h3 { font-family: var(--font-heading); font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 12px; }
+.faq-empty p { font-size: 15px; color: rgba(255,255,255,0.6); }
+
+/* Yellow closing CTA (dark text on yellow, intentional accent block) */
+.faq-cta {
+  background: var(--yellow); padding: 52px 64px;
+  display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap;
+}
+.faq-cta h2 { font-family: var(--font-heading); font-size: clamp(26px, 3vw, 38px); font-weight: 700; color: #0a0a0a; margin-bottom: 10px; }
+.faq-cta p { font-size: 16px; color: rgba(0,0,0,0.65); }
+
+@media (max-width: 900px) {
+  section { padding: 48px 20px; }
+  .faq-controls { padding: 40px 20px; }
+  .faq-cta { padding: 44px 24px; }
+}
+@media (max-width: 600px) {
+  .faq-question { font-size: 17px; padding: 18px 18px; gap: 12px; }
+  .faq-question .chevron { width: 28px; height: 28px; }
+  .faq-answer p { font-size: 14px; padding: 0 18px 18px; }
+  .faq-category h2 { font-size: 22px; }
+}
