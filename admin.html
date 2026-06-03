@@ -15,10 +15,13 @@
 <body class="lg" data-marquee-off>
 <div class="admin-shell">
   <div class="admin-top">
-    <a href="index.html" class="brand">
-      <span class="logo">i<span>partment</span></span>
-      <span class="badge">CRM Admin</span>
-    </a>
+    <div class="admin-top-left">
+      <a href="index.html" class="brand">
+        <span class="logo">i<span>partment</span></span>
+        <span class="badge">CRM Admin</span>
+      </a>
+      <span class="admin-proof"><span class="dash-proof-dot"></span><strong>Yes, this is real</strong> - live data from my own custom CRM database</span>
+    </div>
     <nav class="nav">
       <a href="index.html">View Site</a>
       <a href="#" id="link-logout" style="display:none;">Logout</a>
@@ -45,8 +48,6 @@
     <div class="dash-header">
       <div>
         <h1>CRM Dashboard</h1>
-        <p>Live accounts, bookings and vouchers from Supabase, plus marketing leads captured across the site.</p>
-        <p class="dash-proof"><span class="dash-proof-dot"></span><strong>Yes, this is real.</strong> Every number below was captured and stored live by my own custom CRM database, not mocked up for the demo.</p>
       </div>
       <div class="dash-actions">
         <button class="dash-btn" onclick="adminSignIn()">Admin sign in</button>

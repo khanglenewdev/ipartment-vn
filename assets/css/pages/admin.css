@@ -186,18 +186,20 @@ tbody tr:last-child td { border-bottom: none; }
    box and stays centered (no horizontal scroll). */
 table:has(.locked-note) { min-width: 0; }
 table:has(.locked-note) td { border-bottom: none; padding: 0; }
+/* the locked note is not interactive, so it should not light up on row hover */
+table:has(.locked-note) tbody tr:hover td { background: transparent; cursor: default; }
 
-/* ===== "THIS IS REAL" header proof badge ============================== */
-.dash-proof {
-  display: inline-flex; align-items: center; gap: 9px;
-  margin-top: 12px !important; max-width: 680px !important;
-  background: rgba(255,237,0,0.1); border: 1px solid rgba(255,237,0,0.3);
-  border-radius: 10px; padding: 10px 14px;
-  font-size: 13px !important; color: rgba(255,255,255,0.85) !important; line-height: 1.5;
+/* ===== "THIS IS REAL" proof badge (in the top bar, by the logo) ======== */
+.admin-top-left { display: flex; align-items: center; gap: 16px; min-width: 0; }
+.admin-proof {
+  display: inline-flex; align-items: center; gap: 8px; white-space: nowrap;
+  background: rgba(255,237,0,0.08); border: 1px solid rgba(255,237,0,0.25); border-radius: 999px;
+  padding: 6px 13px; font-size: 12px; color: rgba(255,255,255,0.8); line-height: 1.3;
 }
-.dash-proof strong { color: var(--yellow); }
+.admin-proof strong { color: var(--yellow); }
 .dash-proof-dot { width: 8px; height: 8px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px #4ade80; flex-shrink: 0; animation: dashProofPulse 1.8s infinite; }
 @keyframes dashProofPulse { 0%, 100% { opacity: 1; transform: scale(1); } 50% { opacity: 0.45; transform: scale(0.85); } }
+@media (max-width: 860px) { .admin-proof { display: none; } }
 
 /* ===== STATUS / TYPE PILLS ============================================= */
 .tag-pill {
