@@ -27,31 +27,31 @@ promoted into the library, so the next client gets it for free).
 
 ## The build, step by step
 
-### Step 1 — Pick the niche. Get the pages.
+### Step 1 - Pick the niche. Get the pages.
 Look up the client's niche in `niches.json`. Its `pages` array is the starting
 page list. Its `sectionsSpecial` are the section types this niche usually needs.
 
-### Step 2 — Pick the goals. Get the sections and functions.
+### Step 2 - Pick the goals. Get the sections and functions.
 The client chooses 2-3 goals from `goals.json`. Union the `sections` and
 `functions` from the chosen goals with the niche's specials. That is the plan.
 (The `/showcase.html` "Your build" panel does this union for you live: pick the
 niche and goals and read off the result.)
 
-### Step 3 — Choose a variant for each section.
+### Step 3 - Choose a variant for each section.
 For each section type in the plan, open `sections.json` and pick the variant
 whose `whenToUse` and `goals` fit this client. Prefer `built: true` variants
 (no new template needed). For a `built: false` variant, you will build its
 template in Step 6.
 
-### Step 4 — Fill the data (the swap + the fresh writing).
+### Step 4 - Fill the data (the swap + the fresh writing).
 Create the client's data files. This is most of the job:
-- `src/_data/brand.json` — Layer 0 knobs: name, colors, fonts, logo, contact, NAP.
-- `src/_data/site.json` — nav, footer, domain, social, SEO defaults.
-- `src/_data/property.json` (or the niche equivalent) — the structured-data values.
-- One content file per page, e.g. `src/_data/home.json` — the actual copy, written
+- `src/_data/brand.json` - Layer 0 knobs: name, colors, fonts, logo, contact, NAP.
+- `src/_data/site.json` - nav, footer, domain, social, SEO defaults.
+- `src/_data/property.json` (or the niche equivalent) - the structured-data values.
+- One content file per page, e.g. `src/_data/home.json` - the actual copy, written
   fresh with the frameworks (interview, H-S-B-S copy formula, proof-point checklist).
 
-### Step 5 — Write each page skeleton.
+### Step 5 - Write each page skeleton.
 For each page, create a file in `src/` (like `src/index.njk`) with front matter
 listing its sections in order, each pointing at a section template:
 
@@ -67,18 +67,18 @@ The body loops the list:
 {% for s in sections %}{% set sec = home[s.key] %}{% include s.template %}{% endfor %}
 ```
 
-### Step 6 — Build any "spec" variants you chose.
+### Step 6 - Build any "spec" variants you chose.
 If a chosen variant has no template yet, build it in `src/_includes/sections/`,
 reading its content from `sec` (the data) exactly like the existing ones do.
 Then update `sections.json` to mark it `built: true`. It is now in the library.
 
-### Step 7 — Wire the functions.
+### Step 7 - Wire the functions.
 Attach the functions from the plan. Site-level functions (chatbot, analytics,
 nav) load in `base.njk` / `scripts.njk`. Section-level functions (booking,
 finder, capture) mount inside their section. Configure them with the client's
 data (e.g. the chatbot's FAQ file).
 
-### Step 8 — Refine the library.
+### Step 8 - Refine the library.
 Anything genuinely new you had to build becomes a reusable section variant or
 function, not a one-off. Promote it. The next client starts from a higher floor.
 
