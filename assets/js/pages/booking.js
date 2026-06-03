@@ -18,6 +18,49 @@
     WELCOME15: { percent: 15, label: '15% off your first stay' }
   };
 
+  // Public welcome codes handed out by the homepage popup (A/B test) and the
+  // finder. These redeem for ANY guest at checkout, no account needed, so the
+  // voucher the popup promises is actually usable. Percent codes discount the
+  // room subtotal; "freeExtra" codes make the named add-on free (its price is
+  // added then subtracted, so the perk shows on the receipt and the total nets
+  // out). Account-bound vouchers still work through the existing chip/lookup path.
+  const WELCOME_CODES = {
+    WELCOME15:   { percent: 15,          label: '15% off your first stay' },
+    WELCOMERIDE: { freeExtra: 'airport', label: 'Free airport pickup' },
+    WELCOMEPACK: { freeExtra: 'welcome', label: 'Free welcome pack' }
+  };
+
+  // Single source of truth for how much a voucher takes off. Used by the glass
+  // receipt, the legacy sidebar and the saved booking so they never disagree.
+  function voucherDiscountFor(roomSubtotal) {
+    const v = state.voucher;
+    if (!v) return 0;
+    if (v.percent) return Math.round(roomSubtotal * v.percent / 100);
+    if (v.freeExtra) {
+      const ex = state.extras.find(x => x.key === v.freeExtra);
+      return ex ? ex.price : 0;   // only discounts when that add-on is in the order
+    }
+    return 0;
+  }
+
+  // Ensure an add-on is selected (used when a "free extra" voucher is applied so
+  // the perk appears in the order and can be subtracted). Mirrors toggleExtra.
+  function ensureExtraSelected(key) {
+    if (state.extras.some(x => x.key === key)) return;
+    const card = document.querySelector('.extra-card[data-extra="' + key + '"]');
+    if (!card) return;
+    card.classList.add('selected');
+    const price = parseInt(card.dataset.price, 10) || 0;
+    const nameEl = card.querySelector('.extra-name');
+    state.extras.push({ key: key, name: nameEl ? nameEl.textContent : key, price: price });
+    state.extrasTotal = state.extras.reduce((s, x) => s + x.price, 0);
+  }
+
+  function extraName(key) {
+    const el = document.querySelector('.extra-card[data-extra="' + key + '"] .extra-name');
+    return el ? el.textContent.toLowerCase() : 'add-on';
+  }
+
   const TODAY = new Date(); TODAY.setHours(0,0,0,0);
   const BOOKED_DATES = new Set();
 
@@ -99,12 +142,12 @@
       else if (state.nights >= 7) { rate = r.weekly; label = 'Weekly tier'; pct = Math.round((1 - r.weekly / r.nightly) * 100); }
       else { rate = r.nightly; }
       var subtotal = rate * state.nights;
-      var vDisc = state.voucher ? Math.round(subtotal * state.voucher.percent / 100) : 0;
+      var vDisc = voucherDiscountFor(subtotal);
       total = subtotal + state.extrasTotal - vDisc;
       var html = '<div class="l"><span>' + fmtInt(rate) + ' × ' + state.nights + ' night' + (state.nights > 1 ? 's' : '') + '</span><span class="v">' + fmtInt(subtotal) + '</span></div>';
       if (pct > 0) html += '<div class="l disc"><span>' + label + ' unlocked</span><span class="v">-' + pct + '%</span></div>';
       if (state.extrasTotal > 0) html += '<div class="l"><span>Add-ons</span><span class="v">+ ' + fmtInt(state.extrasTotal) + '</span></div>';
-      if (state.voucher) html += '<div class="l disc"><span>Voucher ' + state.voucher.code + '</span><span class="v">-' + fmtInt(vDisc) + '</span></div>';
+      if (state.voucher && vDisc > 0) { var vlabel = state.voucher.freeExtra ? (state.voucher.label || ('Voucher ' + state.voucher.code)) : ('Voucher ' + state.voucher.code); html += '<div class="l disc"><span>' + vlabel + '</span><span class="v">-' + fmtInt(vDisc) + '</span></div>'; }
       if (lines) lines.innerHTML = html;
     } else if (lines) {
       lines.innerHTML = '<div class="l"><span>Select your dates</span><span class="v">-</span></div>';
@@ -427,6 +470,25 @@
     const code = (codeArg || (input ? input.value : '') || '').trim().toUpperCase();
     if (!code) { showPromoMsg('Enter a promo code.', false); return; }
 
+    // Public welcome codes (from the homepage popup / finder) redeem for everyone,
+    // no account required. A voucher chip passes voucherId, so only treat a code
+    // as a public welcome code when it is NOT coming from an account chip.
+    if (!voucherId && WELCOME_CODES[code]) {
+      const wc = WELCOME_CODES[code];
+      if (wc.freeExtra) {
+        ensureExtraSelected(wc.freeExtra);
+        state.voucher = { code: code, freeExtra: wc.freeExtra, label: wc.label };
+        if (input) input.value = code;
+        showPromoMsg(code + ' applied: your ' + extraName(wc.freeExtra) + ' is on us.', true);
+      } else {
+        state.voucher = { code: code, percent: wc.percent, label: wc.label };
+        if (input) input.value = code;
+        showPromoMsg(code + ' applied: ' + wc.percent + '% off your stay.', true);
+      }
+      updateSidebar();
+      return;
+    }
+
     // Must be logged in - vouchers live in your account
     const user = window.ipartmentAuth ? await window.ipartmentAuth.getUser() : null;
     if (!user) {
@@ -513,10 +575,10 @@
       document.getElementById('sb-subtotal').textContent = formatVND(ratePerNight * state.nights);
       // Voucher: percent off the room subtotal only (add-ons excluded)
       const voucherRow = document.getElementById('sb-voucher-row');
-      state.voucherDiscount = state.voucher ? Math.round(state.totalPrice * state.voucher.percent / 100) : 0;
-      if (state.voucher && voucherRow) {
+      state.voucherDiscount = voucherDiscountFor(state.totalPrice);
+      if (state.voucher && state.voucherDiscount > 0 && voucherRow) {
         voucherRow.style.display = 'flex';
-        document.getElementById('sb-voucher-label').textContent = `Voucher ${state.voucher.code} (-${state.voucher.percent}%)`;
+        document.getElementById('sb-voucher-label').textContent = state.voucher.freeExtra ? (state.voucher.label || `Voucher ${state.voucher.code}`) : `Voucher ${state.voucher.code} (-${state.voucher.percent}%)`;
         document.getElementById('sb-voucher-val').textContent = '-' + formatVND(state.voucherDiscount);
       } else if (voucherRow) {
         voucherRow.style.display = 'none';
@@ -612,7 +674,7 @@
     const notes = val('guest-notes');
 
     const r = RATES[state.room];
-    const voucherDiscount = state.voucher ? Math.round(state.totalPrice * state.voucher.percent / 100) : 0;
+    const voucherDiscount = voucherDiscountFor(state.totalPrice);
     const total = state.totalPrice + state.extrasTotal - voucherDiscount;
     const stamped = window.ipartmentCRM.add('bookings', {
       room: state.room, roomName: r.name, roomSize: r.size,

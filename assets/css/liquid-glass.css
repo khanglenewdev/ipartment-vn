@@ -66,6 +66,9 @@ body.lg .site-header-main {
   border-radius: 999px;
   box-shadow: 0 20px 60px -16px rgba(0,0,0,0.65), var(--glass-inner);
   max-width: calc(100vw - 44px);
+  /* Own stacking context so an overlay/survey compositing in elsewhere does not
+     force this glass pill to re-sample its backdrop and flash a dark halo. */
+  isolation: isolate;
 }
 body.lg .site-header .logo {
   font-family: var(--font-body); font-weight: 900; font-size: 18px;
@@ -103,6 +106,7 @@ body.lg .site-header-edu {
   font-family: var(--font-mono); font-size: 9px; font-style: normal;
   letter-spacing: 0.14em; text-transform: uppercase;
   padding: 6px 13px; white-space: nowrap;
+  isolation: isolate;
 }
 body.lg .menu-toggle { color: #fff; }
 

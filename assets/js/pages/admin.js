@@ -660,9 +660,15 @@ document.getElementById('art-form').addEventListener('submit', e => {
 });
 
 (async function initAdmin() {
-  showLogin('');
-  try {
-    const admin = await Auth.isAdmin();
-    if (admin) { showDash(); refreshWebhookStatus(); renderMagazineList(); }
-  } catch (e) { /* not logged in - login screen stays */ }
+  // TEMP (owner request, June 2026): the admin login gate is BYPASSED so the
+  // dashboard can be previewed without an admin account. Note that row-level
+  // security still hides real data from an anonymous session, so the tables read
+  // empty until a real admin logs in; this only exposes the dashboard SHELL/UI.
+  // TO RE-ENABLE THE GATE: delete the two lines below and restore the block:
+  //   showLogin('');
+  //   try { const admin = await Auth.isAdmin();
+  //         if (admin) { showDash(); refreshWebhookStatus(); renderMagazineList(); }
+  //   } catch (e) { /* not logged in - login screen stays */ }
+  showDash();
+  try { refreshWebhookStatus(); renderMagazineList(); } catch (e) {}
 })();

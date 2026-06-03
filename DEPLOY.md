@@ -1,27 +1,37 @@
-# Deploying ipartment-vn (Vercel)
+# Deploying ipartment-vn
 
 The site is built by Eleventy. The thing that actually gets published is the
 `_site/` folder, which the build generates and which is NOT saved to Git (it is
-in `.gitignore`). So the host has to run the build. We use Vercel, which does
-that automatically on every push. There is no manual build step for you.
+in `.gitignore`). So whichever host you use has to run the build for you. Two
+options are wired up. You only need one. We are using GitHub Pages.
 
-## One-time setup (owner does this once)
+## Option A: GitHub Pages (current, matches the class submission)
 
-1. Go to vercel.com and sign in with GitHub.
-2. "Add New..." then "Project", and import the `khanglenewdev/ipartment-vn` repo.
-3. Vercel reads `vercel.json` and pre-fills the settings:
-   - Framework Preset: Other
-   - Build Command: `npm run build`
-   - Output Directory: `_site`
-   - Install Command: `npm install` (automatic)
-   Leave them as they are and click Deploy.
-4. (Later) Add the real domain under the project's Settings then Domains. Email
-   sender authentication (SPF, DKIM, DMARC) is a separate job on the Make/Brevo
-   side and has nothing to do with Vercel.
+A GitHub Actions workflow at `.github/workflows/deploy.yml` builds the site and
+publishes it to GitHub Pages on every push. One-time setup:
 
-That is it. Vercel now rebuilds and republishes the site every time you push.
+1. Push this repo so the workflow file is on GitHub.
+2. On GitHub, open the repo, then Settings, then Pages.
+3. Under "Build and deployment", set Source to "GitHub Actions".
+4. Push anything (or open the Actions tab and run the workflow once). It builds
+   and publishes automatically. Watch it go green in the Actions tab.
 
-## Every deploy after that
+The live URL is `https://khanglenewdev.github.io/ipartment-vn/`. Every push after
+that rebuilds and republishes on its own. The site uses only relative links, so
+it works correctly under that `/ipartment-vn/` subpath.
+
+Note: the SEO canonical and sitemap URLs still use the placeholder domain
+`ipartment.vn`. That does not break anything; it is just a tidy-up for when a
+real custom domain is attached. Not needed for the class.
+
+## Option B: Vercel (alternative, not currently used)
+
+`vercel.json` is in the repo (build `npm run build`, output `_site`). To use
+Vercel instead: sign in to vercel.com with GitHub, Add New then Project, import
+`khanglenewdev/ipartment-vn`, leave the auto-filled settings, click Deploy. It
+serves at the project's root domain (no subpath). Use one host, not both.
+
+## Every deploy after setup (either host)
 
 Just push to GitHub. Nothing else.
 
@@ -30,9 +40,6 @@ git add -A
 git commit -m "your message"
 git push
 ```
-
-Vercel runs `npm install`, then `npm run build`, then serves `_site/`. You never
-run the build by hand to deploy.
 
 To preview locally before pushing:
 

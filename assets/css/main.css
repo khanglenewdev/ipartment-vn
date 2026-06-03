@@ -279,7 +279,7 @@ body.has-header { padding-top: var(--header-height); }
 .cta-popup {
   background: var(--white);
   max-width: 880px; width: 100%;
-  max-height: 90vh;
+  max-height: 92vh;
   display: grid; grid-template-columns: 1fr 1fr;
   position: relative; overflow: hidden;
   transform: translateY(40px) scale(0.96);
@@ -291,9 +291,9 @@ body.has-header { padding-top: var(--header-height); }
 .cta-visual {
   background: linear-gradient(135deg, var(--black-pure) 0%, #1a1a1a 100%);
   position: relative; overflow: hidden;
-  min-height: 432px;
+  min-height: 380px;
   display: flex; flex-direction: column; justify-content: flex-end;
-  padding: 36px;
+  padding: 32px;
 }
 .cta-visual::before {
   content: '';
@@ -323,8 +323,11 @@ body.has-header { padding-top: var(--header-height); }
 }
 
 .cta-form {
-  padding: 44px 40px; display: flex; flex-direction: column;
-  justify-content: center;
+  padding: 32px 36px; display: flex; flex-direction: column;
+  /* "safe center" centers the form when it fits, but falls back to top-aligned
+     (fully scrollable, never clipped) when a short screen cannot fit it. */
+  justify-content: safe center;
+  overflow-y: auto; min-height: 0; max-height: 92vh;
 }
 .cta-form-eyebrow {
   font-size: 11px; font-weight: 700; letter-spacing: 0.16em;
@@ -340,7 +343,7 @@ body.has-header { padding-top: var(--header-height); }
   display: block;
 }
 .cta-form .sub {
-  font-size: 14px; color: #555; margin-bottom: 28px; line-height: 1.55;
+  font-size: 14px; color: #555; margin-bottom: 18px; line-height: 1.55;
 }
 .cta-form .field { margin-bottom: 14px; }
 .cta-form input {
@@ -402,10 +405,10 @@ body.has-header { padding-top: var(--header-height); }
 .cta-success p { font-size: 14px; color: #555; line-height: 1.6; max-width: 320px; }
 
 @media (max-width: 720px) {
-  .cta-popup { grid-template-columns: 1fr; max-width: 420px; }
+  .cta-popup { grid-template-columns: 1fr; max-width: 420px; overflow-y: auto; }
   .cta-visual { min-height: 200px; padding: 28px; }
   .cta-visual h2 { font-size: 22px; }
-  .cta-form { padding: 32px 28px; }
+  .cta-form { padding: 28px 26px; overflow: visible; }
   .cta-form h3 { font-size: 24px; }
   .cta-form h3 .accent { font-size: 30px; }
 }
@@ -818,6 +821,9 @@ textarea.form-input { resize: vertical; min-height: 56px; font-family: var(--fon
   box-shadow: 0 14px 40px rgba(0,0,0,0.18);
   padding: 20px 22px; transform: translateY(140%); opacity: 0;
   transition: transform 0.35s cubic-bezier(0.16,1,0.3,1), opacity 0.35s;
+  /* Keep this on its own GPU layer so sliding it in does not force the glass
+     nav and educational pill to re-sample their backdrop (the dark-halo flash). */
+  will-change: transform; isolation: isolate;
 }
 .exit-survey.open { transform: translateY(0); opacity: 1; }
 .exit-survey-close {

@@ -22,8 +22,8 @@
      zoom makes the hero fill exactly one screen; the next section flows right
      after it (no overlap, no gap). */
   min-height: calc(100vh / 0.9);
-  display: flex; align-items: flex-end;
-  padding: 120px 56px 64px;
+  display: flex; align-items: center;
+  padding: 64px 56px 112px;
 }
 .hero-bg {
   position: absolute; inset: 0;
@@ -41,7 +41,7 @@
 }
 .hero-inner {
   position: relative; z-index: 2; width: 100%; max-width: 1320px; margin: 0 auto;
-  display: grid; grid-template-columns: 1.25fr 0.92fr; gap: 48px; align-items: end;
+  display: grid; grid-template-columns: 1.25fr 0.92fr; gap: 48px; align-items: center;
 }
 .hero-text { min-width: 0; }
 .hero-pill-row { display: flex; flex-wrap: wrap; gap: 10px; margin-bottom: 22px; }

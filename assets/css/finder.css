@@ -19,6 +19,20 @@ body.lg .finder-banner .btn { flex-shrink: 0; }
 body.lg .finder-section { padding: 40px 24px; background: var(--black-deep, #0c0404); }
 @media (max-width: 560px) { body.lg .finder-section { padding: 28px 16px; } }
 
+/* On the homepage the finder banner CLOSES the rooms (accommodation) block:
+   it sits just under the room grid and aligns to the same content width. The
+   adjacency selector only matches on index (rooms precedes finder); on the
+   accommodation page the banner keeps its standalone centered look. Tightening
+   the rooms padding-bottom via :has gives a clean ~40px gap with no negative
+   margins; where :has is unsupported it just falls back to the normal padding. */
+body.lg .rooms-section:has(+ .finder-section) { padding-bottom: 40px; }
+body.lg .rooms-section + .finder-section { padding: 0 56px 80px; }
+body.lg .rooms-section + .finder-section .finder-banner { max-width: none; margin: 0; }
+@media (max-width: 1100px) {
+  body.lg .rooms-section:has(+ .finder-section) { padding-bottom: 32px; }
+  body.lg .rooms-section + .finder-section { padding: 0 24px 64px; }
+}
+
 /* ---- modal ---- */
 body.lg .fq-overlay {
   position: fixed; inset: 0; z-index: 100000;
