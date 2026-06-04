@@ -1085,6 +1085,30 @@
     document.body.appendChild(peek);
     peek.addEventListener('click', function () { document.body.classList.remove('nav-hidden'); });
 
+    // The page uses html{zoom}, under which CSS 100vh resolves to the rendered
+    // viewport value treated as layout px (it ignores the zoom divide), so it ends
+    // up SHORTER than the true layout viewport. Anything positioned off 100vh sits
+    // too high / never fully clears the edge. Measure the real distances here and
+    // hand them to CSS as --nav-drop (rest just above the bottom) and --nav-gone
+    // (fully off the bottom). Derived purely from rendered measurements, so it is
+    // self-correcting at any zoom level.
+    function measureNavDrop() {
+      var rectH = header.getBoundingClientRect().height; // rendered (post-zoom) height
+      var layoutH = header.offsetHeight;                 // layout (pre-zoom) height
+      if (!rectH || !layoutH) return;
+      var z = rectH / layoutH;                            // effective zoom factor
+      var gap = 14;                                       // rendered px above the edge
+      // header sits at top:0, so its natural rendered bottom == rectH.
+      var dropLayout = (window.innerHeight - gap - rectH) / z;
+      var goneLayout = window.innerHeight / z + 30;       // push fully below the edge
+      var root = document.documentElement.style;
+      root.setProperty('--nav-drop', Math.max(0, dropLayout).toFixed(1) + 'px');
+      root.setProperty('--nav-gone', goneLayout.toFixed(1) + 'px');
+    }
+    measureNavDrop();
+    requestAnimationFrame(measureNavDrop); // re-measure once layout/fonts settle
+    window.addEventListener('load', measureNavDrop);
+
     // Scroll-to-bottom past a sticky filter (only on pages that have one).
     var filter = document.querySelector('[data-nav-dodge], .cat-nav, .summary-strip');
     if (filter) {
@@ -1092,8 +1116,10 @@
         document.body.classList.toggle('nav-bottom', filter.getBoundingClientRect().top <= 1);
       };
       window.addEventListener('scroll', onScroll, { passive: true });
-      window.addEventListener('resize', onScroll, { passive: true });
+      window.addEventListener('resize', function () { measureNavDrop(); onScroll(); }, { passive: true });
       onScroll();
+    } else {
+      window.addEventListener('resize', measureNavDrop, { passive: true });
     }
   }
 

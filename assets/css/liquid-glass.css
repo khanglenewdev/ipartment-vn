@@ -120,11 +120,15 @@ body.lg.nav-bottom .site-header-edu { top: 62px; }
 /* Everything moves via transform (never top/bottom), so the slide between top and
    bottom AND the hide/show all animate smoothly at one matched, slower speed. */
 body.lg .site-header { transition: transform 0.62s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
-/* drop to the bottom: slide down to sit just above the bottom edge (animated) */
-body.lg.nav-bottom .site-header { transform: translateY(calc(100vh - 100% - 44px)); }
+/* drop to the bottom: slide down to sit just above the bottom edge (animated).
+   --nav-drop / --nav-gone are measured in JS (initNavBehavior). The page uses
+   html{zoom}, which makes CSS 100vh resolve shorter than the real viewport, so a
+   100vh-based formula leaves the pill floating too high and unable to fully hide.
+   The vh fallbacks only apply before JS runs. */
+body.lg.nav-bottom .site-header { transform: translateY(var(--nav-drop, 78vh)); }
 /* hidden: slide off the left (when at the top) or fully down (when at the bottom) */
 body.lg.nav-hidden:not(.nav-bottom) .site-header { transform: translateX(-100%); }
-body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(100vh); }
+body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(var(--nav-gone, 112vh)); }
 
 body.lg .nav-hide {
   flex-shrink: 0; width: 28px; height: 28px; margin-right: 4px; border-radius: 50%;
@@ -605,9 +609,17 @@ body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline
   body.lg nav.site-nav.open a.nav-cta { margin: 6px 0 0; text-align: center; }
 }
 @media (max-width: 900px) {
-  /* Not enough width to pin the edu pill beside the nav: stack it under, centered. */
+  /* On phones the centered nav owns the top, the dropping nav owns bottom-center,
+     and the two corner chat launchers own the bottom corners, so a floating edu
+     pill has nowhere to sit without covering something. JS reparents it to the end
+     of <body>, so here we let it fall into normal flow as a centered disclaimer at
+     the very bottom of the page (footer-style) instead of an orphaned corner pill. */
   body.lg .site-header { flex-direction: column; align-items: center; gap: 7px; }
-  body.lg .site-header-edu { position: static; top: auto; left: auto; }
+  body.lg .site-header-edu {
+    position: static; top: auto; left: auto; right: auto; bottom: auto;
+    display: flex; width: -moz-fit-content; width: fit-content;
+    margin: 10px auto 26px; transition: none;
+  }
 }
 @media (max-width: 640px) {
   body.lg { --blur-sm: 8px; --blur-md: 12px; --blur-lg: 16px; --blur-xl: 20px; }
@@ -619,8 +631,13 @@ body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline
 /* ===== SCROLL LOCK ====================================================== */
 /* Freeze the page behind any full-screen modal so the background cannot scroll
    while a pop-up is open. scrollbar-gutter keeps the layout from shifting when
-   the scrollbar hides during the lock. */
-html { scrollbar-gutter: stable; }
+   the scrollbar hides during the lock.
+   overflow-x: clip kills the stray horizontal scrollbar that scroll-reveal
+   transforms (translateX on .reveal-left/.reveal-right) and full-bleed
+   backgrounds can produce on narrow screens. Unlike overflow-x: hidden, clip
+   does NOT create a scroll container, so position: sticky (results filter bar)
+   keeps sticking to the viewport. */
+html { scrollbar-gutter: stable; overflow-x: clip; }
 html:has(.cta-overlay.open),
 html:has(.auth-overlay.open),
 html:has(.fq-overlay.open),
