@@ -75,13 +75,21 @@
       'Meow~ questions about a stay? Tap me, I am happy to help. 🐾',
       'Psst, house cat here. 🐱 Need a paw with booking or the apartments? Tap to ask.',
       'Mrrp! I batted a question loose just for you. Tap if you need a hand with your stay.',
-      'Nya~ I am awake (mostly). Tap me for anything about ipartment.'
+      'Nya~ I am awake (mostly). Tap me for anything about ipartment.',
+      'Meow. I knocked your questions off the shelf. Tap and I will fetch the answers. 🐾',
+      'Purr... still curled up by the window. Tap if you want help picking an apartment.',
+      'Hey, the resident cat again. 🐈 Dates, prices, sizes, ask me anything about your stay.',
+      'Mew! I already counted the comfy spots. Tap and I will help you book the best one.'
     ],
     vi: [
       'Meo~ có thắc mắc về kỳ nghỉ? Chạm vào tôi nhé, tôi sẵn lòng giúp. 🐾',
       'Suỵt, mèo nhà đây. 🐱 Cần giúp đặt phòng hay tìm căn hộ? Chạm để hỏi.',
       'Mrrp! Tôi vừa hất một câu hỏi ra cho bạn. Chạm nếu cần giúp về kỳ nghỉ.',
-      'Nya~ Tôi đang thức (gần như vậy). Chạm vào tôi để hỏi bất cứ điều gì về ipartment.'
+      'Nya~ Tôi đang thức (gần như vậy). Chạm vào tôi để hỏi bất cứ điều gì về ipartment.',
+      'Meo. Tôi vừa hất mấy câu hỏi của bạn xuống. Chạm vào tôi, tôi sẽ tìm câu trả lời. 🐾',
+      'Gừ gừ... vẫn đang cuộn tròn bên cửa sổ. Chạm nếu bạn muốn được giúp chọn căn hộ.',
+      'Này, mèo cư dân đây. 🐈 Ngày ở, giá, diện tích, hỏi tôi bất cứ điều gì về kỳ nghỉ.',
+      'Meo! Tôi đã đếm sẵn mấy chỗ êm ái rồi. Chạm để tôi giúp bạn đặt căn tốt nhất.'
     ]
   };
   function catNudge() { var p = CAT_NUDGES[lang] || CAT_NUDGES.en; return p[Math.floor(Math.random() * p.length)]; }
@@ -293,21 +301,26 @@
     if (openedOnce) gotoWelcome(!!greetedLangs[lang]);
   }
 
-  // ---- proactive nudge (once per session, intent pages only) ----
+  // ---- proactive nudge (repeats on intent pages: pops every 30s, shows 5s) ----
   function maybeNudge() {
     var page = (location.pathname.split('/').pop() || '').toLowerCase();
     if (page.indexOf('accommodation') < 0 && page.indexOf('booking') < 0) return;
-    if (sessionStorage.getItem('ipc_nudged')) return;
-    setTimeout(function () {
-      if (openedOnce || sessionStorage.getItem('ipc_nudged')) return;
-      sessionStorage.setItem('ipc_nudged', '1');
-      launcher.classList.add('ipc-has-nudge');
-      nudgeEl = el('div', 'ipc-nudge', '<button class="ipc-nudge-x" aria-label="Dismiss">&times;</button>' + esc(catNudge()));
-      document.body.appendChild(nudgeEl);
-      clearBottomBars();   // line the bubble up with the launcher's current (possibly lifted) position
-      requestAnimationFrame(function () { nudgeEl.classList.add('show'); });
-      nudgeEl.addEventListener('click', function (e) { if (e.target.classList.contains('ipc-nudge-x')) { hideNudge(); launcher.classList.remove('ipc-has-nudge'); return; } open(); });
-    }, 24000);
+    var GAP = 30000, VISIBLE = 5000;
+    (function cycle() {
+      setTimeout(function () {
+        cycle();   // re-arm so a new bubble appears every GAP ms
+        // skip this round if the chat is open or a bubble is still on screen
+        if (panel.classList.contains('open') || nudgeEl) return;
+        launcher.classList.add('ipc-has-nudge');
+        nudgeEl = el('div', 'ipc-nudge', '<button class="ipc-nudge-x" aria-label="Dismiss">&times;</button>' + esc(catNudge()));
+        document.body.appendChild(nudgeEl);
+        clearBottomBars();   // line the bubble up with the launcher's current (possibly lifted) position
+        requestAnimationFrame(function () { nudgeEl.classList.add('show'); });
+        nudgeEl.addEventListener('click', function (e) { if (e.target.classList.contains('ipc-nudge-x')) { hideNudge(); launcher.classList.remove('ipc-has-nudge'); return; } open(); });
+        // auto-dismiss after 5s if the guest does not interact, then it re-pops next cycle.
+        setTimeout(function () { hideNudge(); launcher.classList.remove('ipc-has-nudge'); }, VISIBLE);
+      }, GAP);
+    })();
   }
   function hideNudge() { if (nudgeEl) { nudgeEl.classList.remove('show'); var n = nudgeEl; setTimeout(function () { if (n.parentNode) n.parentNode.removeChild(n); }, 300); nudgeEl = null; } }
 

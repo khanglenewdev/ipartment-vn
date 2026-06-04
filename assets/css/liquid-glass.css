@@ -78,9 +78,9 @@ body.lg .site-header .logo {
 body.lg .site-header .logo span { color: var(--yellow); }
 body.lg nav.site-nav { display: flex; align-items: center; gap: 1px; }
 body.lg nav.site-nav a {
-  font-family: var(--font-body); font-size: 12px; font-weight: 600;
+  font-family: var(--font-body); font-size: 12px; font-weight: 700;
   letter-spacing: 0; text-transform: none;
-  color: rgba(255,255,255,0.85); text-decoration: none;
+  color: rgba(255,255,255,0.92); text-decoration: none;
   padding: 8px 13px; border-radius: 999px;
   transition: color 0.2s, background 0.2s;
 }
@@ -632,12 +632,12 @@ body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline
 /* Freeze the page behind any full-screen modal so the background cannot scroll
    while a pop-up is open. scrollbar-gutter keeps the layout from shifting when
    the scrollbar hides during the lock.
-   overflow-x: clip kills the stray horizontal scrollbar that scroll-reveal
-   transforms (translateX on .reveal-left/.reveal-right) and full-bleed
-   backgrounds can produce on narrow screens. Unlike overflow-x: hidden, clip
-   does NOT create a scroll container, so position: sticky (results filter bar)
-   keeps sticking to the viewport. */
-html { scrollbar-gutter: stable; overflow-x: clip; }
+   NOTE: do NOT add overflow-x:hidden/clip on html or body here. In Chrome it
+   severs the scroll ancestry and silently breaks position: sticky (the magazine
+   and results filter bars). Stray horizontal scroll from scroll-reveal offsets
+   is handled at the source instead (see .reveal-left/.reveal-right mobile rule
+   in main.css). */
+html { scrollbar-gutter: stable; }
 html:has(.cta-overlay.open),
 html:has(.auth-overlay.open),
 html:has(.fq-overlay.open),

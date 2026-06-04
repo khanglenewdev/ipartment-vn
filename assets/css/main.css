@@ -437,6 +437,16 @@ body.has-header { padding-top: var(--header-height); }
 .reveal-delay-4 { transition-delay: 0.4s; }
 .reveal-delay-5 { transition-delay: 0.5s; }
 
+@media (max-width: 768px) {
+  /* On narrow screens a sideways reveal offset on an element that already sits
+     near the edge pushes the page wider and spawns a stray horizontal scrollbar.
+     Reveal vertically instead so nothing overflows. This fixes the overflow at
+     the source, leaving html/body overflow untouched so the sticky filter bars
+     (magazine, results) keep working. */
+  .reveal-left, .reveal-right { transform: translateY(30px); }
+  .reveal-left.is-visible, .reveal-right.is-visible { transform: translateY(0); }
+}
+
 @media (prefers-reduced-motion: reduce) {
   .reveal, .reveal-left, .reveal-right, .reveal-zoom {
     opacity: 1; transform: none; transition: none;
