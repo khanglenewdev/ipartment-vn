@@ -117,18 +117,19 @@ body.lg .site-header-edu.edu-hidden { display: none; }
 body.lg.nav-bottom .site-header-edu { top: 62px; }
 
 /* ===== NAV BEHAVIOR (scroll-to-bottom, hide/show, glassy peek) ========== */
-/* Everything moves via transform (never top/bottom), so the slide between top and
-   bottom AND the hide/show all animate smoothly at one matched, slower speed. */
-body.lg .site-header { transition: transform 0.62s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
+/* Everything moves via transform (never top/bottom), so the scroll drop and the
+   hide/show all animate smoothly at one matched 0.8s speed. */
+body.lg .site-header { transition: transform 0.8s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
+body.lg.nav-hidden .site-header { transition: transform 0.8s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
 /* drop to the bottom: slide down to sit just above the bottom edge (animated).
-   --nav-drop / --nav-gone are measured in JS (initNavBehavior). The page uses
-   html{zoom}, which makes CSS 100vh resolve shorter than the real viewport, so a
-   100vh-based formula leaves the pill floating too high and unable to fully hide.
-   The vh fallbacks only apply before JS runs. */
-body.lg.nav-bottom .site-header { transform: translateY(var(--nav-drop, 78vh)); }
-/* hidden: slide off the left (when at the top) or fully down (when at the bottom) */
+   --nav-drop is measured in JS (initNavBehavior). The page uses html{zoom}, which
+   makes CSS 100vh resolve shorter than the real viewport, so a 100vh-based formula
+   leaves the pill floating too high. The vh fallback only applies before JS runs. */
+body.lg.nav-bottom .site-header { transform: translateY(var(--nav-drop, 78vh)) translateX(0); }
+/* hidden: always slide off to the LEFT, holding the current vertical spot (top OR
+   bottom) so the exit is one smooth sideways glide instead of dropping downward. */
 body.lg.nav-hidden:not(.nav-bottom) .site-header { transform: translateX(-100%); }
-body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(var(--nav-gone, 112vh)); }
+body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(var(--nav-drop, 78vh)) translateX(-100%); }
 
 body.lg .nav-hide {
   flex-shrink: 0; width: 28px; height: 28px; margin-right: 4px; border-radius: 50%;
@@ -151,9 +152,11 @@ body.lg .nav-peek {
 body.lg .nav-peek svg { width: 17px; height: 17px; }
 body.lg .nav-peek:hover { background: rgba(22,22,22,0.6); transform: scale(1.06); }
 body.lg.nav-hidden .nav-peek { display: inline-flex; }
+/* the nav now hides leftward whether it is at the top or the bottom, so the peek
+   tab is a left-edge handle pointing right in both cases (just anchored low when
+   the nav was at the bottom). */
 body.lg.nav-hidden:not(.nav-bottom) .nav-peek { top: 14px; left: 0; width: 34px; height: 46px; border-radius: 0 16px 16px 0; border-left: none; }
-body.lg.nav-hidden.nav-bottom .nav-peek { bottom: 0; left: 16px; width: 46px; height: 34px; border-radius: 16px 16px 0 0; border-bottom: none; }
-body.lg.nav-hidden.nav-bottom .nav-peek svg { transform: rotate(-90deg); }
+body.lg.nav-hidden.nav-bottom .nav-peek { bottom: 14px; top: auto; left: 0; width: 34px; height: 46px; border-radius: 0 16px 16px 0; border-left: none; }
 body.lg .menu-toggle { color: #fff; }
 
 /* ===== BUTTONS (glass language) ========================================== */

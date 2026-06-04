@@ -1100,10 +1100,7 @@
       var gap = 14;                                       // rendered px above the edge
       // header sits at top:0, so its natural rendered bottom == rectH.
       var dropLayout = (window.innerHeight - gap - rectH) / z;
-      var goneLayout = window.innerHeight / z + 30;       // push fully below the edge
-      var root = document.documentElement.style;
-      root.setProperty('--nav-drop', Math.max(0, dropLayout).toFixed(1) + 'px');
-      root.setProperty('--nav-gone', goneLayout.toFixed(1) + 'px');
+      document.documentElement.style.setProperty('--nav-drop', Math.max(0, dropLayout).toFixed(1) + 'px');
     }
     measureNavDrop();
     requestAnimationFrame(measureNavDrop); // re-measure once layout/fonts settle
