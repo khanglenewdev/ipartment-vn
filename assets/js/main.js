@@ -1100,7 +1100,11 @@
       var gap = 14;                                       // rendered px above the edge
       // header sits at top:0, so its natural rendered bottom == rectH.
       var dropLayout = (window.innerHeight - gap - rectH) / z;
-      document.documentElement.style.setProperty('--nav-drop', Math.max(0, dropLayout).toFixed(1) + 'px');
+      var rootStyle = document.documentElement.style;
+      rootStyle.setProperty('--nav-drop', Math.max(0, dropLayout).toFixed(1) + 'px');
+      // top value that drops the peek handle (46px tall) to ~14px above the edge.
+      var peekTopLayout = window.innerHeight / z - 46 - 14;
+      rootStyle.setProperty('--peek-bottom', Math.max(0, peekTopLayout).toFixed(1) + 'px');
     }
     measureNavDrop();
     requestAnimationFrame(measureNavDrop); // re-measure once layout/fonts settle

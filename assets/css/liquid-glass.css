@@ -143,20 +143,32 @@ body.lg .nav-hide:hover { background: rgba(255,255,255,0.16); color: #fff; }
 body.lg .nav-peek {
   position: fixed; z-index: 9999; display: none; align-items: center; justify-content: center;
   cursor: pointer; color: #fff;
-  background: rgba(12,12,12,0.42);
+  /* 20% less transparent than before (0.42 -> 0.62) so the handle is easier to spot. */
+  background: rgba(12,12,12,0.62);
   backdrop-filter: blur(var(--blur-lg)) saturate(160%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
   border: 1px solid var(--glass-border-hi);
   box-shadow: 0 16px 44px -14px rgba(0,0,0,0.7), var(--glass-inner);
-  transition: transform 0.2s, background 0.2s;
+  transform-origin: left center;
+  /* top transitions over 1s so the handle glides smoothly when the nav moves
+     between the top and bottom; transform/background stay snappy for hover. */
+  transition: top 1s var(--ease, cubic-bezier(0.16,1,0.3,1)), transform 0.2s, background 0.2s;
 }
 body.lg .nav-peek svg { width: 17px; height: 17px; }
-body.lg .nav-peek:hover { background: rgba(22,22,22,0.6); transform: scale(1.06); }
-body.lg.nav-hidden .nav-peek { display: inline-flex; }
-/* the nav now hides leftward whether it is at the top or the bottom, so the peek
-   tab is a left-edge handle pointing right in both cases (just anchored low when
-   the nav was at the bottom). */
+/* gentle attention pop every ~3s while the nav is hidden, so guests notice where
+   it tucked away. Paused on hover so it settles under the cursor. */
+body.lg.nav-hidden .nav-peek { display: inline-flex; animation: navPeekPop 3s ease-in-out infinite; }
+body.lg .nav-peek:hover { background: rgba(28,28,28,0.74); animation-play-state: paused; }
+@keyframes navPeekPop {
+  0%, 60%, 100% { transform: scale(1); }
+  73% { transform: scale(1.16); }
+  86% { transform: scale(0.98); }
+}
+/* the nav hides leftward whether at the top or the bottom, so the peek is a
+   left-edge handle pointing right in both cases. Positioned by `top` (not bottom)
+   so it can transition smoothly between the two spots. --peek-bottom is measured
+   in JS for the same html{zoom} reason as --nav-drop. */
 body.lg.nav-hidden:not(.nav-bottom) .nav-peek { top: 14px; left: 0; width: 34px; height: 46px; border-radius: 0 16px 16px 0; border-left: none; }
-body.lg.nav-hidden.nav-bottom .nav-peek { bottom: 14px; top: auto; left: 0; width: 34px; height: 46px; border-radius: 0 16px 16px 0; border-left: none; }
+body.lg.nav-hidden.nav-bottom .nav-peek { top: var(--peek-bottom, calc(100vh - 60px)); left: 0; width: 34px; height: 46px; border-radius: 0 16px 16px 0; border-left: none; }
 body.lg .menu-toggle { color: #fff; }
 
 /* ===== BUTTONS (glass language) ========================================== */
@@ -584,6 +596,7 @@ body.lg .fb-success .fb-send { max-width: 230px; margin: 0 auto; display: block;
 }
 @media (prefers-reduced-motion: reduce) {
   body.lg .hero-bg, body.lg .book-card, body.lg [class*="float"] { animation: none !important; }
+  body.lg.nav-hidden .nav-peek { animation: none !important; }
 }
 body.lg :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: inherit; }
 body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline-color: #fff; }
