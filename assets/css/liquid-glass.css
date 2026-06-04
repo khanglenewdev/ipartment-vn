@@ -108,7 +108,7 @@ body.lg .site-header-edu {
   letter-spacing: 0.14em; text-transform: uppercase;
   padding: 6px 9px 6px 13px; white-space: nowrap;
   isolation: isolate;
-  transition: top 0.42s var(--ease, cubic-bezier(0.16,1,0.3,1));
+  transition: top 0.62s var(--ease, cubic-bezier(0.16,1,0.3,1));
 }
 body.lg .edu-close { background: none; border: none; color: rgba(255,237,0,0.5); font-size: 14px; line-height: 1; cursor: pointer; padding: 0 1px; margin: 0; }
 body.lg .edu-close:hover { color: #fff; }
@@ -117,10 +117,14 @@ body.lg .site-header-edu.edu-hidden { display: none; }
 body.lg.nav-bottom .site-header-edu { top: 62px; }
 
 /* ===== NAV BEHAVIOR (scroll-to-bottom, hide/show, glassy peek) ========== */
-body.lg .site-header { transition: transform 0.42s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
-body.lg.nav-bottom .site-header { top: auto; bottom: 0; align-items: flex-end; padding: 0 22px 14px; }
+/* Everything moves via transform (never top/bottom), so the slide between top and
+   bottom AND the hide/show all animate smoothly at one matched, slower speed. */
+body.lg .site-header { transition: transform 0.62s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
+/* drop to the bottom: slide down to sit just above the bottom edge (animated) */
+body.lg.nav-bottom .site-header { transform: translateY(calc(100vh - 100% - 44px)); }
+/* hidden: slide off the left (when at the top) or fully down (when at the bottom) */
 body.lg.nav-hidden:not(.nav-bottom) .site-header { transform: translateX(-100%); }
-body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(130%); }
+body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(100vh); }
 
 body.lg .nav-hide {
   flex-shrink: 0; width: 28px; height: 28px; margin-right: 4px; border-radius: 50%;
