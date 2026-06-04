@@ -1042,6 +1042,62 @@
   }
 
   // ============================================================
+  // NAV BEHAVIOR
+  // - scroll-to-bottom: when a page's sticky filter (magazine cat-nav, results
+  //   summary-strip) sticks to the top, the floating pill drops to the bottom so
+  //   it never covers the filter; it returns to the top when scrolled back up.
+  // - hide/show: a glassy left chevron on the pill slides it out of the way (left
+  //   at the top, down at the bottom); a glassy peek arrow at that corner brings
+  //   it back.
+  // - educational tag: relocated to the top-right with a close X (it still
+  //   returns on reload / navigation, it just can be dismissed for the view).
+  // ============================================================
+  function initNavBehavior() {
+    var header = document.querySelector('.site-header');
+    var pill = document.querySelector('.site-header-main');
+    if (!header || !pill) return;
+
+    // Educational tag -> own fixed element (moved out of the header so the
+    // header's hide/move transforms never drag it along), with a close X.
+    var edu = header.querySelector('.site-header-edu');
+    if (edu && edu.parentNode === header) {
+      document.body.appendChild(edu);
+      var ex = document.createElement('button');
+      ex.type = 'button'; ex.className = 'edu-close'; ex.setAttribute('aria-label', 'Dismiss notice');
+      ex.innerHTML = '&times;';
+      ex.addEventListener('click', function () { edu.classList.add('edu-hidden'); });
+      edu.appendChild(ex);
+    }
+
+    // Hide button (left chevron) at the start of the pill.
+    if (!pill.querySelector('.nav-hide')) {
+      var hideBtn = document.createElement('button');
+      hideBtn.type = 'button'; hideBtn.className = 'nav-hide'; hideBtn.setAttribute('aria-label', 'Hide menu');
+      hideBtn.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M15 6l-6 6 6 6"/></svg>';
+      pill.insertBefore(hideBtn, pill.firstChild);
+      hideBtn.addEventListener('click', function () { document.body.classList.add('nav-hidden'); });
+    }
+
+    // Peek button to bring the nav back when hidden.
+    var peek = document.createElement('button');
+    peek.type = 'button'; peek.className = 'nav-peek'; peek.setAttribute('aria-label', 'Show menu');
+    peek.innerHTML = '<svg viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4" stroke-linecap="round" stroke-linejoin="round"><path d="M9 6l6 6-6 6"/></svg>';
+    document.body.appendChild(peek);
+    peek.addEventListener('click', function () { document.body.classList.remove('nav-hidden'); });
+
+    // Scroll-to-bottom past a sticky filter (only on pages that have one).
+    var filter = document.querySelector('[data-nav-dodge], .cat-nav, .summary-strip');
+    if (filter) {
+      var onScroll = function () {
+        document.body.classList.toggle('nav-bottom', filter.getBoundingClientRect().top <= 1);
+      };
+      window.addEventListener('scroll', onScroll, { passive: true });
+      window.addEventListener('resize', onScroll, { passive: true });
+      onScroll();
+    }
+  }
+
+  // ============================================================
   // INIT
   // ============================================================
   document.addEventListener('DOMContentLoaded', () => {
@@ -1050,6 +1106,7 @@
     initScrollReveal();
     initCountUp();
     initMobileNav();
+    initNavBehavior();
     initBackToTop();
     initStickyBar();
     initSocialProof();

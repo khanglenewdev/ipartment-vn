@@ -59,7 +59,7 @@ body.lg .site-header-main {
   height: auto; width: auto;
   display: inline-flex; align-items: center; justify-content: flex-start; gap: 4px;
   padding: 7px 8px 7px 20px;
-  background: rgba(10,10,10,0.35);
+  background: rgba(10,10,10,0.18);
   backdrop-filter: blur(var(--blur-lg)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
   border: 1px solid var(--glass-border);
@@ -78,9 +78,9 @@ body.lg .site-header .logo {
 body.lg .site-header .logo span { color: var(--yellow); }
 body.lg nav.site-nav { display: flex; align-items: center; gap: 1px; }
 body.lg nav.site-nav a {
-  font-family: var(--font-body); font-size: 12px; font-weight: 500;
+  font-family: var(--font-body); font-size: 12px; font-weight: 600;
   letter-spacing: 0; text-transform: none;
-  color: rgba(255,255,255,0.72); text-decoration: none;
+  color: rgba(255,255,255,0.85); text-decoration: none;
   padding: 8px 13px; border-radius: 999px;
   transition: color 0.2s, background 0.2s;
 }
@@ -97,7 +97,8 @@ body.lg nav.site-nav a.nav-cta.active { background: var(--yellow); }
 /* Educational disclaimer - small glass pill pinned to the top-left,
    filling the empty space beside the centered nav pill. */
 body.lg .site-header-edu {
-  position: absolute; top: 18px; left: 24px; pointer-events: auto;
+  position: fixed; top: 18px; right: 24px; left: auto; z-index: 9998; pointer-events: auto;
+  display: inline-flex; align-items: center; gap: 5px;
   background: rgba(10,10,10,0.5);
   backdrop-filter: blur(var(--blur-sm));
   -webkit-backdrop-filter: blur(var(--blur-sm));
@@ -105,9 +106,46 @@ body.lg .site-header-edu {
   color: rgba(255,237,0,0.72);
   font-family: var(--font-mono); font-size: 9px; font-style: normal;
   letter-spacing: 0.14em; text-transform: uppercase;
-  padding: 6px 13px; white-space: nowrap;
+  padding: 6px 9px 6px 13px; white-space: nowrap;
   isolation: isolate;
+  transition: top 0.42s var(--ease, cubic-bezier(0.16,1,0.3,1));
 }
+body.lg .edu-close { background: none; border: none; color: rgba(255,237,0,0.5); font-size: 14px; line-height: 1; cursor: pointer; padding: 0 1px; margin: 0; }
+body.lg .edu-close:hover { color: #fff; }
+body.lg .site-header-edu.edu-hidden { display: none; }
+/* when the nav drops to the bottom, slide the tag below the stuck filter */
+body.lg.nav-bottom .site-header-edu { top: 62px; }
+
+/* ===== NAV BEHAVIOR (scroll-to-bottom, hide/show, glassy peek) ========== */
+body.lg .site-header { transition: transform 0.42s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
+body.lg.nav-bottom .site-header { top: auto; bottom: 0; align-items: flex-end; padding: 0 22px 14px; }
+body.lg.nav-hidden:not(.nav-bottom) .site-header { transform: translateX(-100%); }
+body.lg.nav-hidden.nav-bottom .site-header { transform: translateY(130%); }
+
+body.lg .nav-hide {
+  flex-shrink: 0; width: 28px; height: 28px; margin-right: 4px; border-radius: 50%;
+  display: inline-flex; align-items: center; justify-content: center; cursor: pointer;
+  background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border); color: rgba(255,255,255,0.82);
+  transition: background 0.18s, color 0.18s;
+}
+body.lg .nav-hide svg { width: 15px; height: 15px; }
+body.lg .nav-hide:hover { background: rgba(255,255,255,0.16); color: #fff; }
+
+body.lg .nav-peek {
+  position: fixed; z-index: 9999; display: none; align-items: center; justify-content: center;
+  cursor: pointer; color: #fff;
+  background: rgba(12,12,12,0.42);
+  backdrop-filter: blur(var(--blur-lg)) saturate(160%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
+  border: 1px solid var(--glass-border-hi);
+  box-shadow: 0 16px 44px -14px rgba(0,0,0,0.7), var(--glass-inner);
+  transition: transform 0.2s, background 0.2s;
+}
+body.lg .nav-peek svg { width: 17px; height: 17px; }
+body.lg .nav-peek:hover { background: rgba(22,22,22,0.6); transform: scale(1.06); }
+body.lg.nav-hidden .nav-peek { display: inline-flex; }
+body.lg.nav-hidden:not(.nav-bottom) .nav-peek { top: 14px; left: 0; width: 34px; height: 46px; border-radius: 0 16px 16px 0; border-left: none; }
+body.lg.nav-hidden.nav-bottom .nav-peek { bottom: 0; left: 16px; width: 46px; height: 34px; border-radius: 16px 16px 0 0; border-bottom: none; }
+body.lg.nav-hidden.nav-bottom .nav-peek svg { transform: rotate(-90deg); }
 body.lg .menu-toggle { color: #fff; }
 
 /* ===== BUTTONS (glass language) ========================================== */
@@ -628,6 +666,8 @@ body.lg .voucher-card {
 }
 body.lg .voucher-card .vc-row { display: flex; align-items: center; gap: 12px; width: 100%; }
 body.lg .vc-notice { display: none; margin-top: 9px; font-size: 12px; line-height: 1.4; color: #f87171; }
+body.lg .vc-notice-link { color: var(--yellow); text-decoration: underline; cursor: pointer; font-weight: 600; }
+body.lg .vc-notice-link:hover { color: #fff; }
 body.lg .voucher-card.show-notice .vc-notice { display: block; }
 body.lg .voucher-card.show-notice { border-color: rgba(248,113,113,0.5); border-left-color: #f87171; cursor: default; }
 body.lg .voucher-card:hover { background: rgba(255,255,255,0.08); border-color: rgba(255,237,0,0.4); transform: translateY(-1px); }

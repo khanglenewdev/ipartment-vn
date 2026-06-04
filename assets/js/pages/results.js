@@ -41,17 +41,39 @@ if (state.checkin && state.checkout) {
   state.nights = Math.round((state.checkout - state.checkin) / 86400000);
 }
 
+const ROOM_BY_ID = {}; ROOMS.forEach(r => { ROOM_BY_ID[r.id] = r; });
+function roomLabel() {
+  if (!state.preferRoom || !ROOM_BY_ID[state.preferRoom]) return 'Any size';
+  return state.preferRoom + ' - ' + ROOM_BY_ID[state.preferRoom].name;
+}
+
 function renderSummary() {
   document.getElementById('sum-checkin').textContent = state.checkin ? formatDate(state.checkin) : 'Select dates';
   document.getElementById('sum-checkout').textContent = state.checkout ? formatDate(state.checkout) : 'Select dates';
   document.getElementById('sum-guests').textContent = state.guests + (state.guests === 1 ? ' guest' : ' guests');
+  const rm = document.getElementById('sum-room'); if (rm) rm.textContent = roomLabel();
   document.getElementById('sum-nights').textContent = state.nights > 0 ? `${state.nights} night${state.nights>1?'s':''}` : 'No dates selected';
+}
+
+// Recompute everything after an edit on the search bar, and keep the URL in sync
+// (so a refresh or share keeps the selection) without ever leaving the page.
+function recompute() {
+  state.nights = (state.checkin && state.checkout) ? Math.round((state.checkout - state.checkin) / 86400000) : 0;
+  renderSummary(); renderNoDates(); renderTierInfo(); renderResults(); updateUrl();
+}
+function updateUrl() {
+  const p = new URLSearchParams();
+  if (state.checkin) p.set('ci', dateKey(state.checkin));
+  if (state.checkout) p.set('co', dateKey(state.checkout));
+  p.set('guests', state.guests);
+  if (state.preferRoom) p.set('room', state.preferRoom);
+  try { history.replaceState(null, '', 'results.html?' + p.toString()); } catch (e) {}
 }
 
 function renderNoDates() {
   const el = document.getElementById('no-dates-section');
   if (state.nights === 0) {
-    el.innerHTML = `<div class="no-dates-banner"><p>You have not selected dates yet. Showing standard nightly rates. <strong>Choose dates</strong> on the homepage to see weekly (18% off) and monthly (38% off) discounts.</p><a href="index.html">Pick dates</a></div>`;
+    el.innerHTML = `<div class="no-dates-banner"><p>You have not selected dates yet. Showing standard nightly rates. <strong>Pick your dates</strong> to unlock the weekly (18% off) and monthly (38% off) rates.</p><button type="button" onclick="document.getElementById('field-checkin').click()">Pick dates</button></div>`;
   } else el.innerHTML = '';
 }
 
@@ -89,7 +111,7 @@ function renderResults() {
   else sub.textContent = `${rooms.length} apartments available. Pick dates to see total pricing`;
 
   if (!rooms.length) {
-    document.getElementById('results-list').innerHTML = `<div class="empty"><div class="ico">&#128269;</div><h3>No matches for <em>${state.guests} guests</em></h3><p>Try reducing your guest count or contact us for custom options.</p><a href="index.html" class="btn btn-primary">Edit search</a></div>`;
+    document.getElementById('results-list').innerHTML = `<div class="empty"><div class="ico">&#128269;</div><h3>No matches for <em>${state.guests} guests</em></h3><p>Try reducing your guest count above, or contact us for custom options.</p><button type="button" class="btn btn-primary" onclick="document.getElementById('field-guests').click()">Adjust guests</button></div>`;
     return;
   }
 
@@ -138,6 +160,122 @@ window.sortResults = function(s) {
   document.querySelectorAll('.sort-btn').forEach(b => b.classList.toggle('active', b.dataset.sort === s));
   renderResults();
 };
+
+// ============================================================
+// EDITABLE SEARCH BAR - dates calendar, guests, room - all inline, the guest
+// never leaves the page. The calendar uses a FIXED 6-week (42-cell) grid so its
+// height never changes (the prev/next arrows do not jump), it does NOT auto-close
+// after the second pick, and it commits only on Confirm.
+// ============================================================
+const MONTHS_FULL = ['January','February','March','April','May','June','July','August','September','October','November','December'];
+const calState = { month: null, tempCi: null, tempCo: null };
+
+function closePop() {
+  const pop = document.getElementById('summary-pop');
+  if (pop) { pop.hidden = true; pop.innerHTML = ''; pop.removeAttribute('data-kind'); }
+  document.querySelectorAll('.summary-field.active').forEach(f => f.classList.remove('active'));
+  document.removeEventListener('mousedown', outsideClose, true);
+}
+function outsideClose(e) {
+  const strip = document.getElementById('summary-strip');
+  if (strip && !strip.contains(e.target)) closePop();
+}
+function openPop(kind, field) {
+  const pop = document.getElementById('summary-pop');
+  if (!pop) return;
+  if (!pop.hidden && pop.dataset.kind === kind) { closePop(); return; }
+  document.querySelectorAll('.summary-field.active').forEach(f => f.classList.remove('active'));
+  if (field) field.classList.add('active');
+  pop.dataset.kind = kind;
+  if (kind === 'dates') { calState.tempCi = state.checkin; calState.tempCo = state.checkout; calState.month = startMonth(); pop.innerHTML = calendarHtml(); paintCalendar(); }
+  else if (kind === 'guests') pop.innerHTML = guestsHtml();
+  else if (kind === 'room') pop.innerHTML = roomHtml();
+  pop.hidden = false;
+  setTimeout(() => document.addEventListener('mousedown', outsideClose, true), 0);
+}
+
+function startMonth() {
+  const d = state.checkin ? new Date(state.checkin) : new Date(TODAY);
+  return new Date(d.getFullYear(), d.getMonth(), 1);
+}
+function calendarHtml() {
+  return '<div class="cal-pop">'
+    + '<div class="cal-head"><button type="button" class="cal-nav" data-cal="prev" aria-label="Previous month">&#8249;</button>'
+    + '<span class="cal-title" id="cal-title"></span>'
+    + '<button type="button" class="cal-nav" data-cal="next" aria-label="Next month">&#8250;</button></div>'
+    + '<div class="cal-dows"><span>Mo</span><span>Tu</span><span>We</span><span>Th</span><span>Fr</span><span>Sa</span><span>Su</span></div>'
+    + '<div class="cal-grid" id="cal-grid"></div>'
+    + '<div class="cal-foot"><span class="cal-hint" id="cal-hint"></span>'
+    + '<div class="cal-foot-btns"><button type="button" class="cal-clear" data-cal="clear">Clear</button>'
+    + '<button type="button" class="cal-confirm" data-cal="confirm">Confirm dates</button></div></div></div>';
+}
+function paintCalendar() {
+  const grid = document.getElementById('cal-grid'); if (!grid) return;
+  const m = calState.month;
+  document.getElementById('cal-title').textContent = MONTHS_FULL[m.getMonth()] + ' ' + m.getFullYear();
+  const first = new Date(m.getFullYear(), m.getMonth(), 1);
+  const startDow = (first.getDay() + 6) % 7;          // Monday-first
+  let html = '';
+  for (let i = 0; i < 42; i++) {                        // fixed 6-week grid -> constant height
+    const day = new Date(m.getFullYear(), m.getMonth(), 1 - startDow + i);
+    const inMonth = day.getMonth() === m.getMonth();
+    const past = day < TODAY;
+    let cls = 'cal-day';
+    if (!inMonth) cls += ' cal-out';
+    if (calState.tempCi && day.getTime() === calState.tempCi.getTime()) cls += ' cal-ci';
+    if (calState.tempCo && day.getTime() === calState.tempCo.getTime()) cls += ' cal-co';
+    if (calState.tempCi && calState.tempCo && day > calState.tempCi && day < calState.tempCo) cls += ' cal-inrange';
+    html += '<button type="button" class="' + cls + '"' + ((past || !inMonth) ? ' disabled' : '') + ' data-day="' + dateKey(day) + '">' + day.getDate() + '</button>';
+  }
+  grid.innerHTML = html;
+  const hint = document.getElementById('cal-hint');
+  if (hint) {
+    if (!calState.tempCi) hint.textContent = 'Pick your check-in date';
+    else if (!calState.tempCo) hint.textContent = 'Now pick your check-out date';
+    else { const n = Math.round((calState.tempCo - calState.tempCi) / 86400000); hint.textContent = n + ' night' + (n > 1 ? 's' : '') + ' selected'; }
+  }
+}
+function guestsHtml() {
+  return '<div class="mini-pop"><div class="mini-row"><span>Guests</span><div class="mini-step"><button type="button" data-g="-1" aria-label="Fewer">&minus;</button><span id="g-val">' + state.guests + '</span><button type="button" data-g="1" aria-label="More">+</button></div></div><p class="mini-note">Up to 8 guests across our apartments.</p></div>';
+}
+function roomHtml() {
+  const opts = [{ id: '', name: 'Any size' }].concat(ROOMS.map(r => ({ id: r.id, name: r.id + ' - ' + r.name })));
+  return '<div class="mini-pop room-pop">' + opts.map(o => '<button type="button" class="rp-opt' + ((state.preferRoom || '') === o.id ? ' sel' : '') + '" data-room="' + o.id + '">' + o.name + '</button>').join('') + '</div>';
+}
+
+document.getElementById('summary-pop').addEventListener('click', function (e) {
+  const cal = e.target.closest('[data-cal]');
+  if (cal) {
+    const a = cal.dataset.cal;
+    if (a === 'prev') { calState.month = new Date(calState.month.getFullYear(), calState.month.getMonth() - 1, 1); paintCalendar(); }
+    else if (a === 'next') { calState.month = new Date(calState.month.getFullYear(), calState.month.getMonth() + 1, 1); paintCalendar(); }
+    else if (a === 'clear') { calState.tempCi = null; calState.tempCo = null; paintCalendar(); }
+    else if (a === 'confirm') { state.checkin = calState.tempCi; state.checkout = calState.tempCo; closePop(); recompute(); }
+    return;
+  }
+  const dayBtn = e.target.closest('.cal-day');
+  if (dayBtn && !dayBtn.disabled) {
+    const d = _parseDate(dayBtn.dataset.day);
+    if (!calState.tempCi || calState.tempCo) { calState.tempCi = d; calState.tempCo = null; }   // start fresh
+    else if (d <= calState.tempCi) { calState.tempCi = d; calState.tempCo = null; }              // earlier click resets check-in
+    else { calState.tempCo = d; }                                                                // valid second click sets check-out
+    paintCalendar();                                                                             // never auto-closes
+    return;
+  }
+  const g = e.target.closest('[data-g]');
+  if (g) {
+    state.guests = Math.max(1, Math.min(8, state.guests + parseInt(g.dataset.g, 10)));
+    const gv = document.getElementById('g-val'); if (gv) gv.textContent = state.guests;
+    recompute();
+    return;
+  }
+  const rp = e.target.closest('.rp-opt');
+  if (rp) { state.preferRoom = rp.dataset.room || null; closePop(); recompute(); return; }
+});
+
+document.querySelectorAll('.summary-field').forEach(function (f) {
+  f.addEventListener('click', function () { openPop(f.dataset.edit, f); });
+});
 
 renderSummary();
 renderNoDates();

@@ -7,7 +7,7 @@
 /* ---- launcher (bottom-right floating button) ---- */
 .ipc-launcher {
   position: fixed; right: 22px; bottom: 22px; z-index: 90000;
-  width: 58px; height: 58px; border-radius: 50%; cursor: pointer;
+  width: 58px; height: 58px; border-radius: 50%; cursor: pointer; overflow: hidden;
   border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18));
   background: linear-gradient(150deg, var(--terracotta, #d8613c), #b94a28);
   color: #fff; display: flex; align-items: center; justify-content: center;
@@ -18,7 +18,7 @@
 .ipc-launcher:active { transform: scale(0.97); }
 .ipc-launcher svg { width: 26px; height: 26px; display: block; }
 .ipc-launcher .ipc-ic { display: flex; align-items: center; justify-content: center; width: 100%; height: 100%; }
-.ipc-launcher .ipc-face { width: 86%; height: 86%; object-fit: contain; display: block; pointer-events: none; }
+.ipc-launcher .ipc-face { width: 112%; height: 112%; object-fit: contain; display: block; pointer-events: none; }
 .ipc-launcher.ipc-face-mode { background: radial-gradient(circle at 50% 42%, #fff7e2, #ffe6b0); border-color: rgba(180,120,40,0.45); }
 .ipc-launcher.ipc-open-state { background: linear-gradient(150deg, #3a2a24, #2a1d18); }
 /* attention pulse: two rings expanding out and fading, like the hero dots on

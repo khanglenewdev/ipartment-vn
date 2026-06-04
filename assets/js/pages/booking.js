@@ -560,7 +560,11 @@
       const wm = walletItem(code);
       if (wm && wm.requiresLogin) {
         const u = window.ipartmentAuth ? await window.ipartmentAuth.getUser() : null;
-        if (!u) { showPromoMsg('Please log in or create an account to use this voucher.', false); return; }
+        if (!u) {
+          const pm = document.getElementById('promo-msg');
+          if (pm) { pm.style.display = 'block'; pm.className = 'promo-err'; pm.innerHTML = 'Please <a href="#" onclick="window.ipartmentOpenAuth(\'login\');return false;">log in or create an account</a> to use this voucher.'; }
+          return;
+        }
       }
       const wc = WELCOME_CODES[code];
       addVoucher(voucherObjFromCode(code));   // also selects the free add-on and refreshes the receipt
@@ -620,6 +624,13 @@
   // A tappable menu of the vouchers the guest holds, so they pick one instead of
   // typing a code. Every code routes through applyPromo, so all of them redeem.
   function voucherWalletEsc(e) { if (e.key === 'Escape') window.closeVoucherWallet(); }
+  // From the member-voucher notice: close the wallet and pop the sign-in modal in
+  // place, so the guest never leaves the booking (no lost progress).
+  window.voucherLoginPrompt = function() {
+    window.closeVoucherWallet();
+    if (window.ipartmentOpenAuth) window.ipartmentOpenAuth('login');
+    else if (window.ipartmentToast) window.ipartmentToast('Sign in from the menu to use member vouchers.');
+  };
   function updateWalletApplyCount() {
     var n = document.querySelectorAll('#voucher-overlay .voucher-card.selected').length;
     var btn = document.querySelector('#voucher-overlay .voucher-apply-btn');
@@ -666,7 +677,7 @@
         + '<span class="vc-desc">' + v.desc + '</span></span>'
         + '<span class="vc-badge">' + v.badge + '</span>'
         + '</span>'
-        + (v.requiresLogin ? '<span class="vc-notice">Please log in or create an account to use this voucher.</span>' : '')
+        + (v.requiresLogin ? '<span class="vc-notice">Please <span class="vc-notice-link" onclick="event.stopPropagation();voucherLoginPrompt()">log in or create an account</span> to use this voucher.</span>' : '')
         + '</button>';
     }).join('');
     var html = '<div class="voucher-overlay" id="voucher-overlay" role="dialog" aria-modal="true" aria-label="Your vouchers">'

@@ -37,12 +37,13 @@
   <div class="site-header-edu">For educational purposes only</div>
 </header>
 
-<div class="summary-strip">
-  <div class="summary-item"><span class="lbl">Check-in</span><span class="val" id="sum-checkin">-</span></div>
-  <div class="summary-item"><span class="lbl">Check-out</span><span class="val" id="sum-checkout">-</span></div>
-  <div class="summary-item"><span class="lbl">Guests</span><span class="val" id="sum-guests">1</span></div>
+<div class="summary-strip" id="summary-strip" data-nav-dodge>
+  <button type="button" class="summary-field" data-edit="dates" id="field-checkin"><span class="lbl">Check-in</span><span class="val" id="sum-checkin">Select dates</span></button>
+  <button type="button" class="summary-field" data-edit="dates" id="field-checkout"><span class="lbl">Check-out</span><span class="val" id="sum-checkout">Select dates</span></button>
+  <button type="button" class="summary-field" data-edit="guests" id="field-guests"><span class="lbl">Guests</span><span class="val" id="sum-guests">2 guests</span></button>
+  <button type="button" class="summary-field" data-edit="room" id="field-room"><span class="lbl">Apartment</span><span class="val" id="sum-room">Any size</span></button>
   <span class="summary-nights" id="sum-nights">No dates selected</span>
-  <a href="index.html" class="summary-edit">Edit Search</a>
+  <div class="summary-pop" id="summary-pop" hidden></div>
 </div>
 
 <div class="results-wrap">
