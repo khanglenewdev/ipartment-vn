@@ -29,7 +29,10 @@ function applyFilter() {
     cat.querySelectorAll('.faq-item').forEach(item => {
       const kw = (item.dataset.keywords || '').toLowerCase();
       const qText = item.querySelector('.faq-question').textContent.toLowerCase();
-      const matchQ = !q || kw.includes(q) || qText.includes(q);
+      // Token AND match: every word in the query must appear somewhere in the
+      // keywords or question, so multi-word searches ("cat litter") still match.
+      const hay = kw + ' ' + qText;
+      const matchQ = !q || q.split(/\s+/).every(w => hay.includes(w));
       const show = matchCat && matchQ;
       item.classList.toggle('hide', !show);
       if (show) { catVisible = true; anyVisible = true; }

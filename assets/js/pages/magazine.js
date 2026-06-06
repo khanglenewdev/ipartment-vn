@@ -5,33 +5,41 @@
   const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const escapeAttr = s => escapeHtml(s);
 
-  function renderFeatured(featured) {
+  function featuredCard(featured) {
+    const tag = featured.tag || 'Featured';
+    const dateLine = [featured.date, featured.source].filter(Boolean).join(', ');
+    const isExternal = featured.url && /^https?:\/\//.test(featured.url);
+    const readLabel = featured.media === 'video' ? 'Watch the video' : 'Read article';
+    return `
+      <a href="${escapeAttr(featured.url || '#')}" ${isExternal ? 'target="_blank" rel="noopener"' : ''} class="featured-card">
+        <div class="featured-img" style="background-image:url('${escapeAttr(featured.image)}');"></div>
+        <div class="featured-text">
+          <span class="tag" style="margin-bottom:18px;align-self:flex-start;">${escapeHtml(tag)}</span>
+          <h2>${escapeHtml(featured.title)}</h2>
+          <p>${escapeHtml(featured.excerpt)}</p>
+          <div class="featured-meta">
+            <span>${escapeHtml(dateLine)}</span>
+            ${isExternal ? `<span class="read">${escapeHtml(readLabel)} &#8599;</span>` : ''}
+          </div>
+        </div>
+      </a>
+    `;
+  }
+
+  // Renders up to two featured stories side by side (compact dark cards).
+  function renderFeatured(featuredList) {
     const slot = document.getElementById('featured-slot');
     const section = document.getElementById('featured-section');
-    // No featured article chosen? Hide the whole Feature section (no awkward gap).
-    if (!featured) {
+    const list = (featuredList || []).filter(Boolean);
+    // Nothing featured? Hide the whole Feature section (no awkward gap).
+    if (!list.length) {
       if (section) section.style.display = 'none';
       if (slot) slot.innerHTML = '';
       return;
     }
     if (section) section.style.display = '';
-    const tag = featured.tag || 'Featured';
-    const dateLine = [featured.date, featured.source].filter(Boolean).join(', ');
-    const isExternal = featured.url && /^https?:\/\//.test(featured.url);
-    slot.innerHTML = `
-      <a href="${escapeAttr(featured.url || '#')}" ${isExternal ? 'target="_blank" rel="noopener"' : ''} class="featured-card">
-        <div class="featured-img" style="background-image:url('${escapeAttr(featured.image)}');"></div>
-        <div class="featured-text">
-          <span class="tag" style="margin-bottom:20px;align-self:flex-start;">${escapeHtml(tag)}</span>
-          <h2>${escapeHtml(featured.title)}</h2>
-          <p>${escapeHtml(featured.excerpt)}</p>
-          <div class="featured-meta">
-            <span>${escapeHtml(dateLine)}</span>
-            ${isExternal ? '<span class="read">Read article &#8599;</span>' : ''}
-          </div>
-        </div>
-      </a>
-    `;
+    slot.innerHTML = '<div class="featured-grid' + (list.length === 1 ? ' featured-grid-single' : '') + '">' +
+      list.map(featuredCard).join('') + '</div>';
   }
 
   function renderGrid(articles) {
@@ -74,9 +82,9 @@
 
   function render() {
     const all = window.ipartmentLoadArticles ? window.ipartmentLoadArticles() : [];
-    // Featured is the first article with category === 'featured' OR featured: true
-    const featured = all.find(a => a.featured === true || a.category === 'featured') || null;
-    const rest = all.filter(a => a !== featured);
+    // Up to two featured stories (category === 'featured' OR featured: true).
+    const featured = all.filter(a => a.featured === true || a.category === 'featured').slice(0, 2);
+    const rest = all.filter(a => !featured.includes(a));
     renderFeatured(featured);
     renderGrid(rest);
     applyFilter();

@@ -95,6 +95,23 @@
   var jokeIdx = Math.floor(Math.random() * JOKES.length);
   function nextJoke() { jokeIdx = (jokeIdx + 1) % JOKES.length; return JOKES[jokeIdx]; }
 
+  // ---- cat easter egg ----
+  // The mascot is a cat, so playful cat-bait inputs (meow, purr, pspsps, "are you
+  // a cat", "mascot", and Vietnamese equivalents) get a wink back, then steer to
+  // real help. Deliberately NARROW so genuine pet questions (bring my cat, cat
+  // litter, the vet) still land on the FAQ library instead of this.
+  var CAT_RE = /\bmeow+\b|\bmew\b|\bpurr+\b|\b(?:ps){2,}\b|\bpss+t\b|\bkitt(?:y|ies|en|ens)\b|(?:good|nice|cute|pretty|sweet) cat\b|i love (?:your |the )?cats?\b|are you (?:a |the )?cat\b|you are a cat\b|\bmascot\b|pet the cat\b|meo meo|ban la (?:con )?meo|meo oi|cho toi xem (?:con )?meo/;
+  var CAT_LINES = [
+    { en: "You found the house cat. 🐱 I usually nap on the warm router, but I am very good at booking, the apartments, and Thao Dien. What can I help with?", vi: "Bạn vừa tìm thấy chú mèo của nhà. 🐱 Tôi hay ngủ trên bộ phát wifi ấm áp, nhưng rất giỏi về đặt phòng, các căn hộ và Thảo Điền. Tôi có thể giúp gì cho bạn?" },
+    { en: "Meow. 🐾 Yes, the mascot is a cat, and yes, that cat is me. Ask me anything about your stay and I will stop chasing my tail to help.", vi: "Meo. 🐾 Đúng vậy, linh vật là một chú mèo, và chú mèo đó chính là tôi. Hãy hỏi tôi bất cứ điều gì về kỳ lưu trú và tôi sẽ ngừng đuổi theo cái đuôi của mình để giúp bạn." },
+    { en: "Purrr. You scratched exactly the right spot. 🐈 Now, booking, the apartments, or the neighbourhood, which one shall we chase?", vi: "Grừ grừ. Bạn vừa gãi đúng chỗ rồi. 🐈 Nào, đặt phòng, các căn hộ hay khu phố, chúng ta sẽ đuổi theo cái nào đây?" },
+    { en: "I have personally tested the Wi-Fi by sitting on the router, and I can confirm it is fast. 🐱 Ask me anything about a stay.", vi: "Tôi đã đích thân kiểm tra Wi-Fi bằng cách nằm lên bộ phát, và xác nhận là nó rất nhanh. 🐱 Hãy hỏi tôi bất cứ điều gì về kỳ lưu trú." },
+    { en: "Pspsps right back at you. 🐾 I am the ipartment cat. Type a real question and I will fetch the answer, no fetching jokes please, I am a cat.", vi: "Pspsps lại cho bạn nè. 🐾 Tôi là mèo của ipartment. Hãy gõ một câu hỏi thật và tôi sẽ tha câu trả lời về cho bạn, đừng bảo tôi nhặt bóng nhé, tôi là mèo mà." },
+    { en: "Meow meow. 🐱 Translation: how can I help with your stay today? Booking, apartments, check-in, or the area, your pick.", vi: "Meo meo. 🐱 Dịch ra là: hôm nay tôi có thể giúp gì cho kỳ lưu trú của bạn? Đặt phòng, căn hộ, nhận phòng hay khu vực, bạn chọn nhé." }
+  ];
+  var catIdx = Math.floor(Math.random() * CAT_LINES.length);
+  function nextCat() { catIdx = (catIdx + 1) % CAT_LINES.length; return CAT_LINES[catIdx]; }
+
   // ---- state ----
   var raw = null;          // parsed JSON
   var entries = [];        // augmented entries (with normalised fields + token sets)
@@ -206,6 +223,7 @@
   // ---- the cascade decision: strong fuzzy OR a distinctive keyword ----
   function match(text, lang) {
     if (JOKE_RE.test(normalise(text))) return { status: 'joke', joke: nextJoke(), score: 0, via: 'joke', suggestions: [] };
+    if (CAT_RE.test(normalise(text))) return { status: 'cat', cat: nextCat(), score: 0, via: 'cat', suggestions: [] };
     var a = analyze(text);
     if (!a) return { status: 'miss', entry: null, score: 1, via: null, suggestions: [] };
     if (a.exact) return { status: 'hit', entry: a.exact, score: 0, via: 'exact', suggestions: relatedEntries(a.exact.id, 3) };
@@ -285,6 +303,7 @@
     },
     match: match,
     joke: nextJoke,
+    cat: nextCat,
     categories: categories,
     byCategory: byCategory,
     byFeatured: byFeatured,

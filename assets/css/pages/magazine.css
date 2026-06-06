@@ -61,20 +61,24 @@ section { padding: 64px 64px; }
    card so the lead story still has weight against the warm page. */
 .mag-featured-section { padding: 32px 64px 40px; }
 .mag-featured-title { margin-bottom: 32px; }
+/* Two compact featured stories side by side (was one oversized hero). Each card
+   keeps the dark editorial look against the warm page. */
+.featured-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 24px; }
+.featured-grid-single { grid-template-columns: 1fr; max-width: 640px; }
 .featured-card {
-  display: grid; grid-template-columns: 1fr 1fr; gap: 0;
+  display: flex; flex-direction: column;
   background: #150b0b; border: 1px solid #e3e3e8; border-radius: 20px;
-  overflow: hidden; min-height: 432px; text-decoration: none; color: inherit;
+  overflow: hidden; text-decoration: none; color: inherit;
   box-shadow: 0 24px 60px -28px rgba(0,0,0,0.25);
   transition: transform 0.4s var(--ease), border-color 0.4s, box-shadow 0.4s;
 }
 .featured-card:hover { transform: translateY(-4px); border-color: var(--terracotta); box-shadow: 0 30px 70px -24px rgba(0,0,0,0.32); }
-.featured-img { background-size: cover; background-position: center; min-height: 320px; transition: transform 0.6s var(--ease); }
+.featured-img { background-size: cover; background-position: center; height: 240px; flex-shrink: 0; transition: transform 0.6s var(--ease); }
 .featured-card:hover .featured-img { transform: scale(1.04); }
-.featured-text { padding: 56px; display: flex; flex-direction: column; justify-content: center; }
+.featured-text { padding: 36px 40px 40px; display: flex; flex-direction: column; flex: 1; }
 /* body.lg prefix so it out-specifies body.lg .paper-section h2 (this card is dark, not paper) */
-body.lg .featured-text h2 { font-family: var(--font-heading); font-size: clamp(22px, 2.7vw, 36px); font-weight: 600; color: #fff; line-height: 1.15; margin-bottom: 20px; }
-.featured-text p { font-size: 15px; color: rgba(255,255,255,0.72); line-height: 1.8; margin-bottom: 28px; }
+body.lg .featured-text h2 { font-family: var(--font-heading); font-size: clamp(21px, 2vw, 28px); font-weight: 600; color: #fff; line-height: 1.2; margin-bottom: 16px; }
+.featured-text p { font-size: 14.5px; color: rgba(255,255,255,0.72); line-height: 1.75; margin-bottom: 24px; flex: 1; }
 .featured-meta { display: flex; align-items: center; gap: 16px; flex-wrap: wrap; font-family: var(--font-mono); font-size: 11px; color: rgba(255,255,255,0.45); font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase; }
 .featured-meta .read { display: inline-flex; align-items: center; gap: 6px; color: var(--yellow); font-weight: 700; }
 
@@ -137,9 +141,9 @@ body.lg .featured-text h2 { font-family: var(--font-heading); font-size: clamp(2
   .cat-nav { padding: 12px 24px; }
   .mag-search-section, .mag-featured-section, .mag-articles-section { padding-left: 24px; padding-right: 24px; }
   .mag-newsletter { padding: 56px 24px; }
-  .featured-card { grid-template-columns: 1fr; min-height: auto; }
-  .featured-img { min-height: 220px; }
-  .featured-text { padding: 36px 24px; }
+  .featured-grid, .featured-grid-single { grid-template-columns: 1fr; max-width: none; }
+  .featured-img { height: 200px; }
+  .featured-text { padding: 28px 24px 32px; }
   .article-grid { grid-template-columns: 1fr 1fr; }
 }
 @media (max-width: 600px) {

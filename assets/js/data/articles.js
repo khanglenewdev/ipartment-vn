@@ -7,6 +7,21 @@
 window.IPARTMENT_DEFAULT_ARTICLES = [
 
   {
+    id: 'def-featured-guest-thaodien',
+    featured: true,
+    media: 'video',
+    title: "A Day in Thao Dien, Through Our Guest's Lens",
+    excerpt: "Guest Trương Ngọc Trân takes you through a real day in the neighbourhood. Dining and shopping, wellness, entertainment, and work-friendly spots, all just moments from ipartment. A glimpse of the lifestyle, and the base, that make Thao Dien click.",
+    category: 'featured',
+    source: 'ipartment Thao Dien',
+    url: 'https://www.facebook.com/share/v/19tL1xiAk4/',
+    image: 'https://images.unsplash.com/photo-1554118811-1e0d58224f24?w=1200&q=80',
+    date: 'June 2026',
+    tag: 'Guest Story',
+    keywords: 'guest video day in thao dien lifestyle neighborhood tour truong ngoc tran facebook'
+  },
+
+  {
     id: 'def-featured-launch',
     featured: true,
     title: 'Hello Saigon. ipartment Has Officially Landed in Thao Dien',

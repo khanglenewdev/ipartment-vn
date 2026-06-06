@@ -208,6 +208,7 @@
     if (!E.ready) { botMsg(linkify(t().offline)); return; }
     var r = E.match(text, lang);
     if (r.status === 'joke') { C.track('joke', { q: text }); renderJoke(r.joke); return; }
+    if (r.status === 'cat') { C.track('cat', { q: text }); renderCat(r.cat); return; }
     if (r.status === 'hit') { r.entry._suggest = r.suggestions; gotoAnswer(r.entry, 'text'); }
     else { C.track('answer_miss', { q: text }); offerCapture({ intent: 'help', question: text }, false); }
   }
@@ -217,6 +218,16 @@
     botMsg(linkify(lang === 'vi' ? joke.vi : joke.en), function () {
       addChips([
         { label: lang === 'vi' ? 'Kể nữa đi' : 'One more', onClick: function () { var nxt = lang === 'vi' ? 'Kể nữa đi' : 'One more'; addUser(nxt); C.track('joke', { again: true }); renderJoke(E.joke()); } },
+        { label: t().back, cls: 'ipc-back', onClick: function () { gotoWelcome(true); } }
+      ]);
+    });
+  }
+
+  function renderCat(cat) {
+    state = 'ANSWER';
+    botMsg(linkify(lang === 'vi' ? cat.vi : cat.en), function () {
+      addChips([
+        { label: 'Pspsps', onClick: function () { addUser('Pspsps'); C.track('cat', { again: true }); renderCat(E.cat()); } },
         { label: t().back, cls: 'ipc-back', onClick: function () { gotoWelcome(true); } }
       ]);
     });
