@@ -4,6 +4,7 @@
 
   const escapeHtml = s => String(s || '').replace(/[&<>"']/g, c => ({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]));
   const escapeAttr = s => escapeHtml(s);
+  let hasFeatured = false;
 
   function featuredCard(featured) {
     const tag = featured.tag || 'Featured';
@@ -64,26 +65,39 @@
   }
 
   function applyFilter() {
-    const activeCat = document.querySelector('.cat-nav button.active').dataset.cat;
+    const activeBtn = document.querySelector('.cat-nav button.active');
+    const activeCat = activeBtn ? activeBtn.dataset.cat : 'all';
     const q = (document.getElementById('mag-search').value || '').toLowerCase().trim();
+    const words = q ? q.split(/\s+/) : [];
     let visible = 0;
     document.querySelectorAll('.article-card').forEach(card => {
       const cat = card.dataset.cat;
-      const keywords = (card.dataset.keywords || '').toLowerCase();
-      const title = card.querySelector('.article-title').textContent.toLowerCase();
+      const titleEl = card.querySelector('.article-title');
+      // Token AND match across keywords + title, so multi-word searches
+      // ("best food", "metro thao dien") match even when not a contiguous phrase.
+      const hay = ((card.dataset.keywords || '') + ' ' + (titleEl ? titleEl.textContent : '')).toLowerCase();
       const matchesCat = activeCat === 'all' || cat === activeCat;
-      const matchesQ = !q || keywords.includes(q) || title.includes(q);
+      const matchesQ = !words.length || words.every(w => hay.includes(w));
       const show = matchesCat && matchesQ;
       card.classList.toggle('hide', !show);
       if (show) visible++;
     });
-    document.getElementById('empty-state').style.display = visible ? 'none' : 'block';
+    // While searching, collapse the featured block so the filtered results sit
+    // right under the search bar instead of ~700px below it (that gap made the
+    // search look broken). Featured returns once the box is cleared.
+    const fs = document.getElementById('featured-section');
+    if (fs) fs.style.display = (hasFeatured && !q) ? '' : 'none';
+    // The Featured tab shows its content in the block above, so do not flash a
+    // "no articles" message for it.
+    const showEmpty = !visible && activeCat !== 'featured';
+    document.getElementById('empty-state').style.display = showEmpty ? 'block' : 'none';
   }
 
   function render() {
     const all = window.ipartmentLoadArticles ? window.ipartmentLoadArticles() : [];
     // Up to two featured stories (category === 'featured' OR featured: true).
     const featured = all.filter(a => a.featured === true || a.category === 'featured').slice(0, 2);
+    hasFeatured = featured.length > 0;
     const rest = all.filter(a => !featured.includes(a));
     renderFeatured(featured);
     renderGrid(rest);

@@ -164,7 +164,7 @@
   color: #fff; font-family: var(--font-body, system-ui); font-size: 13.5px; padding: 11px 14px; border-radius: 13px;
 }
 .ipc-input input::placeholder { color: rgba(255,255,255,0.4); }
-.ipc-input input:focus { outline: none; border-color: var(--terracotta, #d8613c); }
+.ipc-input input:focus { outline: none; border-color: var(--yellow, #ffed00); }
 .ipc-input input:disabled { opacity: 0.5; }
 .ipc-send {
   flex-shrink: 0; width: 42px; height: 42px; border-radius: 50%; border: none; cursor: pointer;

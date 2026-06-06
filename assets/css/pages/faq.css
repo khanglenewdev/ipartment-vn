@@ -94,9 +94,10 @@ section { padding: 64px 64px; }
 .faq-empty h3 { font-family: var(--font-heading); font-size: 24px; font-weight: 600; color: #fff; margin-bottom: 12px; }
 .faq-empty p { font-size: 15px; color: rgba(255,255,255,0.6); }
 
-/* Yellow closing CTA (dark text on yellow, intentional accent block) */
+/* White closing CTA, so it reads as its own band between the dark FAQ list above
+   and the yellow "Ready when you are" band below (two yellow bands looked merged). */
 .faq-cta {
-  background: var(--yellow); padding: 52px 64px;
+  background: #fff; padding: 52px 64px;
   display: flex; align-items: center; justify-content: space-between; gap: 40px; flex-wrap: wrap;
 }
 .faq-cta h2 { font-family: var(--font-heading); font-size: clamp(26px, 3vw, 38px); font-weight: 700; color: #0a0a0a; margin-bottom: 10px; }
