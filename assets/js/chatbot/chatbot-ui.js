@@ -20,6 +20,7 @@
       talkHuman: 'Talk to a human', findApt: 'Find my apartment', back: 'Back to topics', skip: 'Skip',
       ask: 'Anything else I can help with?',
       more: 'What else may I help you with?',
+      stPivot: 'I could happily chat all day, but let me actually be useful. 😺 Here is what I can help with:',
       ctaBook: 'Start my booking', ctaQuote: 'Get my quote', ctaView: 'Show me the apartments',
       miss: 'That is a good question, and I would rather get it exactly right than guess. Our team can follow up personally, usually within a couple of hours. Would you like me to have them reach out?',
       offer: 'I would love to make sure you get the right answer. Our team can follow up personally, usually within a couple of hours. Would you like me to have them reach out?',
@@ -42,6 +43,7 @@
       talkHuman: 'Gặp nhân viên', findApt: 'Tìm căn hộ cho tôi', back: 'Về danh mục', skip: 'Bỏ qua',
       ask: 'Tôi có thể giúp gì thêm không?',
       more: 'Bạn cần tôi hỗ trợ gì thêm không?',
+      stPivot: 'Mình tám cả ngày cũng được, nhưng để mình giúp việc thật sự nào. 😺 Đây là những gì mình có thể hỗ trợ:',
       ctaBook: 'Bắt đầu đặt phòng', ctaQuote: 'Nhận báo giá riêng', ctaView: 'Xem căn hộ',
       miss: 'Câu hỏi hay đấy, và tôi muốn trả lời thật chính xác thay vì đoán. Đội ngũ của chúng tôi có thể liên hệ trực tiếp, thường trong vài giờ. Bạn có muốn chúng tôi liên hệ không?',
       offer: 'Tôi muốn chắc chắn bạn nhận được câu trả lời đúng. Đội ngũ của chúng tôi có thể liên hệ trực tiếp, thường trong vài giờ. Bạn có muốn chúng tôi liên hệ không?',
@@ -143,19 +145,48 @@
   }
 
   // ---- conversation: WELCOME ----
+  function topicMenuChips() {
+    var chips = E.topics().map(function (tp) {
+      return { label: (lang === 'vi' ? tp.label_vi : tp.label_en) || tp.category, cls: 'ipc-topic', onClick: function () { gotoTopic(tp); } };
+    });
+    if (window.ipartmentFinder) chips.push({ label: t().findApt, cls: 'ipc-topic', onClick: function () { C.track('finder_open'); close(); window.ipartmentFinder.open(); } });
+    chips.push({ label: t().talkHuman, cls: 'ipc-back', onClick: function () { offerCapture({ intent: 'human' }, true); } });
+    return chips;
+  }
   function gotoWelcome(skipGreeting) {
     state = 'WELCOME';
-    var topics = E.topics();
     var greet = skipGreeting ? t().ask : (E.welcome(lang) || t().ask);
     if (!skipGreeting) greetedLangs[lang] = 1;
-    botMsg(linkify(greet), function () {
-      var chips = topics.map(function (tp) {
-        return { label: (lang === 'vi' ? tp.label_vi : tp.label_en) || tp.category, cls: 'ipc-topic', onClick: function () { gotoTopic(tp); } };
-      });
-      if (window.ipartmentFinder) chips.push({ label: t().findApt, cls: 'ipc-topic', onClick: function () { C.track('finder_open'); close(); window.ipartmentFinder.open(); } });
-      chips.push({ label: t().talkHuman, cls: 'ipc-back', onClick: function () { offerCapture({ intent: 'human' }, true); } });
-      addChips(chips);
-    });
+    botMsg(linkify(greet), function () { addChips(topicMenuChips()); });
+  }
+  // Small talk. Quick greetings/thanks land on the topic menu. The conversational
+  // "easter egg" replies (kind 'convo') stay chatty: the bot just replies (each
+  // line already nudges back toward the stay) and keeps the input open, with a
+  // light "back to topics" escape. After a few convo turns in a row it gently
+  // pivots to the menu so it never loops forever.
+  var smalltalkStreak = 0;
+  var ST_DELAY = 1000;  // small talk gets a snappy 1s typing beat, not the full 2.34s
+  function renderSmalltalk(kind, reply) {
+    state = 'WELCOME';
+    if (kind === 'convo') {
+      smalltalkStreak++;
+      if (smalltalkStreak >= 3) {
+        smalltalkStreak = 0;
+        botMsg(linkify(reply), function () {
+          botMsg(linkify(t().stPivot), function () { addChips(topicMenuChips()); }, ST_DELAY);
+        }, ST_DELAY);
+        return;
+      }
+      botMsg(linkify(reply), function () {
+        addChips([{ label: t().back, cls: 'ipc-back', onClick: function () { smalltalkStreak = 0; gotoWelcome(true); } }]);
+      }, ST_DELAY);
+      return;
+    }
+    smalltalkStreak = 0;
+    botMsg(linkify(reply), function () {
+      if (kind === 'bye') { addChips([{ label: t().back, cls: 'ipc-back', onClick: function () { gotoWelcome(true); } }]); return; }
+      addChips(topicMenuChips());
+    }, ST_DELAY);
   }
 
   // ---- TOPIC: 5 featured question chips ----
@@ -212,7 +243,8 @@
     var r = E.match(text, lang);
     if (r.status === 'joke') { C.track('joke', { q: text }); renderJoke(r.joke); return; }
     if (r.status === 'cat') { C.track('cat', { q: text }); renderCat(r.cat); return; }
-    if (r.status === 'hit') { r.entry._suggest = r.suggestions; gotoAnswer(r.entry, 'text'); }
+    if (r.status === 'smalltalk') { C.track('smalltalk', { kind: r.kind, intent: r.intentId || null }); renderSmalltalk(r.kind, r.reply); return; }
+    if (r.status === 'hit') { smalltalkStreak = 0; r.entry._suggest = r.suggestions; gotoAnswer(r.entry, 'text'); }
     else { C.track('answer_miss', { q: text }); offerCapture({ intent: 'help', question: text }, false); }
   }
 
