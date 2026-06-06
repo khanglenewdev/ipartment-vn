@@ -66,24 +66,31 @@
       <div class="kpi"><div class="lbl">Applications</div><div class="val" id="kpi-applications">0</div><div class="sub">Career page submissions</div></div>
     </div>
 
-    <div class="tabs-control">
-      <button class="tabs-toggle" id="tabs-toggle" type="button" aria-expanded="true" aria-controls="admin-tabs">Minimize tabs &#9650;</button>
-    </div>
-    <div class="tabs" id="admin-tabs">
-      <button class="tab-btn-admin active" data-tab="leads">Leads</button>
-      <button class="tab-btn-admin" data-tab="users">Accounts</button>
-      <button class="tab-btn-admin" data-tab="bookings">Bookings</button>
-      <button class="tab-btn-admin" data-tab="vouchers">Vouchers</button>
-      <button class="tab-btn-admin" data-tab="applications">Applications</button>
-      <button class="tab-btn-admin" data-tab="sessions">Page Views</button>
-      <button class="tab-btn-admin" data-tab="quiz">Password Quiz</button>
-      <button class="tab-btn-admin" data-tab="feedback">Feedback</button>
-      <button class="tab-btn-admin" data-tab="chatbot">Chatbot &amp; Finder</button>
-      <button class="tab-btn-admin" data-tab="funnel">Funnel</button>
-      <button class="tab-btn-admin" data-tab="magazine">Magazine</button>
-    </div>
-
-    <div class="tab-content">
+    <div class="dash-body" id="dash-body">
+      <aside class="admin-sidebar" id="admin-sidebar">
+        <div class="admin-sidebar-inner">
+          <div class="admin-sidebar-label">Data sets</div>
+          <nav class="tabs" id="admin-tabs">
+            <button class="tab-btn-admin active" data-tab="leads">Leads</button>
+            <button class="tab-btn-admin" data-tab="users">Accounts</button>
+            <button class="tab-btn-admin" data-tab="bookings">Bookings</button>
+            <button class="tab-btn-admin" data-tab="vouchers">Vouchers</button>
+            <button class="tab-btn-admin" data-tab="applications">Applications</button>
+            <button class="tab-btn-admin" data-tab="sessions">Page Views</button>
+            <button class="tab-btn-admin" data-tab="quiz">Password Quiz</button>
+            <button class="tab-btn-admin" data-tab="feedback">Feedback</button>
+            <button class="tab-btn-admin" data-tab="chatbot">Chatbot &amp; Finder</button>
+            <button class="tab-btn-admin" data-tab="funnel">Funnel</button>
+            <button class="tab-btn-admin" data-tab="magazine">Magazine</button>
+          </nav>
+        </div>
+      </aside>
+      <div class="tab-main">
+        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Toggle data menu" aria-expanded="true" aria-controls="admin-sidebar">
+          <span class="sidebar-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
+          <span class="sidebar-toggle-text">Menu</span>
+        </button>
+        <div class="tab-content">
       <div class="tab-pane active" id="tab-leads"><table id="tbl-leads"></table></div>
       <div class="tab-pane" id="tab-users"><table id="tbl-users"></table></div>
       <div class="tab-pane" id="tab-bookings"><table id="tbl-bookings"></table></div>
@@ -120,6 +127,8 @@
         </div>
 
         <div id="mag-list"></div>
+      </div>
+        </div>
       </div>
     </div>
   </div>
@@ -210,18 +219,31 @@
 <script src="assets/js/data/articles.js"></script>
 <script src="assets/js/pages/admin.js"></script>
 <script>
-  /* Tab row collapse/expand. With 12 tabs the row wraps into several lines;
-     minimizing hides all but the active tab so the bar is a single chip. */
+  /* Collapsible data sidebar (Facebook-style). The hamburger opens/closes the
+     left rail of data sets; closing it gives the tables the full width. On
+     narrow screens it starts closed and auto-closes after a pick. */
   (function () {
-    var toggle = document.getElementById('tabs-toggle');
+    var toggle = document.getElementById('sidebar-toggle');
+    var body = document.getElementById('dash-body');
     var tabs = document.getElementById('admin-tabs');
-    if (!toggle || !tabs) return;
-    var count = tabs.querySelectorAll('.tab-btn-admin').length;
-    function setLabel(min) {
-      toggle.innerHTML = min ? ('Show all tabs (' + count + ') &#9660;') : ('Minimize tabs &#9650;');
-      toggle.setAttribute('aria-expanded', String(!min));
+    if (!toggle || !body) return;
+    var narrow = function () { return window.matchMedia && window.matchMedia('(max-width: 760px)').matches; };
+    function setOpen(open) {
+      body.classList.toggle('sidebar-closed', !open);
+      toggle.setAttribute('aria-expanded', String(open));
     }
-    toggle.addEventListener('click', function () { setLabel(tabs.classList.toggle('tabs--min')); });
+    toggle.addEventListener('click', function () { setOpen(body.classList.contains('sidebar-closed')); });
+    // On phones, choosing a data set closes the drawer so the table is visible.
+    if (tabs) tabs.addEventListener('click', function (e) {
+      if (e.target.closest('.tab-btn-admin') && narrow()) setOpen(false);
+    });
+    // On phones, tapping the dimmed backdrop (outside the drawer) closes it too.
+    document.addEventListener('click', function (e) {
+      if (!narrow() || body.classList.contains('sidebar-closed')) return;
+      var sb = document.getElementById('admin-sidebar');
+      if (sb && !sb.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
+    });
+    if (narrow()) setOpen(false);  // start collapsed on small screens
   })();
 </script>
 </body>

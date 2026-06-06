@@ -114,30 +114,51 @@ body.lg { background: var(--black-deep); }
 #sessions-summary .mini-stat .l { font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-top: 8px; }
 #sessions-summary .note { flex-basis: 100%; font-size: 12px; color: rgba(255,255,255,0.45); margin-top: 2px; line-height: 1.55; }
 
-/* ===== TAB BAR (glass pills) =========================================== */
-.tabs { display: flex; gap: 6px; margin-bottom: 18px; flex-wrap: wrap; }
-.tab-btn-admin {
-  background: var(--glass-base-soft); border: 1px solid var(--glass-border); border-radius: 999px;
-  backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm));
-  padding: 10px 18px;
-  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase;
-  color: rgba(255,255,255,0.6); cursor: pointer; white-space: nowrap; transition: all 0.2s;
-}
-.tab-btn-admin:hover { color: #fff; border-color: var(--glass-border-hi); background: rgba(255,255,255,0.06); }
-.tab-btn-admin.active { background: var(--yellow); border-color: var(--yellow); color: #0a0a0a; font-weight: 700; }
+/* ===== DATA SIDEBAR (collapsible glass rail, Facebook-style) =========== */
+.dash-body { display: flex; align-items: flex-start; gap: 18px; }
+.tab-main { flex: 1 1 auto; min-width: 0; }
 
-/* ===== TAB ROW COLLAPSE TOGGLE ======================================== */
-.tabs-control { margin-bottom: 10px; }
-.tabs-toggle {
-  background: var(--glass-base-soft); border: 1px solid var(--glass-border); border-radius: 999px;
-  backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm));
-  padding: 7px 14px; font-family: var(--font-mono); font-size: 10.5px; font-weight: 600;
-  letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.6); cursor: pointer; transition: all 0.2s;
+/* The rail collapses by shrinking its flex-basis to 0 (content reflows wider).
+   overflow:hidden clips the fixed-width inner panel cleanly while it closes. */
+.admin-sidebar {
+  flex: 0 0 auto; width: 214px; min-width: 0; overflow: hidden;
+  transition: width 0.34s var(--ease, cubic-bezier(0.16,1,0.3,1)), opacity 0.26s, margin 0.34s;
 }
-.tabs-toggle:hover { color: #fff; border-color: var(--glass-border-hi); background: rgba(255,255,255,0.06); }
-/* minimized: collapse the row to just the active tab */
-.tabs.tabs--min .tab-btn-admin { display: none; }
-.tabs.tabs--min .tab-btn-admin.active { display: inline-flex; }
+.admin-sidebar-inner {
+  width: 214px; box-sizing: border-box; padding: 14px 12px;
+  background: var(--glass-base);
+  backdrop-filter: blur(var(--blur-md)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-md)) saturate(180%);
+  border: 1px solid var(--glass-border); border-radius: 16px; box-shadow: var(--shadow-glass-md);
+}
+.admin-sidebar-label {
+  font-family: var(--font-mono); font-size: 9.5px; font-weight: 600; letter-spacing: 0.16em;
+  text-transform: uppercase; color: rgba(255,255,255,0.4); padding: 4px 10px 10px;
+}
+.dash-body.sidebar-closed .admin-sidebar { width: 0; opacity: 0; margin-right: -18px; pointer-events: none; }
+
+/* hamburger toggle (glass) */
+.sidebar-toggle {
+  display: inline-flex; align-items: center; gap: 11px; margin-bottom: 16px;
+  background: var(--glass-base-soft); border: 1px solid var(--glass-border); border-radius: 12px;
+  backdrop-filter: blur(var(--blur-sm)); -webkit-backdrop-filter: blur(var(--blur-sm));
+  padding: 10px 15px; cursor: pointer; transition: all 0.2s;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.7);
+}
+.sidebar-toggle:hover { color: #fff; border-color: var(--glass-border-hi); background: rgba(255,255,255,0.07); }
+.sidebar-toggle-bars { display: inline-flex; flex-direction: column; gap: 3px; width: 16px; }
+.sidebar-toggle-bars span { display: block; height: 2px; width: 100%; background: currentColor; border-radius: 2px; }
+
+/* tab buttons -> vertical list items in the rail */
+.tabs { display: flex; flex-direction: column; gap: 3px; }
+.tab-btn-admin {
+  width: 100%; text-align: left; display: block;
+  background: transparent; border: 1px solid transparent; border-radius: 10px;
+  padding: 11px 13px;
+  font-family: var(--font-mono); font-size: 11px; font-weight: 600; letter-spacing: 0.06em; text-transform: uppercase;
+  color: rgba(255,255,255,0.62); cursor: pointer; white-space: nowrap; transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+.tab-btn-admin:hover { color: #fff; background: rgba(255,255,255,0.06); }
+.tab-btn-admin.active { background: var(--yellow); border-color: var(--yellow); color: #0a0a0a; font-weight: 700; }
 
 /* ===== TAB CONTENT PANEL =============================================== */
 .tab-content {
@@ -344,5 +365,24 @@ table:has(.locked-note) tbody tr:hover td { background: transparent; cursor: def
   .tab-content { padding: 18px 14px; }
   table { font-size: 12px; }
   th, td { padding: 10px 9px; }
-  .tab-btn-admin { padding: 9px 14px; }
+  .tab-btn-admin { padding: 11px 13px; }
+}
+/* On phones the rail becomes an off-canvas drawer that slides over the data
+   (so the tables always keep full width), with a tap-to-close backdrop. */
+@media (max-width: 760px) {
+  .dash-body { display: block; }
+  .tab-main { width: 100%; }
+  .admin-sidebar {
+    position: fixed; top: 0; left: 0; bottom: 0; z-index: 320; flex-basis: auto;
+    width: 248px; max-width: 84vw; overflow-y: auto; margin: 0; opacity: 1;
+    transform: translateX(0); transition: transform 0.32s var(--ease, cubic-bezier(0.16,1,0.3,1));
+  }
+  .admin-sidebar-inner { width: 248px; max-width: 84vw; min-height: 100%; border-radius: 0 16px 16px 0; padding-top: 78px; }
+  .dash-body.sidebar-closed .admin-sidebar { width: 248px; max-width: 84vw; transform: translateX(-100%); opacity: 1; margin: 0; pointer-events: none; transition: transform 0.32s var(--ease, cubic-bezier(0.16,1,0.3,1)); }
+  /* dim backdrop behind the open drawer */
+  .dash-body::before {
+    content: ''; position: fixed; inset: 0; z-index: 310; background: rgba(0,0,0,0.5);
+    opacity: 1; transition: opacity 0.3s; pointer-events: auto;
+  }
+  .dash-body.sidebar-closed::before { opacity: 0; pointer-events: none; }
 }
