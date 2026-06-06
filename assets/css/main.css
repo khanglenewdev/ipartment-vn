@@ -856,6 +856,8 @@ textarea.form-input { resize: vertical; min-height: 56px; font-family: var(--fon
 }
 .exit-survey-opts button:hover { background: #fff; border-color: var(--black-pure); transform: translateY(-1px); }
 .exit-survey-opts button.primary { background: var(--yellow); border-color: var(--yellow); text-align: center; }
+/* second-step action buttons (Send / No thanks) are full-width CTAs, centered */
+.exit-survey-opts button#exit-survey-skip { text-align: center; }
 .exit-survey input {
   width: 100%; padding: 13px 15px; border: 1.5px solid #ddd; border-radius: 12px; font-family: var(--font-body);
   font-size: 14px; outline: none; margin-bottom: 12px;

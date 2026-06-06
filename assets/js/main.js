@@ -380,6 +380,7 @@
               <button type="button" data-r="price">The price</button>
               <button type="button" data-r="dates">Dates did not work</button>
               <button type="button" data-r="more_info">I need more info</button>
+              <button type="button" data-r="confusing">The website was confusing</button>
               <button type="button" data-r="browsing">Just browsing</button>
             </div>
           </div>
@@ -430,11 +431,11 @@
     setTimeout(() => overlay.remove(), 350);
   }
 
-  // Global exit-intent: the survey fires only when the cursor leaves the page
-  // over the TOP edge AND stays out for 0.8s. A quick flick toward the tabs or
-  // address bar comes right back and cancels the timer, so it no longer fires by
-  // accident. A short arm after load stops it firing during the first moment on
-  // the page, and a brief cooldown after a close prevents an instant re-trigger.
+  // Global exit-intent. The survey only arms after the visitor has spent at least
+  // 30s on the page AND scrolled at least once, so it cannot fire on a quick
+  // bounce. Once armed, it fires only when the cursor leaves over the TOP edge AND
+  // stays out for 0.8s (a quick flick toward the tabs comes back and cancels it,
+  // so no accidental triggers). Once-per-session guard lives in ipartmentExitSurvey.
   // Runs on every page except the admin dashboard.
   function initExitIntent() {
     const path = (window.location.pathname || '').toLowerCase();
@@ -442,15 +443,16 @@
     // Desktop only: "cursor leaves the top of the window" is not a gesture on touch.
     if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
 
-    let outTimer = null, armed = false;
-    setTimeout(() => { armed = true; }, 1500);
+    let outTimer = null, armed = false, engaged = false;
+    window.addEventListener('scroll', function () { engaged = true; }, { passive: true, once: true });
+    setTimeout(() => { armed = true; }, 30000);  // at least 30s on the page
 
     function leaving() {
       if (window.__bookingDone || !window.ipartmentExitSurvey) return;
       window.ipartmentExitSurvey('page_exit');
     }
     document.addEventListener('mouseout', function (e) {
-      if (!armed) return;
+      if (!armed || !engaged) return;                               // needs 30s on page + a scroll
       if (e.relatedTarget || e.clientY > 0) return;                 // genuine exit over the TOP edge only
       if (Date.now() < (window.__exitSuppressUntil || 0)) return;   // honour the post-close cooldown
       clearTimeout(outTimer);
