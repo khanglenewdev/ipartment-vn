@@ -398,20 +398,33 @@
     });
   };
 
+  // A follow-up tailored to WHY they are leaving, so the answer is actually
+  // useful (a price gripe, a missing date, a confusing step), not just "what
+  // offer". Both the reason and the free-text answer are stored on the event's
+  // meta, so the CRM keeps the full picture without any new table.
+  var EXIT_FOLLOWUPS = {
+    price:     { q: 'What price or budget would have worked for you?',   ph: 'e.g. around 900k a night, or 15% cheaper' },
+    dates:     { q: 'What dates were you hoping to stay?',               ph: 'e.g. June 10 to 20, or a long weekend' },
+    more_info: { q: 'What information were you missing?',                ph: 'e.g. exact size, more photos, the neighbourhood' },
+    confusing: { q: 'What was confusing or hard to find?',               ph: 'e.g. choosing dates, where the prices are' },
+    browsing:  { q: 'What would bring you back to book later?',          ph: 'e.g. a reminder, a deal, more time to plan' }
+  };
+
   function recordExitReason(reason, context) {
     if (window.ipartmentTrack) window.ipartmentTrack('exit_survey', reason, { meta: { context: context || '' } });
     const body = document.getElementById('exit-survey-body');
     if (!body) return;
+    const f = EXIT_FOLLOWUPS[reason] || { q: 'What would have made you book?', ph: 'Tell us anything...' };
     body.innerHTML = `
-      <div class="exit-survey-q">Thanks. What offer would have made you book?</div>
-      <input type="text" id="exit-survey-offer" placeholder="e.g. free airport pickup, 20% off..." />
+      <div class="exit-survey-q">${f.q}</div>
+      <input type="text" id="exit-survey-offer" placeholder="${f.ph}" />
       <div class="exit-survey-opts">
         <button type="button" class="primary" id="exit-survey-send">Send</button>
         <button type="button" id="exit-survey-skip">No thanks</button>
       </div>`;
     document.getElementById('exit-survey-send').addEventListener('click', () => {
       const v = (document.getElementById('exit-survey-offer').value || '').trim();
-      if (v && window.ipartmentTrack) window.ipartmentTrack('exit_survey', 'offer_wish', { meta: { reason: reason, offer: v } });
+      if (v && window.ipartmentTrack) window.ipartmentTrack('exit_survey', 'detail', { meta: { reason: reason, answer: v } });
       thankExit();
     });
     document.getElementById('exit-survey-skip').addEventListener('click', thankExit);

@@ -465,20 +465,25 @@ async function renderFunnel() {
 
   // Exit-survey: why visitors leave (and what offer would have won them)
   const ex = (eres && !eres.error && eres.data) ? eres.data : [];
+  const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing' };
   if (ex.length) {
-    const reasons = {}; const wishes = [];
+    const reasons = {}; const details = [];
     ex.forEach(r => {
-      if (r.name === 'offer_wish') { if (r.meta && r.meta.offer) wishes.push(r.meta.offer); }
+      // new reason-tailored answers
+      if (r.name === 'detail') { if (r.meta && r.meta.answer) details.push({ reason: r.meta.reason, answer: r.meta.answer }); }
+      // older "what offer" answers (kept so existing data still shows)
+      else if (r.name === 'offer_wish') { if (r.meta && r.meta.offer) details.push({ reason: r.meta.reason, answer: r.meta.offer }); }
       else if (r.name) reasons[r.name] = (reasons[r.name] || 0) + 1;
     });
-    const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', browsing: 'Just browsing' };
     html += '<div style="max-width:680px;margin-top:32px;border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;">';
     html += '<h3 style="font-family:var(--font-heading);font-size:20px;font-weight:900;margin-bottom:12px;">Why visitors leave</h3>';
     const keys = Object.keys(reasons);
     if (keys.length) html += '<table style="width:100%;"><tbody>' + keys.map(k => '<tr><td style="padding:6px 0;">' + (rl[k] || esc(k)) + '</td><td style="text-align:right;font-weight:700;">' + reasons[k] + '</td></tr>').join('') + '</tbody></table>';
-    if (wishes.length) {
-      html += '<h4 style="font-family:var(--font-heading);font-size:16px;font-weight:900;margin:18px 0 8px;">Offers they asked for</h4>';
-      html += '<ul style="margin-left:18px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.7;">' + wishes.slice(0, 40).map(w => '<li>' + esc(w) + '</li>').join('') + '</ul>';
+    if (details.length) {
+      html += '<h4 style="font-family:var(--font-heading);font-size:16px;font-weight:900;margin:18px 0 8px;">What they told us</h4>';
+      html += '<ul style="margin-left:18px;font-size:13px;color:rgba(255,255,255,0.7);line-height:1.8;list-style:none;padding-left:0;">'
+        + details.slice(0, 50).map(d => '<li style="margin-bottom:7px;"><span style="font-family:var(--font-mono);font-size:10px;letter-spacing:0.06em;text-transform:uppercase;color:var(--yellow);">' + esc(rl[d.reason] || d.reason || 'Other') + '</span><br>' + esc(d.answer) + '</li>').join('')
+        + '</ul>';
     }
     html += '</div>';
   }
