@@ -110,10 +110,13 @@
 
   // ---- message + chip rendering ----
   function addUser(text) { var m = el('div', 'ipc-msg user'); m.textContent = text; scrollEl.appendChild(m); scrollBottom(); }
-  function botMsg(html, done) {
+  // Show the typing dots for a beat before each bot message. Default is 2.34s;
+  // a caller can pass a custom duration (the "anything else?" line uses 4.67s).
+  // Reduced-motion users get a near-instant reply instead of a long wait.
+  function botMsg(html, done, delayMs) {
     var typing = el('div', 'ipc-typing', '<span></span><span></span><span></span>');
     scrollEl.appendChild(typing); scrollBottom();
-    var delay = reduceMotion ? 120 : Math.min(380 + html.length * 3, 850);
+    var delay = reduceMotion ? 120 : (delayMs || 2340);
     setTimeout(function () {
       if (typing.parentNode) typing.parentNode.removeChild(typing);
       var m = el('div', 'ipc-msg bot'); m.innerHTML = html; scrollEl.appendChild(m); scrollBottom();
@@ -196,7 +199,7 @@
         });
         chips.push({ label: t().back, cls: 'ipc-back', onClick: function () { gotoWelcome(true); } });
         addChips(chips);
-      });
+      }, 4670);  // longer typing pause before the "anything else?" nudge
     });
   }
 
@@ -238,7 +241,13 @@
     state = 'CAPTURE';
     if (C.hasCaptured()) { botMsg(linkify(t().thanks), function () { maybeQualify(ctx); }); return; }
     C.track('capture_shown', ctx.intent ? { intent: ctx.intent } : null);
-    botMsg(linkify(fromButton ? t().offer : t().miss), function () {
+    // From a CTA (e.g. "Get my quote" after a useful answer) or "talk to a human"
+    // the visitor already showed clear intent, so skip the soft "shall the team
+    // reach out?" confirmation and go straight to asking for contact. The
+    // "I would love to make sure you get the right answer" line is reserved for
+    // the no-clear-answer path, where the bot is the one offering to follow up.
+    if (fromButton) { askContact(ctx); return; }
+    botMsg(linkify(t().offer), function () {
       addChips([
         { label: t().yes, onClick: function () { askContact(ctx); } },
         { label: t().no, cls: 'ipc-back', onClick: function () { botMsg(linkify(t().declined), function () { gotoWelcome(true); }); } }
