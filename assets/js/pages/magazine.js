@@ -82,11 +82,16 @@
       card.classList.toggle('hide', !show);
       if (show) visible++;
     });
-    // While searching, collapse the featured block so the filtered results sit
-    // right under the search bar instead of ~700px below it (that gap made the
-    // search look broken). Featured returns once the box is cleared.
+    // Collapse the featured block whenever the reader is actively filtering, so the
+    // filtered posts sit right at the top instead of hidden ~700px below the
+    // featured cards (which made filtering look like it did nothing). Featured shows
+    // only in the default browse state (All, no search) and on the Featured tab,
+    // which is where the featured stories live.
     const fs = document.getElementById('featured-section');
-    if (fs) fs.style.display = (hasFeatured && !q) ? '' : 'none';
+    if (fs) {
+      const showFeatured = hasFeatured && !q && (activeCat === 'all' || activeCat === 'featured');
+      fs.style.display = showFeatured ? '' : 'none';
+    }
     // The Featured tab shows its content in the block above, so do not flash a
     // "no articles" message for it.
     const showEmpty = !visible && activeCat !== 'featured';

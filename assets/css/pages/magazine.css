@@ -42,6 +42,9 @@ section { padding: 64px 64px; }
 }
 .cat-nav button:hover { color: #fff; border-color: var(--glass-border-hi); }
 .cat-nav button.active { background: var(--yellow); color: #0a0a0a; border-color: var(--yellow); font-weight: 700; }
+/* Rounded focus ring (box-shadow hugs the 999px pill, so it can never render as a
+   sharp rectangle the way an outline could). */
+.cat-nav button:focus-visible { outline: none; box-shadow: 0 0 0 3px rgba(255,237,0,0.45); }
 
 /* ===== SEARCH (on paper) ================================================= */
 .mag-search-section { padding: 56px 64px 8px; }

@@ -603,7 +603,11 @@ body.lg .fb-success .fb-send { max-width: 230px; margin: 0 auto; display: block;
   body.lg .hero-bg, body.lg .book-card, body.lg [class*="float"] { animation: none !important; }
   body.lg.nav-hidden .nav-peek { animation: none !important; }
 }
-body.lg :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; border-radius: inherit; }
+/* NOTE: no border-radius here. "border-radius: inherit" would reset a focused
+   element's own rounding to its parent's (often 0), squaring off rounded inputs
+   and pill buttons on focus. Modern browsers already draw the outline following
+   the element's own border-radius, so the ring stays rounded without it. */
+body.lg :focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
 body.lg .btn-primary:focus-visible, body.lg .auth-submit:focus-visible { outline-color: #fff; }
 /* Every text box lights up the same way when focused or typed into: a soft yellow
    glow that hugs the input's OWN rounded corners (a box-shadow follows
