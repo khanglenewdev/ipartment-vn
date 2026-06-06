@@ -357,39 +357,42 @@
   }
 
   // ============================================================
-  // EXIT-INTENT MICRO-SURVEY - one kind question on the way out.
-  // Positively framed ("what is holding you back" beats "why didn't you buy").
-  // Shows once per session as a subtle bottom card. Logs to the events table.
+  // EXIT-INTENT MICRO-SURVEY - one kind question on the way out, shown as a
+  // centered modal (over everything, including the chatbot). Armed on every page
+  // except admin, but shown at most ONCE per session (on whichever page the
+  // visitor first leaves from). Logs to the events table.
   // ============================================================
-  function exitSurveyShown() { try { return sessionStorage.getItem('ipartment_exit_survey') === '1'; } catch (e) { return false; } }
-
   window.ipartmentExitSurvey = function(context) {
-    // Show at most ONCE per session, and never stack on another popup. This is
-    // the main "make it less sensitive" guard: once it has appeared, it will
-    // not come back no matter how the visitor moves the mouse or navigates.
-    if (exitSurveyShown()) return;
-    if (document.getElementById('exit-survey')) return;                                                       // one is already showing
-    if (document.querySelector('.cta-overlay.open') || document.querySelector('.auth-overlay.open')) return;  // another popup is up
+    try { if (sessionStorage.getItem('ipartment_exit_survey') === '1') return; } catch (e) {}  // once per session
+    if (document.getElementById('exit-overlay')) return;  // one is already showing
+    // never stack on top of another full-screen popup
+    if (document.querySelector('.cta-overlay.open') || document.querySelector('.auth-overlay.open')
+        || document.querySelector('.fq-overlay.open') || document.querySelector('.voucher-overlay.open')) return;
     try { sessionStorage.setItem('ipartment_exit_survey', '1'); } catch (e) {}
     const html = `
-      <div class="exit-survey" id="exit-survey" role="dialog" aria-label="Quick question">
-        <button class="exit-survey-close" id="exit-survey-close" aria-label="Close">&times;</button>
-        <div class="exit-survey-body" id="exit-survey-body">
-          <div class="exit-survey-q">Before you go, what is holding you back today?</div>
-          <div class="exit-survey-opts">
-            <button type="button" data-r="price">The price</button>
-            <button type="button" data-r="dates">Dates did not work</button>
-            <button type="button" data-r="more_info">I need more info</button>
-            <button type="button" data-r="browsing">Just browsing</button>
+      <div class="exit-overlay" id="exit-overlay">
+        <div class="exit-survey" id="exit-survey" role="dialog" aria-modal="true" aria-label="One quick question">
+          <button class="exit-survey-close" id="exit-survey-close" aria-label="Close">&times;</button>
+          <div class="exit-survey-body" id="exit-survey-body">
+            <div class="exit-survey-eyebrow">Before you go</div>
+            <div class="exit-survey-q">It seems you are leaving. Do you mind telling us why?</div>
+            <div class="exit-survey-opts">
+              <button type="button" data-r="price">The price</button>
+              <button type="button" data-r="dates">Dates did not work</button>
+              <button type="button" data-r="more_info">I need more info</button>
+              <button type="button" data-r="browsing">Just browsing</button>
+            </div>
           </div>
+          <p class="exit-survey-note">Your opinions matter a lot to us, and we read every single one. Thank you for being here.</p>
         </div>
       </div>`;
     document.body.insertAdjacentHTML('beforeend', html);
-    const card = document.getElementById('exit-survey');
-    requestAnimationFrame(() => card.classList.add('open'));
-    setTimeout(() => card.classList.add('open'), 60);
+    const overlay = document.getElementById('exit-overlay');
+    requestAnimationFrame(() => overlay.classList.add('open'));
+    setTimeout(() => overlay.classList.add('open'), 60);
     document.getElementById('exit-survey-close').addEventListener('click', closeExitSurvey);
-    card.querySelectorAll('.exit-survey-opts button').forEach(b => {
+    overlay.addEventListener('click', (e) => { if (e.target === overlay) closeExitSurvey(); });  // click the dimmed area to dismiss
+    overlay.querySelectorAll('.exit-survey-opts button').forEach(b => {
       b.addEventListener('click', () => recordExitReason(b.dataset.r, context));
     });
   };
@@ -420,38 +423,42 @@
   }
 
   function closeExitSurvey() {
-    const card = document.getElementById('exit-survey');
-    if (!card) return;
-    card.classList.remove('open');
-    setTimeout(() => card.remove(), 300);
+    const overlay = document.getElementById('exit-overlay');
+    if (!overlay) return;
+    overlay.classList.remove('open');
+    window.__exitSuppressUntil = Date.now() + 2500;  // short cooldown so it does not immediately re-fire
+    setTimeout(() => overlay.remove(), 350);
   }
 
-  // Global exit-intent: whenever the cursor leaves the top of the viewport, ask
-  // the one kind question. Showcase mode lets it re-trigger each time; the guard
-  // inside ipartmentExitSurvey prevents stacking. Skipped on admin and once a
-  // booking is done.
+  // Global exit-intent: the survey fires only when the cursor leaves the page
+  // over the TOP edge AND stays out for 0.8s. A quick flick toward the tabs or
+  // address bar comes right back and cancels the timer, so it no longer fires by
+  // accident. A short arm after load stops it firing during the first moment on
+  // the page, and a brief cooldown after a close prevents an instant re-trigger.
+  // Runs on every page except the admin dashboard.
   function initExitIntent() {
     const path = (window.location.pathname || '').toLowerCase();
     if (path.includes('admin')) return;
-    // Desktop only: "cursor leaves the top of the window" is not a real gesture
-    // on touch, where it would misfire constantly.
+    // Desktop only: "cursor leaves the top of the window" is not a gesture on touch.
     if (window.matchMedia && window.matchMedia('(pointer: coarse)').matches) return;
 
-    // Deliberately not sensitive. The survey only arms after the visitor has
-    // spent real time on the page AND scrolled at least once, so it cannot fire
-    // the moment someone lands and flicks the mouse toward the tabs or address
-    // bar. With the once-per-session guard inside ipartmentExitSurvey, normal
-    // navigating no longer triggers it.
-    let armed = false, engaged = false;
-    window.addEventListener('scroll', function () { engaged = true; }, { passive: true, once: true });
-    setTimeout(function () { armed = true; }, 30000); // at least 30s on the page
+    let outTimer = null, armed = false;
+    setTimeout(() => { armed = true; }, 1500);
 
-    document.addEventListener('mouseout', function (e) {
-      if (!armed || !engaged) return;
-      if (e.clientY > 0 || e.relatedTarget) return;     // only a genuine exit over the TOP edge
+    function leaving() {
       if (window.__bookingDone || !window.ipartmentExitSurvey) return;
       window.ipartmentExitSurvey('page_exit');
+    }
+    document.addEventListener('mouseout', function (e) {
+      if (!armed) return;
+      if (e.relatedTarget || e.clientY > 0) return;                 // genuine exit over the TOP edge only
+      if (Date.now() < (window.__exitSuppressUntil || 0)) return;   // honour the post-close cooldown
+      clearTimeout(outTimer);
+      outTimer = setTimeout(leaving, 800);
     });
+    const cancel = function () { clearTimeout(outTimer); };
+    document.addEventListener('mouseover', cancel);   // cursor came back -> cancel
+    window.addEventListener('blur', cancel);
   }
 
   // ============================================================

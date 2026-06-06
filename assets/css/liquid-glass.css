@@ -439,18 +439,25 @@ body.lg .quiz-ends { color: rgba(255,255,255,0.45); }
    over the glass nav makes Chromium repaint the nav + edu pills with a dark halo
    (the "shadow" you see when the cursor leaves the top of the screen). A
    near-opaque card never adds that blur layer, so the nav stays clean. */
+/* Centered glass modal (matches the finder quiz), sitting above the chatbot. The
+   panel is near-opaque so the glass nav behind the dimmed backdrop never flashes
+   a dark halo. */
+body.lg .exit-overlay { background: rgba(12,4,4,0.72); backdrop-filter: blur(8px); -webkit-backdrop-filter: blur(8px); }
 body.lg .exit-survey {
-  background: #16120f;
-  border: 1px solid var(--glass-border-hi); border-radius: 16px;
+  background: #17120f;
+  border: 1px solid var(--glass-border-hi); border-radius: 22px;
   box-shadow: var(--shadow-glass-lg);
 }
+body.lg .exit-survey-eyebrow { color: var(--yellow); }
 body.lg .exit-survey-q { color: #fff; }
 body.lg .exit-survey-close { color: rgba(255,255,255,0.5); }
-body.lg .exit-survey-opts button { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; border-radius: 10px; }
+body.lg .exit-survey-close:hover { color: #fff; }
+body.lg .exit-survey-opts button { background: rgba(255,255,255,0.05); border: 1px solid var(--glass-border); color: #fff; border-radius: 12px; }
 body.lg .exit-survey-opts button:hover { background: rgba(255,255,255,0.1); border-color: rgba(255,255,255,0.3); }
 body.lg .exit-survey-opts button.primary { background: var(--yellow); border-color: var(--yellow); color: #0a0a0a; }
-body.lg .exit-survey input { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12); color: #fff; border-radius: 10px; }
+body.lg .exit-survey input { background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12); color: #fff; border-radius: 12px; }
 body.lg .exit-survey input:focus { border-color: var(--yellow); }
+body.lg .exit-survey-note { color: rgba(255,255,255,0.5); border-top-color: rgba(255,255,255,0.1); }
 
 /* ===== INLINE ALERT ===================================================== */
 body.lg .alert {
@@ -680,6 +687,7 @@ html:has(.auth-overlay.open),
 html:has(.fq-overlay.open),
 html:has(.fb-overlay.open),
 html:has(.voucher-overlay.open),
+html:has(.exit-overlay.open),
 html:has(#app-modal.open),
 html:has(#art-modal.open) {
   overflow: hidden;
