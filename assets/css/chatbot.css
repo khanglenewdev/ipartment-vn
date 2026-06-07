@@ -41,8 +41,8 @@
 /* ---- proactive nudge bubble ---- */
 .ipc-nudge {
   position: fixed; right: 22px; bottom: 104px; z-index: 90002; max-width: 230px;
-  background: var(--glass-base-strong, rgba(20,18,16,0.7)); color: #fff;
-  backdrop-filter: blur(var(--blur-lg, 18px)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-lg, 18px)) saturate(180%);
+  /* No backdrop-filter (same halo trigger as .ipc-panel): near-opaque instead. */
+  background: rgba(20,18,16,0.97); color: #fff;
   border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18)); border-radius: 16px 16px 4px 16px;
   padding: 13px 16px; font-family: var(--font-body, system-ui); font-size: 13.5px; line-height: 1.45;
   box-shadow: var(--shadow-glass-md, 0 12px 32px rgba(0,0,0,0.4));
@@ -56,8 +56,13 @@
   position: fixed; right: 22px; bottom: 92px; z-index: 90001;
   width: 380px; max-width: calc(100vw - 36px); height: 580px; max-height: calc(100vh - 130px);
   display: flex; flex-direction: column; overflow: hidden;
-  background: var(--glass-base-strong, rgba(20,18,16,0.72));
-  backdrop-filter: blur(var(--blur-xl, 30px)) saturate(180%); -webkit-backdrop-filter: blur(var(--blur-xl, 30px)) saturate(180%);
+  /* NO backdrop-filter, on purpose. While the chat is open, a second live blur
+     layer over the page makes Chromium re-rasterize the OTHER glass surfaces (the
+     nav + edu pills) on every repaint, so moving the mouse or hovering anything
+     flashes a dark halo on the nav. This is the exact trigger the exit survey
+     already avoids. A near-opaque panel kills the second blur layer; the border,
+     shadow and radius still read as a dark glass card. */
+  background: rgba(20,18,16,0.97);
   border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18)); border-radius: 22px;
   box-shadow: var(--shadow-glass-lg, 0 30px 70px rgba(0,0,0,0.55));
   opacity: 0; transform: translateY(16px) scale(0.97); transform-origin: bottom right;
