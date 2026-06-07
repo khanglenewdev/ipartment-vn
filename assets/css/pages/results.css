@@ -24,6 +24,9 @@ body.lg.has-header { padding-top: 80px; }
   -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
   border-bottom: 1px solid var(--glass-border-hi);
   box-shadow: var(--shadow-glass-sm);
+  /* Own stacking context so an overlay/drawer compositing in nearby cannot make
+     this sticky glass strip re-sample its backdrop and flash a dark halo. */
+  isolation: isolate;
 }
 .summary-field {
   display: flex; flex-direction: column; gap: 3px; text-align: left; cursor: pointer;

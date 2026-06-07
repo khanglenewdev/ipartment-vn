@@ -224,9 +224,6 @@
     { id:'sing', re:[/sing (me )?(a )?song|can you sing|sing something|do you sing|\bsing\b/],
       en:["Meow meow, meeeeow~ 🎶 ...the acoustics in our apartments are much better than my voice, want to hear about them?","I only know one song and it's mostly meows. 😸 Tell you what, let me help you book a stay instead?"],
       vi:["Meo meo, meeeeo~ 🎶 ...âm thanh trong căn hộ của tụi mình hay hơn giọng mình nhiều, muốn nghe kể không?","Mình chỉ biết mỗi một bài và toàn tiếng meo. 😸 Hay là để mình giúp bạn đặt phòng thay nhé?"] },
-    { id:'meaning', re:[/meaning of life|whats the point|purpose of life|why are we here|whats it all about|why do we exist/],
-      en:["42, obviously. 😺 A close second: a comfy apartment in a great neighbourhood. Speaking of which, planning a stay?","Naps, snacks, and a window with a view. 🐾 We can sort the window at least, want to see our apartments?"],
-      vi:["42 chứ còn gì nữa. 😺 Á quân là: một căn hộ êm ái ở khu phố tuyệt vời. Tiện thể, bạn đang định ở lại à?","Ngủ trưa, đồ ăn vặt, và một ô cửa sổ có view. 🐾 Cái cửa sổ thì tụi mình lo được, muốn xem căn hộ không?"] },
     { id:'food', re:[/whats your fav(o|ou)?rite food|what do you eat|do you get hungry|are you hungry|fav(o|ou)?rite food/],
       en:["Tuna, obviously. 🐟 But Thao Dien has incredible food too, want me to point you to the best spots near our apartments?","I run on tuna and wifi. 😸 The neighbourhood eats better than I do though, planning to visit?"],
       vi:["Cá ngừ chứ sao. 🐟 Nhưng Thảo Điền cũng có đồ ăn cực đỉnh, để mình chỉ bạn mấy chỗ ngon gần căn hộ nhé?","Mình sống bằng cá ngừ và wifi. 😸 Mà khu này ăn còn ngon hơn mình ăn nữa, bạn định ghé chơi không?"] },
@@ -296,10 +293,95 @@
     return null;
   }
   function convoReply(c, lang) { var a = (lang === 'vi' ? c.vi : c.en) || c.en; return a[Math.floor(Math.random() * a.length)]; }
-  // A FAQ miss: try the conversational library first; only if nothing matches do
-  // we fall through to the capture offer.
+
+  // ---- philosophical "wise cat" easter egg ----
+  // Big-question inputs ("what is love", "what is life", meaning, death, time...)
+  // get a genuinely thoughtful, serious answer, deliberately out of character for
+  // a playful cat. The UI then sends a SECOND, self-deprecating line ~2s later
+  // (WISE_TAIL): "but what do I know, I'm just a cat. meow meow". Each entry has
+  // an EN regex and a VI (accent-stripped) regex so both languages land here.
+  // Triggers are specific big-question phrasings so real FAQ queries never match.
+  var PHILO = [
+    { id:'philo_love', re:[/what ?(s|is) love\b|what does love (mean|feel like)|define love|meaning of love|why do we (love|fall in love)|whats the meaning of love/,
+        /tinh yeu la gi|the nao la tinh yeu|yeu la gi|tai sao (chung ta|con nguoi) (lai )?yeu|y nghia (cua )?tinh yeu/],
+      en:["Love, I think, is paying close attention to someone and choosing them anyway, on the ordinary days and not only the bright ones. It is less a feeling that arrives and more a thing you keep deciding. The poets make it complicated, but most of it is just showing up, gently, again and again.","Love is wanting someone else's good as much as your own, and slowly giving up keeping score. It is built less in the grand moments than in the small unglamorous ones: who you think of first, who you come home to. Quieter than the songs suggest, and far sturdier."],
+      vi:["Tình yêu, mình nghĩ, là việc thật sự để tâm tới một người và vẫn chọn họ, kể cả những ngày bình thường chứ không riêng những ngày rực rỡ. Nó không hẳn là một cảm xúc tự đến, mà là điều bạn quyết định lặp đi lặp lại. Mấy nhà thơ làm nó phức tạp, nhưng phần lớn tình yêu chỉ là có mặt, dịu dàng, lần này qua lần khác.","Tình yêu là mong điều tốt cho người kia nhiều như cho chính mình, và dần dần thôi tính toán hơn thua. Nó được xây nên không phải từ những khoảnh khắc lớn lao mà từ những điều nhỏ chẳng hào nhoáng: bạn nghĩ tới ai đầu tiên, bạn trở về với ai. Lặng hơn lời mấy bài hát, và bền hơn nhiều."] },
+    { id:'philo_life', re:[/what ?(s|is) life\b|what ?(s|is) the meaning of life|meaning of life|whats the point of (life|it all)|why are we here|why do we exist|purpose of life|whats it all about|what ?(s|is) the point\b/,
+        /y nghia (cua )?(cuoc song|cuoc doi)|cuoc song la gi|cuoc doi la gi|song de lam gi|muc dich (cua )?cuoc song|tai sao (chung ta|con nguoi) (lai )?ton tai|chung ta song de lam gi/],
+      en:["Life may not have one grand meaning waiting to be found. It might be something you make, in small pieces, out of what you pay attention to and who you spend it with. The years are mostly ordinary days. The trick, as far as I can tell, is to notice them while they are happening, not only after.","We are here briefly, on a small warm rock, able to love things that will end. That sounds sad until you turn it over: it is the ending that makes any of it matter at all. So the meaning is not hidden somewhere else. It is in how closely you are willing to pay attention to this one."],
+      vi:["Có thể cuộc đời không có một ý nghĩa lớn lao nào đó đang chờ được tìm ra. Nó có lẽ là thứ bạn tự tạo nên, từng mảnh nhỏ một, từ những gì bạn để tâm và những người bạn ở cạnh. Phần lớn đời người là những ngày bình thường. Bí quyết, theo mình thấy, là nhận ra chúng ngay khi đang sống, chứ không chỉ khi đã qua.","Ta ở đây thật ngắn ngủi, trên một hòn đá nhỏ ấm áp, và có khả năng yêu những thứ rồi sẽ kết thúc. Nghe buồn, cho tới khi bạn lật ngược lại: chính cái sự kết thúc đó mới làm mọi thứ trở nên đáng giá. Nên ý nghĩa không nằm ở đâu xa. Nó nằm ở chỗ bạn chịu để tâm tới điều này kỹ tới đâu."] },
+    { id:'philo_happy', re:[/what ?(s|is) happiness|how (to|do i|can i) (be|find) happy|how to be happy|what makes (us|people|you|someone) happy|secret to happiness|how do i find happiness/,
+        /hanh phuc la gi|lam (sao|the nao) de hanh phuc|the nao la hanh phuc|bi quyet (cua )?hanh phuc/],
+      en:["Happiness is quieter than people expect. It is rarely the big wins, which fade within a day, and more often a warm room, work that absorbs you, and someone glad you are home. Chasing it head-on tends to scare it off. It usually arrives sideways, while you are busy with something you love."],
+      vi:["Hạnh phúc lặng lẽ hơn người ta tưởng. Nó hiếm khi là mấy chiến thắng lớn, vì những thứ đó tan trong một ngày, mà thường là một căn phòng ấm, một công việc cuốn lấy bạn, và một người mừng vì bạn đã về. Cứ lao vào đuổi theo là nó chạy mất. Nó thường tới từ bên hông, lúc bạn đang bận với điều mình yêu."] },
+    { id:'philo_time', re:[/what ?(s|is) time\b|why does time (go|fly|move|pass) so (fast|quickly)|where does (the )?time go|why is time so/,
+        /thoi gian la gi|tai sao thoi gian troi (qua )?nhanh|thoi gian troi di dau/],
+      en:["Time is strange: it crawls when you are bored and vanishes when you are happy, which quietly tells you how to spend it. You cannot save it, only spend it, and you never know the balance remaining. So the wise move is to spend it on purpose rather than by accident."],
+      vi:["Thời gian kỳ lạ lắm: nó bò chậm khi bạn buồn chán và biến mất khi bạn vui, điều đó lặng lẽ mách cho bạn cách nên dùng nó. Bạn không cất dành được thời gian, chỉ tiêu nó thôi, và chẳng bao giờ biết còn lại bao nhiêu. Nên nước đi khôn ngoan là tiêu nó một cách có chủ đích, đừng tiêu theo kiểu vô tình."] },
+    { id:'philo_death', re:[/what happens (when|after) (we|you) die|what happens after death|is there an afterlife|life after death|are you (afraid|scared) of (death|dying)|what ?(s|is) death\b|what comes after (death|we die)/,
+        /chet (roi )?(se )?(the nao|ra sao)|chet la gi|sau khi chet( se the nao| co gi)?|co kiep sau khong|ban co so chet khong/],
+      en:["Nobody really knows, and anyone certain is just guessing with confidence. What I do believe: a life is measured less by its length than by how present you were inside it. Whatever comes after, the part you can shape is the part before. So shape it with some kindness."],
+      vi:["Chẳng ai thật sự biết cả, và ai chắc chắn thì cũng chỉ đang đoán một cách tự tin thôi. Điều mình tin: một cuộc đời được đo không phải bằng độ dài, mà bằng việc bạn đã thật sự có mặt trong nó tới đâu. Dù sau đó là gì, phần bạn nắn được là phần trước đó. Nên hãy nắn nó với chút tử tế."] },
+    { id:'philo_freewill', re:[/do (we|i) have free will|is there free will|what ?(s|is) free will|are we (really )?in control|is everything (predetermined|fate)/,
+        /tu do y chi|chung ta co (that su )?tu do (lua chon )?khong|moi thu (deu )?la dinh menh/],
+      en:["Maybe it is all cause and effect and we only feel free. But even if the feeling is an illusion, it is the one we have to live inside, so we may as well act as though our choices matter. They certainly feel like they do, and honestly, that is enough to build a life on."],
+      vi:["Có thể tất cả chỉ là nhân và quả, và ta chỉ cảm thấy mình tự do thôi. Nhưng dù cái cảm giác ấy là ảo ảnh, nó vẫn là thứ ta phải sống bên trong, nên cứ hành xử như thể lựa chọn của mình có ý nghĩa. Rõ ràng nó cảm thấy như vậy, và thật lòng, bấy nhiêu là đủ để dựng nên một cuộc đời."] },
+    { id:'philo_purpose', re:[/what ?(s|is) my purpose|what should i do with my life|what am i (meant|supposed) to do|how do i find my (purpose|calling)|find my purpose|whats my calling/,
+        /muc dich (song )?(cua )?(toi|minh) la gi|(toi|minh) sinh ra de lam gi|lam sao de tim (ra )?muc dich/],
+      en:["Purpose is usually found, not announced. It tends to live where three things overlap: what you are good at, what the world around you needs, and what you would do even unpaid. You rarely think your way to it. You stumble onto it by trying things. So try things, and notice what you lose track of time doing."],
+      vi:["Mục đích thường là thứ ta tìm thấy, chứ không phải thứ được tuyên bố sẵn. Nó hay nằm ở chỗ giao nhau của ba điều: điều bạn giỏi, điều thế giới quanh bạn cần, và điều bạn vẫn làm dù không được trả công. Bạn hiếm khi nghĩ ra nó. Bạn vấp phải nó khi chịu thử. Nên cứ thử đi, và để ý xem mình quên cả thời gian khi làm việc gì."] },
+    { id:'philo_success', re:[/what ?(s|is) success|what does success mean|how do i (become|be) successful|what makes (someone|a person) successful|definition of success/,
+        /thanh cong la gi|the nao la thanh cong|lam sao de thanh cong/],
+      en:["Success borrowed from other people is exhausting to carry. The kind that lasts is quieter: liking the person you are becoming, doing work you respect, and keeping people around you who are real. Most of what looks like success from the outside feels like pressure from the inside. Pick the version you would still want if no one were watching."],
+      vi:["Thành công đi mượn từ người khác thì vác rất mệt. Loại bền lâu thì lặng lẽ hơn: thấy quý con người mình đang trở thành, làm công việc mình nể trọng, và giữ bên cạnh những người thật lòng. Phần lớn thứ nhìn từ ngoài giống thành công thì nhìn từ bên trong lại giống áp lực. Hãy chọn phiên bản mà bạn vẫn muốn ngay cả khi không ai nhìn."] },
+    { id:'philo_universe', re:[/are we alone( in the universe)?|is there (life|anyone) (out there|on other planets)|are there aliens|do aliens exist|how big is the universe/,
+        /chung ta co (don doc|co don) (trong vu tru)?|co nguoi ngoai hanh tinh khong|vu tru (rong )?(lon )?(bao nhieu|the nao)/],
+      en:["The universe is so vast that either we are alone or we are not, and both are staggering to sit with. Whichever is true, it makes this small, warm planet, and the people on it, feel less like a given and more like a small unlikely miracle. Which seems like a good reason to be gentle with it."],
+      vi:["Vũ trụ rộng đến mức hoặc là ta cô đơn, hoặc là không, và ngồi ngẫm cái nào cũng thấy choáng ngợp. Dù điều nào đúng, nó khiến hành tinh nhỏ bé ấm áp này, và những con người trên đó, bớt giống một điều hiển nhiên mà giống một phép màu nhỏ khó tin hơn. Nghe có vẻ là một lý do hay để nâng niu nó."] },
+    { id:'philo_god', re:[/is there a god|does god exist|do you believe in god|is god real/,
+        /co (chua|than thanh|troi|thuong de) (troi )?khong|ban co tin (vao )?(chua|than|troi) khong/],
+      en:["That is the oldest question, and the honest answer is that I cannot tell you. People I deeply respect land on both sides and live good, thoughtful lives either way. Maybe the more useful question is not whether something is watching, but whether you would live more kindly if it were, and then choosing to live that way regardless."],
+      vi:["Đó là câu hỏi xưa nhất, và câu trả lời thành thật là mình không thể nói chắc cho bạn. Những người mình rất nể trọng đứng ở cả hai phía, và đều sống tử tế, sâu sắc theo cách của họ. Có lẽ câu hỏi hữu ích hơn không phải là có ai đó đang dõi theo hay không, mà là bạn có sống tử tế hơn không nếu có, rồi chọn sống như vậy dù thế nào."] },
+    { id:'philo_simulation', re:[/are we (living )?in a simulation|is this (all )?a simulation|simulation theory|is reality (even )?real|what ?(s|is) real\b|is anything real/,
+        /chung ta (co )?(dang )?song trong (mot )?mo phong|thuc tai co (that|thuc) khong|cai gi (moi )?la (that|thuc)/],
+      en:["Maybe it is all a simulation, maybe it is not, and here is the funny part: it would barely change a thing. The coffee still tastes good, the people you love still matter, the evening light still does what it does. Real enough is real enough. Live like it counts, because to you, it plainly does."],
+      vi:["Có thể tất cả chỉ là một mô phỏng, có thể không, và điều buồn cười là: nó gần như chẳng đổi gì. Ly cà phê vẫn ngon, những người bạn thương vẫn quan trọng, ánh chiều vẫn cứ buông như nó vốn thế. Đủ thật là đủ thật rồi. Cứ sống như nó có giá trị, vì với bạn, rõ ràng là nó có thật."] }
+  ];
+  function matchPhilo(qn) {
+    for (var i = 0; i < PHILO.length; i++) {
+      var c = PHILO[i];
+      for (var j = 0; j < c.re.length; j++) { if (c.re[j].test(qn)) return c; }
+    }
+    return null;
+  }
+  function philoReply(c, lang) { var a = (lang === 'vi' ? c.vi : c.en) || c.en; return a[Math.floor(Math.random() * a.length)]; }
+  var WISE_TAIL = {
+    en: [
+      "...but what do I know? I'm just a cat. Meow meow. 🐱",
+      "Anyway. I'm a cat. I just knocked a pen off the table saying that. Meow. 🐾",
+      "...or maybe not. I'm a cat, I forgot half of that already. Meow meow. 😼",
+      "But honestly? I'm a cat. I mostly think about tuna. Meow. 🐟",
+      "...do not quote me though. I'm just a cat. Meow meow. 🐾",
+      "That felt deep. I am a cat. Now I would like a nap. Meow. 😺"
+    ],
+    vi: [
+      "...mà mình biết gì đâu. Mình chỉ là một con mèo thôi. Meo meo. 🐱",
+      "Thôi kệ. Mình là mèo mà. Vừa nói xong mình hất cây bút rớt khỏi bàn rồi. Meo. 🐾",
+      "...hoặc là không. Mình là mèo, mình quên mất một nửa câu vừa nói rồi. Meo meo. 😼",
+      "Mà thật ra? Mình là mèo. Mình chủ yếu nghĩ tới cá ngừ thôi. Meo. 🐟",
+      "...đừng trích lời mình nha. Mình chỉ là một con mèo. Meo meo. 🐾",
+      "Nghe sâu sắc ghê. Mình là mèo. Giờ mình muốn đi ngủ. Meo. 😺"
+    ]
+  };
+  function nextWiseTail(lang) { var a = (lang === 'vi' ? WISE_TAIL.vi : WISE_TAIL.en); return a[Math.floor(Math.random() * a.length)]; }
+
+  // A FAQ miss: try the philosophical library, then the conversational library;
+  // only if nothing matches do we fall through to the capture offer.
   function missResult(text, lang, score, dbg) {
-    var c = matchConvo(normalise(text));
+    var qn = normalise(text);
+    var p = matchPhilo(qn);
+    if (p) return { status: 'wise', reply: philoReply(p, lang), tail: nextWiseTail(lang), intentId: p.id, score: 0, via: 'wise', suggestions: [] };
+    var c = matchConvo(qn);
     if (c) return { status: 'smalltalk', kind: 'convo', reply: convoReply(c, lang), intentId: c.id, score: 0, via: 'convo', suggestions: [] };
     var r = { status: 'miss', entry: null, score: (score == null ? 1 : score), via: null, suggestions: [] };
     if (dbg) r._dbg = dbg;
@@ -423,6 +505,11 @@
     var a = analyze(text);
     if (!a) return missResult(text, lang, 1);
     if (a.exact) return { status: 'hit', entry: a.exact, score: 0, via: 'exact', suggestions: relatedEntries(a.exact.id, 3) };
+    // Philosophical big-questions ("what is love", "what is life", meaning, death)
+    // get the wise-cat treatment, also AFTER exact FAQ but BEFORE fuzzy so a real
+    // question still wins and the matcher cannot mangle them into a stray FAQ.
+    var philo = matchPhilo(a.qn);
+    if (philo) return { status: 'wise', reply: philoReply(philo, lang), tail: nextWiseTail(lang), intentId: philo.id, score: 0, via: 'wise', suggestions: [] };
     // Specific small-talk phrases are caught here, AFTER an exact FAQ match but
     // BEFORE the loose fuzzy matcher (which would otherwise mangle "do you love
     // me" into a random FAQ answer). Triggers are deliberately specific so real

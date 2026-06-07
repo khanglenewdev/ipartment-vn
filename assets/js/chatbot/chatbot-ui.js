@@ -189,6 +189,26 @@
     }, ST_DELAY);
   }
 
+  // Philosophical "wise cat" reply: a serious, considered block, then a self-
+  // deprecating "but what do I know, I'm just a cat" line ~2s later, as if the
+  // cat caught itself being profound. Counts toward the small-talk streak so a
+  // long philosophy session still gently pivots back to the topic menu.
+  function renderWise(reply, tail) {
+    state = 'WELCOME';
+    smalltalkStreak++;
+    var pivot = smalltalkStreak >= 3;
+    if (pivot) smalltalkStreak = 0;
+    botMsg(linkify(reply), function () {
+      botMsg(linkify(tail), function () {
+        if (pivot) {
+          botMsg(linkify(t().stPivot), function () { addChips(topicMenuChips()); }, ST_DELAY);
+        } else {
+          addChips([{ label: t().back, cls: 'ipc-back', onClick: function () { smalltalkStreak = 0; gotoWelcome(true); } }]);
+        }
+      }, 2000);   // the "but what do I know, I'm just a cat" line lands ~2s after the wise block
+    }, 4780);     // a long, considered typing beat (4.78s) so the wise answer feels deliberated
+  }
+
   // ---- TOPIC: 5 featured question chips ----
   function gotoTopic(tp) {
     state = 'TOPIC';
@@ -244,6 +264,7 @@
     if (r.status === 'joke') { C.track('joke', { q: text }); renderJoke(r.joke); return; }
     if (r.status === 'cat') { C.track('cat', { q: text }); renderCat(r.cat); return; }
     if (r.status === 'smalltalk') { C.track('smalltalk', { kind: r.kind, intent: r.intentId || null }); renderSmalltalk(r.kind, r.reply); return; }
+    if (r.status === 'wise') { C.track('smalltalk', { kind: 'wise', intent: r.intentId || null }); renderWise(r.reply, r.tail); return; }
     if (r.status === 'hit') { smalltalkStreak = 0; r.entry._suggest = r.suggestions; gotoAnswer(r.entry, 'text'); }
     else { C.track('answer_miss', { q: text }); offerCapture({ intent: 'help', question: text }, false); }
   }

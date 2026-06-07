@@ -67,9 +67,13 @@ body.lg .site-header-main {
   border-radius: 999px;
   box-shadow: 0 20px 60px -16px rgba(0,0,0,0.65), var(--glass-inner);
   max-width: calc(100vw - 44px);
-  /* Own stacking context so an overlay/survey compositing in elsewhere does not
-     force this glass pill to re-sample its backdrop and flash a dark halo. */
+  /* Own stacking context + its own GPU layer so a neighbouring backdrop-filter
+     element repainting (e.g. the chat panel on hover) cannot make this glass
+     pill re-sample its backdrop and re-rasterize its box-shadow into a hard dark
+     halo. The pill already establishes a containing block via its backdrop-filter,
+     so this translateZ does NOT change where the nested fixed mobile drawer sits. */
   isolation: isolate;
+  transform: translateZ(0);
 }
 body.lg .site-header .logo {
   font-family: var(--font-body); font-weight: 900; font-size: 18px;
@@ -648,6 +652,7 @@ body.lg select:focus, body.lg select:focus-visible {
     background: var(--glass-base-strong);
     backdrop-filter: blur(var(--blur-lg)) saturate(160%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
     border: 1px solid var(--glass-border-hi); border-radius: 18px; box-shadow: var(--shadow-glass-lg);
+    isolation: isolate;
   }
   body.lg nav.site-nav.open a { display: block; font-size: 15px; padding: 12px 16px; border-bottom: none; }
   body.lg nav.site-nav.open a.nav-cta { margin: 6px 0 0; text-align: center; }

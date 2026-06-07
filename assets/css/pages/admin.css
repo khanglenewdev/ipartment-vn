@@ -18,6 +18,9 @@ body.lg { background: var(--black-deep); }
   backdrop-filter: blur(var(--blur-md)) saturate(160%);
   -webkit-backdrop-filter: blur(var(--blur-md)) saturate(160%);
   border-bottom: 1px solid var(--glass-border);
+  /* Own stacking context so the sidebar drawer (or any overlay) compositing in
+     cannot make this sticky glass bar re-sample its backdrop and flash a dark halo. */
+  isolation: isolate;
 }
 .admin-top .brand { display: flex; align-items: center; gap: 12px; text-decoration: none; }
 .admin-top .brand .logo { font-family: var(--font-body); font-weight: 900; font-size: 20px; letter-spacing: -0.02em; color: #fff; text-transform: lowercase; }
