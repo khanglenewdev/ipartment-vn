@@ -65,14 +65,25 @@ body.lg .site-header-main {
   -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);
   border: 1px solid var(--glass-border);
   border-radius: 999px;
-  box-shadow: 0 20px 60px -16px rgba(0,0,0,0.65), var(--glass-inner);
+  /* Keep ONLY the inset highlight here. The big dark drop shadow lives on the
+     ::before below so it is not co-rasterized with this element's backdrop-filter. */
+  box-shadow: var(--glass-inner);
   max-width: calc(100vw - 44px);
-  /* Own stacking context + its own GPU layer so a neighbouring backdrop-filter
-     element repainting (e.g. the chat panel on hover) cannot make this glass
-     pill re-sample its backdrop and re-rasterize its box-shadow into a hard dark
-     halo. The pill already establishes a containing block via its backdrop-filter,
-     so this translateZ does NOT change where the nested fixed mobile drawer sits. */
+  /* isolation keeps the stacking context; position:relative anchors the shadow
+     pseudo-element. */
   isolation: isolate;
+  position: relative;
+}
+/* The dark-halo flicker (a hard dark band behind the nav when the chat panel
+   repaints on chip hover) is the pill's drop shadow being dragged into the
+   backdrop-filter re-raster. Fix: paint the drop shadow on a separate element
+   (this ::before) that has NO backdrop-filter and its own GPU layer (translateZ),
+   so the backdrop re-sample never touches the shadow. It sits behind the pill
+   content via z-index and matches the pill shape via border-radius: inherit. */
+body.lg .site-header-main::before {
+  content: ''; position: absolute; inset: 0; z-index: -1;
+  border-radius: inherit; pointer-events: none;
+  box-shadow: 0 20px 60px -16px rgba(0,0,0,0.65);
   transform: translateZ(0);
 }
 body.lg .site-header .logo {
