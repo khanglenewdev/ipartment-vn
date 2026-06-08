@@ -156,5 +156,6 @@
   .main-pane { padding: 36px 20px 56px; }
   .settings-grid { grid-template-columns: 1fr; }
   .booking-card { grid-template-columns: 1fr; }
-  .booking-total-col { text-align: left; }
+  /* keep totals right-aligned even when stacked, so prices stay comparable */
+  .booking-total-col { text-align: right; }
 }

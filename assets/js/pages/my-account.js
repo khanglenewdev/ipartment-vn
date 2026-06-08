@@ -25,7 +25,7 @@
 
   // ---- Tabs ----
   window.showTab = function (name) {
-    if (name === 'logout') { window.logout(); return; }
+    if (name === 'logout') { window.ipartmentConfirmLogout(window.logout); return; }
     document.querySelectorAll('.pane').forEach(function (p) { p.classList.remove('active'); });
     document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
     var pane = document.getElementById('pane-' + name);

@@ -107,7 +107,7 @@
 }
 .ipc-msg {
   max-width: 84%; padding: 10px 13px; font-family: var(--font-body, system-ui); font-size: 13.5px; line-height: 1.5;
-  border-radius: 15px; white-space: pre-wrap; word-wrap: break-word; animation: ipcIn 0.28s var(--ease, ease) both;
+  border-radius: 16px; white-space: pre-wrap; word-wrap: break-word; animation: ipcIn 0.28s var(--ease, ease) both;
 }
 .ipc-msg.bot { align-self: flex-start; background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border, rgba(255,255,255,0.1)); color: rgba(255,255,255,0.92); border-bottom-left-radius: 5px; }
 .ipc-msg.user { align-self: flex-end; background: var(--yellow, #ffed00); color: #1a1a08; font-weight: 500; border-bottom-right-radius: 5px; }
@@ -122,7 +122,7 @@
 .ipc-chip {
   background: rgba(255,237,0,0.1); border: 1px solid rgba(255,237,0,0.34); color: #ffe98c;
   font-family: var(--font-body, system-ui); font-size: 12.5px; line-height: 1.3; text-align: left;
-  padding: 8px 12px; border-radius: 13px; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
+  padding: 8px 12px; border-radius: 12px; cursor: pointer; transition: background 0.15s, border-color 0.15s, color 0.15s, transform 0.1s;
 }
 .ipc-chip:hover { background: rgba(255,237,0,0.2); border-color: var(--yellow, #ffed00); color: #fff8cc; }
 .ipc-chip:active { transform: scale(0.97); }
@@ -144,7 +144,7 @@
 .ipc-cta.terracotta { background: var(--terracotta, #d8613c); color: #fff; }
 
 /* typing indicator */
-.ipc-typing { align-self: flex-start; display: flex; gap: 4px; padding: 12px 14px; background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border, rgba(255,255,255,0.1)); border-radius: 15px; border-bottom-left-radius: 5px; }
+.ipc-typing { align-self: flex-start; display: flex; gap: 4px; padding: 12px 14px; background: rgba(255,255,255,0.07); border: 1px solid var(--glass-border, rgba(255,255,255,0.1)); border-radius: 16px; border-bottom-left-radius: 5px; }
 .ipc-typing span { width: 7px; height: 7px; border-radius: 50%; background: rgba(255,255,255,0.5); animation: ipcBounce 1.2s infinite; }
 .ipc-typing span:nth-child(2) { animation-delay: 0.18s; }
 .ipc-typing span:nth-child(3) { animation-delay: 0.36s; }
@@ -166,7 +166,7 @@
 .ipc-input { flex: 0 0 auto; display: flex; gap: 8px; padding: 11px 13px 13px; border-top: 1px solid var(--glass-border, rgba(255,255,255,0.1)); }
 .ipc-input input {
   flex: 1 1 auto; min-width: 0; background: rgba(255,255,255,0.06); border: 1.5px solid var(--glass-border, rgba(255,255,255,0.12));
-  color: #fff; font-family: var(--font-body, system-ui); font-size: 13.5px; padding: 11px 14px; border-radius: 13px;
+  color: #fff; font-family: var(--font-body, system-ui); font-size: 13.5px; padding: 11px 14px; border-radius: 12px;
 }
 .ipc-input input::placeholder { color: rgba(255,255,255,0.4); }
 .ipc-input input:focus { outline: none; border-color: var(--yellow, #ffed00); }

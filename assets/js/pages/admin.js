@@ -54,10 +54,12 @@ document.getElementById('login-form').addEventListener('submit', async e => {
   }
 });
 
-document.getElementById('link-logout').addEventListener('click', async e => {
+document.getElementById('link-logout').addEventListener('click', e => {
   e.preventDefault();
-  await Auth.signOut();
-  showLogin();
+  window.ipartmentConfirmLogout(async () => {
+    await Auth.signOut();
+    showLogin();
+  });
 });
 
 document.querySelectorAll('.tab-btn-admin').forEach(b => b.addEventListener('click', () => {
@@ -712,13 +714,17 @@ document.getElementById('art-form').addEventListener('submit', e => {
 });
 
 (async function initAdmin() {
-  // Gate OFF (owner request): the dashboard shell + the public overview KPIs are
-  // shown to everyone (so classmates can see the system works), while loadAll()
-  // keeps the detailed per-tab data admin-only behind a notice. An admin who
-  // signs in (here via "Admin sign in", or on the main site) unlocks the tabs.
-  // TO FULLY RE-GATE THE PAGE: restore the isAdmin() check that calls showLogin().
-  showDash();
-  // Re-render whenever auth state changes, so logging in/out locks or unlocks the
-  // detailed tabs live without a manual refresh.
-  try { Auth.onChange(function () { loadAll(); }); } catch (e) {}
+  // Gate ON: only an admin account sees the dashboard; everyone else gets the
+  // login screen. (The page can be opened to all again by calling showDash()
+  // unconditionally here, as it was during the showcase.)
+  async function gate() {
+    let admin = false;
+    try { admin = await Auth.isAdmin(); } catch (e) {}
+    if (admin) { showLogin(''); showDash(); }
+    else { showLogin(); }
+  }
+  await gate();
+  // Re-evaluate the gate whenever auth state changes, so logging in shows the
+  // dashboard and logging out returns to the login screen without a refresh.
+  try { Auth.onChange(function () { gate(); }); } catch (e) {}
 })();

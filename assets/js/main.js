@@ -1190,4 +1190,36 @@
       }
     });
   });
+
+  // ---- shared logout confirmation modal --------------------------------
+  // A small styled confirm so a stray click on a "Log out" control never signs
+  // you out by accident. Reused by my-account and the admin page. Pass the
+  // function to run when the guest confirms the logout.
+  window.ipartmentConfirmLogout = function (onConfirm) {
+    if (document.querySelector('.logout-overlay')) return; // never stack two
+    var ov = document.createElement('div');
+    ov.className = 'logout-overlay';
+    ov.innerHTML =
+      '<div class="logout-modal" role="dialog" aria-modal="true" aria-label="Confirm log out">' +
+        '<p class="logout-q">Are you sure you want to log out?</p>' +
+        '<div class="logout-actions">' +
+          '<button type="button" class="logout-btn logout-btn-confirm">Log out</button>' +
+          '<button type="button" class="logout-btn logout-btn-cancel">No</button>' +
+        '</div>' +
+      '</div>';
+    document.body.appendChild(ov);
+    var confirmBtn = ov.querySelector('.logout-btn-confirm');
+    var cancelBtn = ov.querySelector('.logout-btn-cancel');
+    function close() {
+      ov.classList.remove('open');
+      document.removeEventListener('keydown', onKey);
+      setTimeout(function () { if (ov.parentNode) ov.parentNode.removeChild(ov); }, 240);
+    }
+    function onKey(e) { if (e.key === 'Escape') close(); }
+    confirmBtn.addEventListener('click', function () { close(); if (typeof onConfirm === 'function') onConfirm(); });
+    cancelBtn.addEventListener('click', close);
+    ov.addEventListener('click', function (e) { if (e.target === ov) close(); });
+    document.addEventListener('keydown', onKey);
+    requestAnimationFrame(function () { ov.classList.add('open'); try { cancelBtn.focus(); } catch (e) {} });
+  };
 })();

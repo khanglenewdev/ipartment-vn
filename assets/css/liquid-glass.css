@@ -786,3 +786,44 @@ body.lg .voucher-apply-btn:hover { background: #fff; }
   transition: transform 0.18s, background 0.18s;
 }
 .voucher-open-btn:hover { background: #fff; transform: translateY(-1px); }
+
+/* ===== LOGOUT CONFIRM MODAL ============================================= */
+/* Unscoped on purpose (works on every page; tokens come from :root). The panel
+   has NO backdrop-filter, like the exit survey, so it never triggers the glass
+   halo. Built by window.ipartmentConfirmLogout in main.js. */
+.logout-overlay {
+  position: fixed; inset: 0; z-index: 100001;
+  display: flex; align-items: center; justify-content: center; padding: 22px;
+  background: rgba(12,4,4,0.62);
+  opacity: 0; pointer-events: none;
+  transition: opacity 0.24s var(--ease, cubic-bezier(0.16,1,0.3,1));
+}
+.logout-overlay.open { opacity: 1; pointer-events: auto; }
+.logout-modal {
+  width: 100%; max-width: 360px; text-align: center;
+  background: #17120f;
+  border: 1px solid var(--glass-border-hi, rgba(255,255,255,0.18));
+  border-radius: 18px; padding: 28px 26px 22px;
+  box-shadow: 0 30px 70px rgba(0,0,0,0.55);
+  transform: translateY(12px) scale(0.985);
+  transition: transform 0.3s var(--ease, cubic-bezier(0.16,1,0.3,1));
+}
+.logout-overlay.open .logout-modal { transform: translateY(0) scale(1); }
+.logout-q {
+  font-family: var(--font-heading, 'Cormorant Garamond', serif);
+  font-size: 21px; line-height: 1.35; color: #fff; margin: 0 0 22px;
+}
+.logout-actions { display: flex; gap: 12px; }
+/* both buttons share the row equally, so they are always the same width */
+.logout-btn {
+  flex: 1 1 0; min-width: 0; padding: 12px 14px; border-radius: 12px;
+  font-family: var(--font-body, system-ui); font-size: 14px; font-weight: 600;
+  cursor: pointer; transition: background 0.18s, color 0.18s, border-color 0.18s;
+}
+/* "No" = the safe default, highlighted in white */
+.logout-btn-cancel { background: #fff; color: #1a1a1a; border: 1px solid #fff; }
+.logout-btn-cancel:hover { background: #ececec; border-color: #ececec; }
+/* "Log out" = destructive: a red box that fills red on hover, easy to spot */
+.logout-btn-confirm { background: transparent; color: #ff7a7a; border: 1.5px solid #e5484d; }
+.logout-btn-confirm:hover { background: #e5484d; color: #fff; border-color: #e5484d; }
+.logout-btn:focus-visible { outline: 2px solid var(--yellow, #ffed00); outline-offset: 2px; }

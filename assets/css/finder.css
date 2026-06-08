@@ -86,7 +86,7 @@ body.lg .fq-rec-discount { font-size: 14px; line-height: 1.5; color: var(--yello
 body.lg .fq-cta {
   display: block; text-align: center; text-decoration: none; background: var(--yellow, #ffed00); color: #0a0a0a;
   font-family: var(--font-mono, monospace); font-size: 13px; font-weight: 700; letter-spacing: 0.08em; text-transform: uppercase;
-  padding: 16px 20px; border-radius: 13px; transition: transform 0.15s, box-shadow 0.15s;
+  padding: 16px 20px; border-radius: 12px; transition: transform 0.15s, box-shadow 0.15s;
 }
 body.lg .fq-cta:hover { transform: translateY(-1px); box-shadow: 0 8px 22px rgba(255,237,0,0.3); }
 body.lg .fq-doubt { font-size: 12px; color: rgba(255,255,255,0.55); text-align: center; margin: 10px 0 22px; }

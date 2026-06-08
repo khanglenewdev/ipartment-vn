@@ -183,7 +183,7 @@ body.lg { background: var(--black-deep); }
 /* ===== DATA TABLES (dark glass) ======================================= */
 table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
 thead th { position: sticky; top: 0; z-index: 2; }
-th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); }
+th, td { text-align: left; padding: 13px 16px; border-bottom: 1px solid rgba(255,255,255,0.06); font-variant-numeric: lining-nums tabular-nums; }
 th {
   background: #16140f;
   font-family: var(--font-mono); font-size: 10px; font-weight: 600; letter-spacing: 0.12em; text-transform: uppercase;
