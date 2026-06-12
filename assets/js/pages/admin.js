@@ -10,6 +10,8 @@ let _adminView = false;
 // without refetching anything.
 let _bkCache = [], _bkProfById = {}, _bkPrefByRef = {};
 let _ldCache = [], _apCache = [];
+// Dashboard data, stashed by loadAll so renderDashboard() can re-run freely.
+let _dashFunnel = [], _dashExit = [], _dashChat = [], _dashStats = { visitors: 0, views: 0, users: 0 };
 const LOCKED_NOTE = '<div class="locked-note"><span class="locked-ico">&#128274;</span><span>For security reasons, only admin accounts can view this data.</span></div>';
 
 function showDash() {
@@ -517,8 +519,8 @@ function renderLockedTabs() {
     if (el) el.style.display = 'none';
   });
   const tableNote = '<tbody><tr><td>' + note + '</td></tr></tbody>';
-  ['tbl-leads','tbl-users','tbl-bookings','tbl-vouchers','tbl-applications','tbl-sessions','tbl-quiz','tbl-feedback','tbl-chatbot-miss','tbl-chatbot-leads'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = tableNote; });
-  ['sessions-summary','chatbot-summary','finder-summary','funnel-view','mag-list'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = note; });
+  ['tbl-leads','tbl-users','tbl-bookings','tbl-vouchers','tbl-applications','tbl-sessions','tbl-quiz','tbl-feedback','tbl-chatbot-miss','tbl-chatbot-leads','tbl-chatbot-all'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = tableNote; });
+  ['sessions-summary','chatbot-summary','finder-summary','funnel-view','mag-list','dash-view'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = note; });
 }
 
 async function loadAll() {
@@ -533,7 +535,7 @@ async function loadAll() {
   // Everything below is read from Supabase, the single source of truth.
   let profiles = [], bookings = [], vouchers = [], leads = [], apps = [], pageviews = [], quiz = [], chatEvents = [], finderEvents = [], prefEvents = [], totalViewsExact = null;
   try {
-    const [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe, pe] = await Promise.all([
+    const [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe, pe, fu, ee] = await Promise.all([
       sb.from('profiles').select('*').order('created_at', { ascending: false }),
       sb.from('bookings').select('*').order('created_at', { ascending: false }),
       sb.from('vouchers').select('*').order('created_at', { ascending: false }),
@@ -545,15 +547,18 @@ async function loadAll() {
       sb.from('site_feedback').select('*').order('created_at', { ascending: false }),
       sb.from('events').select('name,meta,created_at').eq('type', 'chatbot').order('created_at', { ascending: false }).limit(3000),
       sb.from('events').select('name,meta,created_at').eq('type', 'finder').order('created_at', { ascending: false }).limit(3000),
-      sb.from('events').select('meta,created_at').eq('type', 'preferences').order('created_at', { ascending: false }).limit(2000)
+      sb.from('events').select('meta,created_at').eq('type', 'preferences').order('created_at', { ascending: false }).limit(2000),
+      sb.from('events').select('name,session_id').eq('type', 'funnel').limit(5000),
+      sb.from('events').select('name,meta,created_at').eq('type', 'exit_survey').order('created_at', { ascending: false }).limit(1000)
     ]);
     profiles = pr.data || []; bookings = br.data || []; vouchers = vr.data || [];
     leads = lr.data || []; apps = ar.data || []; pageviews = sv.data || [];
     quiz = qz.data || []; chatEvents = ce.data || []; finderEvents = fe.data || [];
     prefEvents = pe.data || [];
     totalViewsExact = (cv && typeof cv.count === 'number') ? cv.count : null;
-    [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe, pe].forEach(r => { if (r.error) console.warn('[admin] load:', r.error.message); });
+    [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe, pe, fu, ee].forEach(r => { if (r.error) console.warn('[admin] load:', r.error.message); });
     window.__feedback = fb.data || [];
+    _dashFunnel = fu.data || []; _dashExit = ee.data || [];
   } catch (e) { console.warn('[admin] supabase load failed', e); }
 
   // KPI cards are already populated by loadPublicKPIs() above. Below we only
@@ -568,6 +573,8 @@ async function loadAll() {
   const recentToday = pageviews.filter(p => new Date(p.created_at) >= startToday);
   const visitorsToday = new Set(recentToday.map(p => p.session_id).filter(Boolean)).size;
   const viewsToday = recentToday.length;
+  _dashChat = chatEvents;
+  _dashStats = { visitors: uniqueVisitors, views: totalViews, visitorsToday: visitorsToday, users: profiles.length };
   const sumEl = document.getElementById('sessions-summary');
   if (sumEl) {
     const stat = (v, l) => `<div class="mini-stat"><div class="v">${v.toLocaleString('en-US')}</div><div class="l">${l}</div></div>`;
@@ -709,7 +716,29 @@ async function loadAll() {
     const recStr = ['XS', 'S', 'M', 'L'].filter(k => recMix[k]).map(k => k + ': ' + recMix[k]).join('   ') || 'none yet';
     const fsum = document.getElementById('finder-summary');
     if (fsum) fsum.innerHTML = stat('Quizzes started', fc('start')) + stat('Completed', fc('result')) + stat('Booking clicks', fc('cta_book_click')) + stat('Leads captured', fc('capture_done')) + stat('Abandoned', fc('abandon')) + '<div style="margin-top:6px;font-family:var(--font-mono,monospace);font-size:11px;letter-spacing:0.06em;color:rgba(255,255,255,0.6);">RECOMMENDED MIX &nbsp;&nbsp; ' + recStr + '</div>';
+
+    // EVERYTHING guests ask, not only the misses. What people ask is what they
+    // care about, whether or not the bot answered: this is the listening layer.
+    const allQ = {};
+    ev.filter(e => e.name === 'question').forEach(e => {
+      const q = ((e.meta && e.meta.q) || '').trim();
+      if (!q) return;
+      const key = q.toLowerCase().replace(/\s+/g, ' ');
+      if (!allQ[key]) allQ[key] = { q, n: 0, last: e.created_at };
+      allQ[key].n++;
+      if (e.created_at > allQ[key].last) allQ[key].last = e.created_at;
+    });
+    const missKeys = new Set(Object.keys(groups));
+    const allRanked = Object.values(allQ).sort((a, b) => b.n - a.n || (b.last > a.last ? 1 : -1)).slice(0, 100);
+    const tblAll = document.getElementById('tbl-chatbot-all');
+    if (tblAll) tblAll.innerHTML = buildTable(
+      ['Times asked', 'Question', 'Bot answered?', 'Last asked'],
+      allRanked.map(g => [g.n, g.q, missKeys.has(g.q.toLowerCase().replace(/\s+/g, ' ')) ? '<span style="color:#f87171;">missed</span>' : '<span style="color:#4ade80;">answered</span>', fmtDate(g.last)]),
+      'Every question typed into the chat will appear here, answered or not. What guests ask is what they care about.'
+    );
   })();
+
+  renderDashboard();
 }
 
 window.downloadJSON = function() {
@@ -815,8 +844,96 @@ document.querySelectorAll('.tab-btn-admin').forEach(b => {
     if (b.dataset.tab === 'integration') { refreshWebhookStatus(); refreshClarityStatus(); }
     if (b.dataset.tab === 'magazine') renderMagazineList();
     if (b.dataset.tab === 'funnel') renderFunnel();
+  if (b.dataset.tab === 'dash') renderDashboard();
   });
 });
+
+// ── BUSINESS DASHBOARD ──
+// The first thing the owner sees: not tables, but the business at a glance
+// plus a "needs your attention" list of concrete next actions. Built entirely
+// from the data loadAll already fetched; re-renders instantly on tab open.
+function renderDashboard() {
+  const wrap = document.getElementById('dash-view');
+  if (!wrap) return;
+  if (!_adminView) { wrap.innerHTML = LOCKED_NOTE; return; }
+  const bk = _bkCache.filter(b => b.status !== 'cancelled');
+  const fmtM = v => v >= 1e6 ? (v / 1e6).toFixed(v >= 1e8 ? 0 : 1) + 'M' : (v >= 1e3 ? Math.round(v / 1e3) + 'k' : String(v));
+  const revenue = bk.reduce((s, b) => s + (b.total || 0), 0);
+  const now = new Date();
+  const monthKey = d => d.getFullYear() + '-' + (d.getMonth() + 1);
+  const revThisMonth = bk.filter(b => monthKey(new Date(b.created_at)) === monthKey(now)).reduce((s, b) => s + (b.total || 0), 0);
+  const nights = bk.reduce((s, b) => s + (b.nights || 0), 0);
+  const pending = _bkCache.filter(b => bkLiveStatus(b) === 'pending confirmation');
+  const weekAgo = new Date(Date.now() - 7 * 86400000);
+  const leads7 = _ldCache.filter(l => new Date(l.created_at) >= weekAgo).length;
+
+  // funnel conversion ring (unique sessions step 1 -> step 5)
+  const sets = {};
+  _dashFunnel.forEach(r => { (sets[r.name] = sets[r.name] || new Set()).add(r.session_id); });
+  const s1 = (sets.step_1 || new Set()).size, s5 = (sets.step_5 || new Set()).size;
+  const convPct = s1 ? Math.round(s5 / s1 * 100) : 0;
+
+  // booked revenue by month, last 6
+  const months = [];
+  for (let i = 5; i >= 0; i--) { const d = new Date(now.getFullYear(), now.getMonth() - i, 1); months.push({ k: monthKey(d), lbl: d.toLocaleString('en-GB', { month: 'short' }), v: 0 }); }
+  bk.forEach(b => { const m = months.find(x => x.k === monthKey(new Date(b.created_at))); if (m) m.v += (b.total || 0); });
+  const maxM = Math.max(1, ...months.map(m => m.v));
+
+  // lead sources
+  const srcCount = {};
+  _ldCache.forEach(l => { const lbl = LEAD_TYPE_LABELS[l.type] || (l.type || 'other').replace(/_/g, ' '); srcCount[lbl] = (srcCount[lbl] || 0) + 1; });
+  const srcs = Object.entries(srcCount).sort((a, b) => b[1] - a[1]).slice(0, 5);
+  const maxSrc = Math.max(1, ...srcs.map(s => s[1]));
+
+  // exit reasons + top chat questions + top miss
+  const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing' };
+  const exitCount = {};
+  _dashExit.forEach(e => { if (e.name && e.name !== 'detail' && e.name !== 'offer_wish') exitCount[e.name] = (exitCount[e.name] || 0) + 1; });
+  const exits = Object.entries(exitCount).sort((a, b) => b[1] - a[1]).slice(0, 4);
+  const qCount = {};
+  _dashChat.filter(e => e.name === 'question').forEach(e => { const q = ((e.meta && e.meta.q) || '').trim(); if (!q) return; const k = q.toLowerCase().replace(/\s+/g, ' '); (qCount[k] = qCount[k] || { q, n: 0 }).n++; });
+  const topQ = Object.values(qCount).sort((a, b) => b.n - a.n).slice(0, 4);
+  const missCount = {};
+  _dashChat.filter(e => e.name === 'answer_miss').forEach(e => { const q = ((e.meta && e.meta.q) || '').trim(); if (q) { const k = q.toLowerCase(); (missCount[k] = missCount[k] || { q, n: 0 }).n++; } });
+  const topMiss = Object.values(missCount).sort((a, b) => b.n - a.n)[0];
+  const stayReqs = _ldCache.filter(l => l.type === 'stay_request').slice(0, 3);
+
+  // decisions, not data: what should the owner DO right now
+  const attention = [];
+  pending.slice(0, 3).forEach(b => attention.push({ ico: '&#128203;', txt: '<b>Confirm booking ' + escp(b.booking_ref || '') + '</b>, ' + escp((b.guests_detail || {}).name || 'guest') + ', check-in ' + escp(b.checkin || '') + ', awaiting your confirmation', tab: 'bookings' }));
+  stayReqs.forEach(l => attention.push({ ico: '&#128718;', txt: '<b>Stay request</b>, ' + escp(((l.meta || {}).requests || []).join(', ') || 'see details') + ' (' + escp(l.booking_ref || '-') + ')', tab: 'leads' }));
+  if (topMiss) attention.push({ ico: '&#128049;', txt: '<b>Teach the chatbot</b>, "' + escp(topMiss.q) + '" was asked ' + topMiss.n + 'x with no answer in the library', tab: 'chatbot' });
+  if (exits.length) attention.push({ ico: '&#128682;', txt: '<b>Top exit reason:</b> ' + escp(rl[exits[0][0]] || exits[0][0]) + ' (' + exits[0][1] + 'x). Worth a closer look.', tab: 'funnel' });
+
+  const kpi = (lbl, val, sub) => '<div class="dc dc-kpi"><div class="dc-lbl">' + lbl + '</div><div class="dc-val">' + val + '</div><div class="dc-sub">' + (sub || '') + '</div></div>';
+  const bars = months.map(m => '<div class="dch-col"><div class="dch-bar" style="height:' + Math.max(4, Math.round(m.v / maxM * 100)) + '%"><span>' + (m.v ? fmtM(m.v) : '') + '</span></div><div class="dch-lbl">' + m.lbl + '</div></div>').join('');
+  const srcBars = srcs.length ? srcs.map(s => '<div class="dcs-row"><span class="dcs-lbl">' + escp(s[0]) + '</span><div class="dcs-track"><div class="dcs-fill" style="width:' + Math.round(s[1] / maxSrc * 100) + '%"></div></div><span class="dcs-n">' + s[1] + '</span></div>').join('') : '<p class="dc-empty">No leads yet.</p>';
+
+  wrap.innerHTML =
+    '<div class="dash-grid">' +
+      kpi('Revenue booked', fmtM(revenue) + ' ₫', revThisMonth ? fmtM(revThisMonth) + ' ₫ this month' : 'all time') +
+      kpi('Nights sold', nights, 'across ' + bk.length + ' booking' + (bk.length === 1 ? '' : 's')) +
+      kpi('Bookings', _bkCache.length, pending.length ? (pending.length + ' awaiting confirmation') : 'none pending') +
+      kpi('Leads', _ldCache.length, leads7 + ' in the last 7 days') +
+      kpi('Visitors', _dashStats.visitors, _dashStats.views + ' page views') +
+      '<div class="dc dc-wide"><div class="dc-lbl">Booked revenue by month</div><div class="dch">' + bars + '</div></div>' +
+      '<div class="dc"><div class="dc-lbl">Booking conversion</div><div class="dc-ring" style="--p:' + convPct + '"><div class="dc-ring-hole"><b>' + convPct + '%</b><span>visit &rarr; book</span></div></div></div>' +
+      '<div class="dc"><div class="dc-lbl">Where leads come from</div>' + srcBars + '</div>' +
+      '<div class="dc dc-wide"><div class="dc-lbl">Needs your attention</div>' +
+        (attention.length ? attention.map(a => '<div class="dc-attn-row"><span class="dc-attn-ico">' + a.ico + '</span><span class="dc-attn-txt">' + a.txt + '</span><button type="button" class="dc-go" data-tab="' + a.tab + '">Open</button></div>').join('') : '<p class="dc-empty">All clear. Nothing is waiting on you right now.</p>') +
+      '</div>' +
+      '<div class="dc"><div class="dc-lbl">Why visitors leave</div>' +
+        (exits.length ? exits.map(e2 => '<div class="dcs-row"><span class="dcs-lbl">' + escp(rl[e2[0]] || e2[0]) + '</span><div class="dcs-track"><div class="dcs-fill" style="width:' + Math.round(e2[1] / exits[0][1] * 100) + '%"></div></div><span class="dcs-n">' + e2[1] + '</span></div>').join('') : '<p class="dc-empty">No exit answers yet. The survey shows on desktop when the cursor leaves the top of the page (after 30 seconds and a scroll), and a record is written the moment a visitor taps a reason.</p>') +
+      '</div>' +
+      '<div class="dc"><div class="dc-lbl">What guests ask the most</div>' +
+        (topQ.length ? topQ.map(q => '<div class="dcs-row"><span class="dcs-lbl dcs-q">' + escp(q.q) + '</span><span class="dcs-n">' + q.n + 'x</span></div>').join('') : '<p class="dc-empty">No chat questions yet.</p>') +
+      '</div>' +
+    '</div>';
+  wrap.querySelectorAll('.dc-go').forEach(b => b.addEventListener('click', () => {
+    const t = document.querySelector('.tab-btn-admin[data-tab="' + b.dataset.tab + '"]');
+    if (t) t.click();
+  }));
+}
 
 // ── BOOKING FUNNEL (Supabase events) ──
 async function renderFunnel() {
@@ -860,9 +977,16 @@ async function renderFunnel() {
     html += '<p style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:8px;">Counts are unique sessions that reached each step.</p></div>';
   }
 
-  // Exit-survey: why visitors leave (and what offer would have won them)
+  // Exit-survey: why visitors leave (and what offer would have won them).
+  // The section ALWAYS renders: when there is no data yet it explains how the
+  // survey works instead of silently vanishing (which read as "not recorded").
   const ex = (eres && !eres.error && eres.data) ? eres.data : [];
   const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing' };
+  if (!ex.length) {
+    html += '<div style="max-width:680px;margin-top:32px;border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;">'
+      + '<h3 style="font-family:var(--font-heading);font-size:20px;font-weight:900;margin-bottom:12px;">Why visitors leave</h3>'
+      + '<p style="font-size:13px;color:rgba(255,255,255,0.55);line-height:1.7;">No exit answers recorded yet. The exit survey appears on DESKTOP only (a cursor leaving the top of the window is not a gesture on phones), after the visitor has been on the page 30 seconds and scrolled, at most once per session. A record is written the moment they tap a reason; the follow-up answer is saved with it.</p></div>';
+  }
   if (ex.length) {
     const reasons = {}; const details = [];
     ex.forEach(r => {
@@ -895,9 +1019,12 @@ async function renderFunnel() {
       else if (r.name === 'conversion') conv[r.variant] = (conv[r.variant] || 0) + 1;
     });
     const vl = { pct15: '15% off', pickup: 'Free airport pickup', pack: 'Free welcome pack' };
-    const variants = Array.from(new Set(Object.keys(exp).concat(Object.keys(conv))));
+    // The pickup and welcome-pack variants are RETIRED (the popup always shows
+    // the 15% member voucher now), so only live offers appear here.
+    const RETIRED = ['pickup', 'pack'];
+    const variants = Array.from(new Set(Object.keys(exp).concat(Object.keys(conv)))).filter(v => RETIRED.indexOf(v) < 0);
     html += '<div style="max-width:680px;margin-top:32px;border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;">';
-    html += '<h3 style="font-family:var(--font-heading);font-size:20px;font-weight:900;margin-bottom:12px;">Welcome offer A/B test</h3>';
+    html += '<h3 style="font-family:var(--font-heading);font-size:20px;font-weight:900;margin-bottom:12px;">Welcome offer performance</h3>';
     html += '<table style="width:100%;font-size:13px;"><thead><tr><th style="text-align:left;padding-bottom:6px;">Offer</th><th style="text-align:right;">Shown</th><th style="text-align:right;">Emails</th><th style="text-align:right;">Rate</th></tr></thead><tbody>';
     let best = null;
     variants.forEach(v => {
@@ -906,8 +1033,8 @@ async function renderFunnel() {
       html += '<tr><td style="padding:6px 0;">' + (vl[v] || esc(v)) + '</td><td style="text-align:right;">' + e + '</td><td style="text-align:right;">' + c + '</td><td style="text-align:right;font-weight:700;">' + rate.toFixed(1) + '%</td></tr>';
     });
     html += '</tbody></table>';
-    if (best && best.rate > 0) html += '<p style="margin-top:10px;font-size:13px;"><strong>Leading offer:</strong> ' + (vl[best.v] || esc(best.v)) + ' at ' + best.rate.toFixed(1) + '%.</p>';
-    html += '<p style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px;">Each visitor is randomly assigned one offer and sees it consistently.</p>';
+    if (best && best.rate > 0) html += '<p style="margin-top:10px;font-size:13px;"><strong>Conversion to email:</strong> ' + best.rate.toFixed(1) + '% of visitors who see the offer claim it.</p>';
+    html += '<p style="font-size:12px;color:rgba(255,255,255,0.5);margin-top:6px;">The welcome popup now always shows the 15% member voucher; the early A/B variants (airport pickup, welcome pack) were retired.</p>';
     html += '</div>';
   }
 

@@ -70,7 +70,8 @@
         <div class="admin-sidebar-inner">
           <div class="admin-sidebar-label">Data sets</div>
           <nav class="tabs" id="admin-tabs">
-            <button class="tab-btn-admin active" data-tab="leads">Leads</button>
+            <button class="tab-btn-admin active" data-tab="dash">Dashboard</button>
+            <button class="tab-btn-admin" data-tab="leads">Leads</button>
             <button class="tab-btn-admin" data-tab="users">Accounts</button>
             <button class="tab-btn-admin" data-tab="bookings">Bookings</button>
             <button class="tab-btn-admin" data-tab="vouchers">Vouchers</button>
@@ -93,7 +94,11 @@
           <span class="sidebar-toggle-text">Menu</span>
         </button>
         <div class="tab-content">
-      <div class="tab-pane active" id="tab-leads">
+      <div class="tab-pane active" id="tab-dash">
+        <div class="panel-intro"><h3>Your business right now</h3><p>The whole operation at a glance: money, demand, and the handful of things that actually need a decision from you today. Every block is computed live from the same database the detail tabs read.</p></div>
+        <div id="dash-view"></div>
+      </div>
+      <div class="tab-pane" id="tab-leads">
         <div class="panel-intro"><h3>Leads</h3><p>Every contact a visitor volunteered, in one stream. Each row is written to the <strong>leads</strong> table in our Supabase database the moment a form is submitted on the site: the welcome voucher popup (type Popup), the newsletter form on the magazine page (Newsletter), a booking request (Booking), a career application (Career), plus captures from the chatbot and the apartment finder quiz. The same submission also triggers the automated branded email, so what you see here is exactly what the follow-up system saw.</p></div>
         <div class="bookings-toolbar" id="leads-toolbar" style="display:none;">
           <input type="text" id="ld-search" class="bk-input bk-grow" placeholder="Search name, email, phone or notes..." aria-label="Search leads" />
@@ -157,7 +162,9 @@
       <div class="tab-pane" id="tab-chatbot">
         <div class="panel-intro"><h3>Chatbot</h3><p>What visitors asked the on-site chat, and the leads it captured. The chat logs every open, question, answer and miss as events in the <strong>events</strong> table; when it cannot answer, it offers a human follow-up and that contact lands in Leads with the exact question attached.</p></div>
         <div id="chatbot-summary" style="margin-bottom:20px;"></div>
-        <div class="panel-intro"><h3>Top unanswered questions</h3><p>Each recurring miss is a question to add to the library, or a keyword to add to an existing answer. This is the backlog that makes the bot smarter.</p></div>
+        <div class="panel-intro"><h3>What guests ask about</h3><p>Every question typed into the chat, answered or not. The bot is not here to replace customer service; it is a listening device. What people ask is what they care about, even when they never fill in a form, so the recurring questions below are free market research: pricing worries, missing information, demand signals.</p></div>
+        <table id="tbl-chatbot-all"></table>
+        <div class="panel-intro" style="margin-top:26px;"><h3>Top unanswered questions</h3><p>Each recurring miss is a question to add to the library, or a keyword to add to an existing answer. This is the backlog that makes the bot smarter.</p></div>
         <table id="tbl-chatbot-miss"></table>
         <div class="panel-intro" style="margin-top:26px;"><h3>Recent chatbot leads</h3><p>Captures from the chat, each with the question that prompted them.</p></div>
         <table id="tbl-chatbot-leads"></table>
