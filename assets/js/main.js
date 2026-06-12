@@ -347,9 +347,65 @@
         <div class="check">&#10003;</div>
         <h3>Your offer is on the way</h3>
         <p>Check <strong>${escapeHtml(email)}</strong> for your <strong>${escapeHtml(offer.code)}</strong> code (${escapeHtml(offer.promo)}), valid on your first stay. We saved your details to follow up.</p>
-        <button type="button" class="submit" style="margin-top:24px;max-width:240px;" onclick="document.getElementById('cta-close').click()">Start exploring</button>
+        <div class="cta-acct" id="cta-acct">
+          <p class="cta-acct-lead">One more step and you never type this again: add a password and we keep this voucher in a free account, with your name and email already filled in at checkout.</p>
+          <div class="cta-acct-row">
+            <input type="password" id="cta-acct-pass" placeholder="Min. 8 characters" autocomplete="new-password" aria-label="Create a password" />
+            <button type="button" class="cta-acct-btn" id="cta-acct-btn">Save my voucher</button>
+          </div>
+          <p class="cta-acct-msg" id="cta-acct-msg"></p>
+        </div>
+        <button type="button" class="submit" style="margin-top:18px;max-width:240px;" onclick="document.getElementById('cta-close').click()">Start exploring</button>
       </div>
     `;
+    wirePopupAccount(email, firstName, phone ? `${cc} ${phone}` : '');
+  }
+
+  // Optional inline signup on the voucher success step. Reuses the details the
+  // guest just typed, so claiming the voucher and owning it become one motion:
+  // the signup trigger in the database auto-issues the Welcome 15 voucher to the
+  // new account, and checkout later prefills from the logged-in profile.
+  function wirePopupAccount(email, firstName, phone) {
+    const Auth = window.ipartmentAuth;
+    const block = document.getElementById('cta-acct');
+    if (!block) return;
+    if (!Auth) { block.style.display = 'none'; return; }
+    // Already signed in? Their account already holds a welcome voucher; the
+    // offer to "create an account" would only confuse.
+    Auth.getUser().then(function (u) { if (u) block.style.display = 'none'; }).catch(function () {});
+    const pass = document.getElementById('cta-acct-pass');
+    const btn = document.getElementById('cta-acct-btn');
+    const msg = document.getElementById('cta-acct-msg');
+    function note(text, ok) { msg.textContent = text; msg.style.color = ok ? '#4ade80' : '#f87171'; }
+    async function submit() {
+      const p = pass.value;
+      if (!p || p.length < 8) { note('Password needs at least 8 characters.', false); pass.focus(); return; }
+      btn.disabled = true; const orig = btn.textContent; btn.textContent = 'Saving...';
+      try {
+        await Auth.signUp({ email: email, password: p, firstName: firstName, phone: phone });
+        block.innerHTML = '<p class="cta-acct-done">&#10003; Account created and you are logged in. Your voucher lives in <strong>My account</strong>, and checkout will greet you by name.</p>';
+        if (window.ipartmentTrack) window.ipartmentTrack('ab', 'popup_signup', { variant: _offerVariant });
+      } catch (err) {
+        btn.disabled = false; btn.textContent = orig;
+        const m = (err && err.message) || '';
+        if (/already (registered|exists)|user already/i.test(m)) {
+          note('This email already has an account. Log in instead and your vouchers are waiting.', false);
+          if (window.ipartmentOpenAuth) {
+            const a = document.createElement('button');
+            a.type = 'button'; a.className = 'cta-acct-login'; a.textContent = 'Log in';
+            a.addEventListener('click', function () { closeWelcomePopup(); window.ipartmentOpenAuth('login'); });
+            msg.appendChild(document.createTextNode(' '));
+            msg.appendChild(a);
+          }
+        } else if (err && err.needsConfirm) {
+          note('Account created. Check your email to confirm, then log in.', true);
+        } else {
+          note(m || 'Could not create the account right now. Your voucher email is still on its way.', false);
+        }
+      }
+    }
+    btn.addEventListener('click', submit);
+    pass.addEventListener('keydown', function (e) { if (e.key === 'Enter') { e.preventDefault(); submit(); } });
   }
 
   function escapeHtml(s) {

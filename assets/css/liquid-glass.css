@@ -660,9 +660,15 @@ body.lg select:focus, body.lg select:focus-visible {
   body.lg nav.site-nav a:not(.nav-cta) { display: none; }
   body.lg nav.site-nav a.nav-cta { display: inline-flex; margin: 0 0 0 4px; padding: 8px 15px; border-bottom: none; }
   body.lg .menu-toggle { display: inline-flex; align-items: center; justify-content: center; order: 3; margin-left: 6px; width: 34px; height: 34px; border-radius: 50%; background: rgba(255,255,255,0.08); border: 1px solid var(--glass-border); font-size: 16px; }
-  /* Open state = glass dropdown panel under the pill */
+  /* Open state = glass dropdown panel under the pill. The pill's backdrop-filter
+     makes it the containing block for this fixed drawer, so left/right offsets
+     resolve against the NARROW pill, not the viewport (the drawer used to open
+     ~170px wide). Fix: size with viewport units (immune to the containing block)
+     and center on the pill's midpoint, which the flex layout keeps at the
+     viewport's midpoint. */
   body.lg nav.site-nav.open {
-    display: flex; position: fixed; top: 66px; left: 14px; right: 14px;
+    display: flex; position: fixed; top: 66px; left: 50%; right: auto;
+    transform: translateX(-50%); width: calc(100vw - 28px); max-width: 430px;
     flex-direction: column; align-items: stretch; gap: 2px; padding: 10px;
     background: var(--glass-base-strong);
     backdrop-filter: blur(var(--blur-lg)) saturate(160%); -webkit-backdrop-filter: blur(var(--blur-lg)) saturate(160%);

@@ -78,7 +78,10 @@
             <button class="tab-btn-admin" data-tab="applications">Applications</button>
             <button class="tab-btn-admin" data-tab="sessions">Page Views</button>
             <button class="tab-btn-admin" data-tab="quiz">Password Quiz</button>
-            <button class="tab-btn-admin" data-tab="feedback">Feedback</button>
+            <!-- Feedback tab hidden for the class showcase: "Rate my website" responses
+                 are business leads for the owner, not demo data. Data still collects;
+                 remove style="display:none" to bring the tab back. -->
+            <button class="tab-btn-admin" data-tab="feedback" style="display:none;">Feedback</button>
             <button class="tab-btn-admin" data-tab="chatbot">Chatbot &amp; Finder</button>
             <button class="tab-btn-admin" data-tab="funnel">Funnel</button>
             <button class="tab-btn-admin" data-tab="magazine">Magazine</button>
@@ -91,16 +94,38 @@
           <span class="sidebar-toggle-text">Menu</span>
         </button>
         <div class="tab-content">
-      <div class="tab-pane active" id="tab-leads"><table id="tbl-leads"></table></div>
-      <div class="tab-pane" id="tab-users"><table id="tbl-users"></table></div>
-      <div class="tab-pane" id="tab-bookings"><table id="tbl-bookings"></table></div>
-      <div class="tab-pane" id="tab-vouchers"><table id="tbl-vouchers"></table></div>
-      <div class="tab-pane" id="tab-applications"><table id="tbl-applications"></table></div>
-      <div class="tab-pane" id="tab-sessions"><div id="sessions-summary"></div><table id="tbl-sessions"></table></div>
-      <div class="tab-pane" id="tab-quiz"><table id="tbl-quiz"></table></div>
+      <div class="tab-pane active" id="tab-leads">
+        <div class="panel-intro"><h3>Leads</h3><p>Every contact a visitor volunteered, in one stream. Each row is written to the <strong>leads</strong> table in our Supabase database the moment a form is submitted on the site: the welcome voucher popup (type Popup), the newsletter form on the magazine page (Newsletter), a booking request (Booking), a career application (Career), plus captures from the chatbot and the apartment finder quiz. The same submission also triggers the automated branded email, so what you see here is exactly what the follow-up system saw.</p></div>
+        <table id="tbl-leads"></table>
+      </div>
+      <div class="tab-pane" id="tab-users">
+        <div class="panel-intro"><h3>Accounts</h3><p>Real registered users. When someone signs up on the main site (or saves a booking or voucher to a free account), Supabase creates the login and a database trigger adds a row to the <strong>profiles</strong> table, which is what this list reads. Role marks who is an admin; everyone else can only ever see their own data, enforced by row-level security in the database itself.</p></div>
+        <table id="tbl-users"></table>
+      </div>
+      <div class="tab-pane" id="tab-bookings">
+        <div class="panel-intro"><h3>Bookings</h3><p>One row per completed booking flow, written to the <strong>bookings</strong> table when the guest confirms the final step. Nights and total are computed live by the booking calculator (including weekly and monthly discounts and any voucher); guest contact comes from the details step. These same rows feed the public availability calendar, which is why booked dates grey out for the next visitor.</p></div>
+        <table id="tbl-bookings"></table>
+      </div>
+      <div class="tab-pane" id="tab-vouchers">
+        <div class="panel-intro"><h3>Vouchers</h3><p>Discount codes owned by accounts, from the <strong>vouchers</strong> table. The Welcome 15 voucher is issued automatically by a database trigger the moment an account is created (including signups from the welcome popup), and its status flips to used when it is applied at checkout.</p></div>
+        <table id="tbl-vouchers"></table>
+      </div>
+      <div class="tab-pane" id="tab-applications">
+        <div class="panel-intro"><h3>Applications</h3><p>Submissions from the Career page form, stored in the <strong>applications</strong> table: role applied for, name, contact and experience, exactly as the applicant typed them.</p></div>
+        <table id="tbl-applications"></table>
+      </div>
+      <div class="tab-pane" id="tab-sessions">
+        <div class="panel-intro"><h3>Page views</h3><p>Anonymous traffic. Every page load logs a pageview event (path plus referrer, no personal data) to the <strong>events</strong> table via a small tracker script that runs on every page. The Visitors number on the overview is unique sessions counted from these events.</p></div>
+        <div id="sessions-summary"></div>
+        <table id="tbl-sessions"></table>
+      </div>
+      <div class="tab-pane" id="tab-quiz">
+        <div class="panel-intro"><h3>Password quiz</h3><p>Answers from the playful forgot-password quiz, stored in the <strong>password_quiz</strong> table. While resetting a password the guest also rates the site and suggests an improvement, which turned a boring reset into a feedback channel.</p></div>
+        <table id="tbl-quiz"></table>
+      </div>
       <div class="tab-pane" id="tab-feedback"><div class="panel-intro"><h3>Website feedback</h3><p>What visitors said when they clicked "Rate my website" in the footer, plus any emails left by people interested in what we build.</p></div><table id="tbl-feedback"></table></div>
       <div class="tab-pane" id="tab-chatbot">
-        <div class="panel-intro"><h3>Chatbot</h3><p>What visitors asked the on-site chat, and the leads it captured.</p></div>
+        <div class="panel-intro"><h3>Chatbot</h3><p>What visitors asked the on-site chat, and the leads it captured. The chat logs every open, question, answer and miss as events in the <strong>events</strong> table; when it cannot answer, it offers a human follow-up and that contact lands in Leads with the exact question attached.</p></div>
         <div id="chatbot-summary" style="margin-bottom:20px;"></div>
         <div class="panel-intro"><h3>Top unanswered questions</h3><p>Each recurring miss is a question to add to the library, or a keyword to add to an existing answer. This is the backlog that makes the bot smarter.</p></div>
         <table id="tbl-chatbot-miss"></table>
@@ -112,7 +137,7 @@
       <div class="tab-pane" id="tab-funnel">
         <div class="panel-intro">
           <h3>Booking funnel</h3>
-          <p>Where visitors drop off between landing on the booking page and confirming. This is your "why don't they book" view.</p>
+          <p>Where visitors drop off between landing on the booking page and confirming. This is your "why don't they book" view. Each step of the booking flow logs a funnel event to the <strong>events</strong> table as the guest moves through it, and the exit survey answers shown below come from the same table (type exit_survey), recorded when someone tells us why they are leaving.</p>
         </div>
         <div id="funnel-view"></div>
       </div>
