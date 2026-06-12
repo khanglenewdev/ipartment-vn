@@ -5,10 +5,11 @@ let currentTab = 'leads';
 // Whether the current viewer is an admin. The overview KPIs are public, but the
 // detailed per-tab data is shown only when this is true.
 let _adminView = false;
-// Bookings tab search/filter state: loadAll fills these caches, then
-// renderBookingsTable() re-renders from them whenever a filter changes,
+// Search/filter state for the filterable tabs: loadAll fills these caches, then
+// the render*Table() functions re-render from them whenever a filter changes,
 // without refetching anything.
 let _bkCache = [], _bkProfById = {}, _bkPrefByRef = {};
+let _ldCache = [], _apCache = [];
 const LOCKED_NOTE = '<div class="locked-note"><span class="locked-ico">&#128274;</span><span>For security reasons, only admin accounts can view this data.</span></div>';
 
 function showDash() {
@@ -17,14 +18,6 @@ function showDash() {
   document.getElementById('link-logout').style.display = 'inline';
   loadAll();
 }
-
-// Owner affordance: open the site's auth modal to sign in as admin and unlock the
-// detailed tabs. Falls back to a hint if the modal is not available on this page.
-window.adminSignIn = function() {
-  if (window.ipartmentOpenAuth) { window.ipartmentOpenAuth('login'); }
-  else if (window.ipartmentToast) { window.ipartmentToast('Sign in from the main site, then come back here.'); }
-  else { window.location.href = 'my-account.html'; }
-};
 
 function showLogin(msg) {
   document.getElementById('login-shell').style.display = 'flex';
@@ -93,33 +86,79 @@ function leadTypeTag(type) {
 }
 
 // ===== BOOKINGS TAB: search + filters =====================================
-function bkPrefCell(b, gd) {
-  const escp = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+function escp(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
+function truncate(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; }
+
+// Collect everything we know about how to host this booking's guest, merged
+// most-specific-first (this booking's answers, then the snapshot stamped on the
+// booking, then the account defaults).
+function bkPrefData(b) {
+  const gd = b.guests_detail || {};
   const prof = b.user_id ? (_bkProfById[b.user_id] || {}) : {};
-  const evMeta = _bkPrefByRef[b.booking_ref] || {};
-  const stay = (evMeta.perfect || '').trim() || ((gd.stay_preference || '') + '').trim() || (prof.stay_preference || '').trim();
+  const ev = _bkPrefByRef[b.booking_ref] || {};
+  const stay = (ev.perfect || '').trim() || ((gd.stay_preference || '') + '').trim() || (prof.stay_preference || '').trim();
   const room = (prof.preferred_category || '').trim();
+  return {
+    room: (room && !/^no preference$/i.test(room)) ? room : '',
+    stay: stay,
+    arrival: (ev.arrival || '').trim(),
+    drink: (ev.drink || '').trim(),
+    wishlist: Array.isArray(ev.wishlist) ? ev.wishlist : [],
+    guest: gd.name || '-'
+  };
+}
+
+// The table cell shows a compact summary; long requests are cut short and the
+// cell opens a modal with the full detail (wired by delegation in initAdminUx).
+function bkPrefCell(b) {
+  const p = bkPrefData(b);
+  if (!p.room && !p.stay && !p.arrival && !p.drink && !p.wishlist.length) return '-';
   const bits = [];
-  if (room && !/^no preference$/i.test(room)) bits.push(`Room: ${escp(room)}`);
-  if (stay) bits.push(`Stay: ${escp(stay)}`);
-  return bits.length ? `<small>${bits.join('<br/>')}</small>` : '-';
+  if (p.room) bits.push(`Room: ${escp(p.room)}`);
+  if (p.stay) bits.push(`Stay: ${escp(truncate(p.stay, 34))}`);
+  if (!p.stay && (p.arrival || p.drink || p.wishlist.length)) bits.push('Prep notes');
+  return `<button type="button" class="pref-more" data-ref="${escp(b.booking_ref || '')}" title="View full preference">` +
+    `<small>${bits.join('<br/>')}</small><span class="pref-open-tag">view</span></button>`;
+}
+
+// Full-preference modal: everything known about hosting this guest, readable.
+function openPrefModal(ref) {
+  const b = _bkCache.find(x => x.booking_ref === ref);
+  if (!b) return;
+  const p = bkPrefData(b);
+  const old = document.getElementById('pref-modal-overlay');
+  if (old) old.remove();
+  const rows = [];
+  if (p.room) rows.push(['Preferred apartment', p.room]);
+  if (p.stay) rows.push(['Stay preference', p.stay]);
+  if (p.arrival) rows.push(['Estimated arrival', p.arrival]);
+  if (p.drink) rows.push(['Coffee or tea', p.drink]);
+  if (p.wishlist.length) rows.push(['Interested in (future services)', p.wishlist.join(', ')]);
+  const ov = document.createElement('div');
+  ov.className = 'pref-modal-overlay'; ov.id = 'pref-modal-overlay';
+  ov.innerHTML = `
+    <div class="pref-modal" role="dialog" aria-modal="true" aria-label="Guest preference">
+      <button type="button" class="pm-close" aria-label="Close">&times;</button>
+      <h3>${escp(p.guest)}</h3>
+      <div class="pm-sub">${escp(ref)} &middot; ${escp(b.checkin || '-')} to ${escp(b.checkout || '-')}</div>
+      ${rows.map(r => `<div class="pm-row"><div class="pm-k">${escp(r[0])}</div><div class="pm-v">${escp(r[1])}</div></div>`).join('')}
+    </div>`;
+  document.body.appendChild(ov);
+  const close = () => { ov.classList.remove('open'); document.removeEventListener('keydown', onKey); setTimeout(() => ov.remove(), 220); };
+  const onKey = e => { if (e.key === 'Escape') close(); };
+  ov.querySelector('.pm-close').addEventListener('click', close);
+  ov.addEventListener('click', e => { if (e.target === ov) close(); });
+  document.addEventListener('keydown', onKey);
+  requestAnimationFrame(() => ov.classList.add('open'));
 }
 
 // Fill the apartment + status dropdowns from the values actually present in the
 // data (so a new status never needs a code change). Keeps the current selection
 // when it still exists.
 function populateBookingFilterOptions() {
-  const fill = (id, values, labelFn) => {
-    const sel = document.getElementById(id);
-    if (!sel) return;
-    const current = sel.value;
-    const all = sel.querySelector('option').outerHTML; // keep the "All ..." option
-    sel.innerHTML = all + values.map(v => `<option value="${v}">${labelFn(v)}</option>`).join('');
-    if (values.indexOf(current) > -1) sel.value = current;
-  };
   const uniq = arr => Array.from(new Set(arr.filter(Boolean)));
-  fill('bk-room', uniq(_bkCache.map(b => (b.room || '').toLowerCase())).sort(), v => v.toUpperCase());
-  fill('bk-status', uniq(_bkCache.map(b => (b.status || '').toLowerCase())).sort(), v => v.replace(/_/g, ' '));
+  fillSelectOptions('bk-room', uniq(_bkCache.map(b => (b.room || '').toLowerCase())).sort(), v => v.toUpperCase());
+  fillSelectOptions('bk-status', uniq(_bkCache.map(b => (b.status || '').toLowerCase())).sort(), v => v.replace(/_/g, ' '));
 }
 
 function bookingMatchesFilters(b, f) {
@@ -172,7 +211,7 @@ function renderBookingsTable() {
         `${b.checkin || '-'} to ${b.checkout || '-'}`,
         b.nights || '-',
         `${(b.total || 0).toLocaleString('vi-VN')} VND`,
-        bkPrefCell(b, gd),
+        bkPrefCell(b),
         b.status || '-',
         fmtDate(b.created_at)
       ];
@@ -181,21 +220,251 @@ function renderBookingsTable() {
   );
 }
 
-function initBookingFilters() {
-  const ids = ['bk-search', 'bk-room', 'bk-status', 'bk-date', 'bk-date-mode'];
+// ===== LEADS TAB: search + filters ========================================
+const LEAD_TYPE_LABELS = { welcome_popup_voucher: 'Popup', newsletter_signup: 'Newsletter', booking_request: 'Booking', career_application: 'Career' };
+function populateLeadFilterOptions() {
+  fillSelectOptions('ld-type',
+    Array.from(new Set(_ldCache.map(l => l.type).filter(Boolean))).sort(),
+    v => LEAD_TYPE_LABELS[v] || v.replace(/_/g, ' '));
+}
+function renderLeadsTable() {
+  const tbl = document.getElementById('tbl-leads');
+  if (!tbl || !_adminView) return;
+  const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const f = { q: val('ld-search').trim().toLowerCase(), type: val('ld-type'), date: val('ld-date') };
+  const rows = _ldCache.filter(l => {
+    if (f.q) {
+      const hay = [l.name, l.email, l.phone, l.booking_ref, l.applied_role, l.voucher_code, l.source_page]
+        .map(x => (x || '') + '').join(' ').toLowerCase();
+      if (hay.indexOf(f.q) < 0) return false;
+    }
+    if (f.type && l.type !== f.type) return false;
+    if (f.date && (l.created_at || '').slice(0, 10) !== f.date) return false;
+    return true;
+  });
+  const countEl = document.getElementById('ld-count');
+  if (countEl) countEl.textContent = (rows.length === _ldCache.length)
+    ? `${_ldCache.length} lead${_ldCache.length === 1 ? '' : 's'}`
+    : `${rows.length} of ${_ldCache.length} leads`;
+  tbl.innerHTML = buildTable(
+    ['Date', 'Type', 'Name / Email', 'Phone', 'Source / Notes'],
+    rows.map(l => [
+      fmtDate(l.created_at),
+      leadTypeTag(l.type),
+      `${l.name || ''}<br/><small style="color:#999;">${l.email || ''}</small>`,
+      l.phone || '-',
+      l.booking_ref ? `Ref: ${l.booking_ref}` : l.applied_role ? `Role: ${l.applied_role}` : l.voucher_code || l.source_page || '-'
+    ]),
+    (f.q || f.type || f.date) ? 'No leads match these filters. Try clearing them.' : 'Leads appear here when visitors fill the welcome popup, newsletter, or any contact form.'
+  );
+}
+
+// ===== APPLICATIONS TAB: search + filters =================================
+function populateAppFilterOptions() {
+  fillSelectOptions('ap-role',
+    Array.from(new Set(_apCache.map(a => a.role).filter(Boolean))).sort(),
+    v => v);
+}
+function renderApplicationsTable() {
+  const tbl = document.getElementById('tbl-applications');
+  if (!tbl || !_adminView) return;
+  const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const f = { q: val('ap-search').trim().toLowerCase(), role: val('ap-role'), date: val('ap-date') };
+  const rows = _apCache.filter(a => {
+    if (f.q) {
+      const hay = [a.first_name, a.last_name, a.email, a.phone, a.role]
+        .map(x => (x || '') + '').join(' ').toLowerCase();
+      if (hay.indexOf(f.q) < 0) return false;
+    }
+    if (f.role && a.role !== f.role) return false;
+    if (f.date && (a.created_at || '').slice(0, 10) !== f.date) return false;
+    return true;
+  });
+  const countEl = document.getElementById('ap-count');
+  if (countEl) countEl.textContent = (rows.length === _apCache.length)
+    ? `${_apCache.length} application${_apCache.length === 1 ? '' : 's'}`
+    : `${rows.length} of ${_apCache.length} applications`;
+  tbl.innerHTML = buildTable(
+    ['Date', 'Role', 'Name', 'Contact', 'Experience'],
+    rows.map(a => [
+      fmtDate(a.created_at), a.role || '-', `${a.first_name || ''} ${a.last_name || ''}`.trim() || '-',
+      `${a.email || ''}<br/><small style="color:#999;">${a.phone || ''}</small>`, a.years_experience || '-'
+    ]),
+    (f.q || f.role || f.date) ? 'No applications match these filters. Try clearing them.' : 'Job applications submitted via the Career page.'
+  );
+}
+
+// Shared option filler for the filter dropdowns: keeps the "All ..." first
+// option, rebuilds the rest from live data, keeps the selection when possible,
+// and refreshes the custom glass dropdown label.
+function fillSelectOptions(id, values, labelFn) {
+  const sel = document.getElementById(id);
+  if (!sel) return;
+  const current = sel.value;
+  const all = sel.querySelector('option').outerHTML;
+  sel.innerHTML = all + values.map(v => `<option value="${escp(v)}">${escp(labelFn(v))}</option>`).join('');
+  if (values.indexOf(current) > -1) sel.value = current;
+  if (sel._admRefresh) sel._admRefresh();
+}
+
+// ===== CUSTOM GLASS CONTROLS (replace the Chrome-default popups) ==========
+// Strategy: the native <select> / <input type=date> stay in the DOM as hidden
+// value stores, so every existing read (val('bk-room')) and listener keeps
+// working; the visible UI is a glass button + glass panel that writes back to
+// the native control and fires its change event. Panels are near-opaque with
+// NO backdrop-filter, per the house halo rule.
+function closeAdmPanels(except) {
+  document.querySelectorAll('.adm-dd.open').forEach(d => { if (d !== except) d.classList.remove('open'); });
+}
+function initAdmSelect(sel) {
+  if (!sel || sel._adm) return;
+  sel._adm = true;
+  const wrap = document.createElement('div');
+  wrap.className = 'adm-dd';
+  sel.parentNode.insertBefore(wrap, sel);
+  wrap.appendChild(sel);
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'bk-input adm-dd-btn';
+  btn.innerHTML = '<span class="adm-dd-label"></span><span class="adm-dd-chev">&#9662;</span>';
+  wrap.appendChild(btn);
+  const menu = document.createElement('div');
+  menu.className = 'adm-dd-menu';
+  wrap.appendChild(menu);
+  const label = () => {
+    const o = sel.options[sel.selectedIndex];
+    btn.querySelector('.adm-dd-label').textContent = o ? o.text : '';
+  };
+  const rebuild = () => {
+    menu.innerHTML = '';
+    Array.prototype.forEach.call(sel.options, o => {
+      const it = document.createElement('button');
+      it.type = 'button';
+      it.className = 'adm-dd-opt' + (o.value === sel.value ? ' active' : '');
+      it.textContent = o.text;
+      it.addEventListener('click', () => {
+        sel.value = o.value;
+        sel.dispatchEvent(new Event('change', { bubbles: true }));
+        label();
+        wrap.classList.remove('open');
+      });
+      menu.appendChild(it);
+    });
+  };
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (wrap.classList.contains('open')) { wrap.classList.remove('open'); return; }
+    closeAdmPanels(wrap); rebuild(); wrap.classList.add('open');
+  });
+  sel._admRefresh = label;
+  label();
+}
+function initAdmDate(inp) {
+  if (!inp || inp._adm) return;
+  inp._adm = true;
+  const ph = inp.getAttribute('data-ph') || 'Any date';
+  const MONTHS = ['Jan', 'Feb', 'Mar', 'Apr', 'May', 'Jun', 'Jul', 'Aug', 'Sep', 'Oct', 'Nov', 'Dec'];
+  const pad = n => (n < 10 ? '0' : '') + n;
+  const wrap = document.createElement('div');
+  wrap.className = 'adm-dd adm-dp';
+  inp.parentNode.insertBefore(wrap, inp);
+  wrap.appendChild(inp);
+  const btn = document.createElement('button');
+  btn.type = 'button'; btn.className = 'bk-input adm-dd-btn';
+  btn.innerHTML = '<span class="adm-dd-label"></span><span class="adm-dd-chev">&#128197;</span>';
+  wrap.appendChild(btn);
+  const menu = document.createElement('div');
+  menu.className = 'adm-dd-menu adm-dp-panel';
+  wrap.appendChild(menu);
+  let view = new Date();
+  const label = () => {
+    const v = inp.value;
+    const el = btn.querySelector('.adm-dd-label');
+    if (!v) { el.textContent = ph; el.classList.add('is-ph'); return; }
+    const p = v.split('-');
+    el.textContent = `${parseInt(p[2], 10)} ${MONTHS[parseInt(p[1], 10) - 1]} ${p[0]}`;
+    el.classList.remove('is-ph');
+  };
+  const setValue = v => {
+    inp.value = v;
+    inp.dispatchEvent(new Event('change', { bubbles: true }));
+    label();
+    wrap.classList.remove('open');
+  };
+  const render = () => {
+    const y = view.getFullYear(), m = view.getMonth();
+    const startDow = (new Date(y, m, 1).getDay() + 6) % 7; // Monday-first grid
+    const dim = new Date(y, m + 1, 0).getDate();
+    const today = new Date();
+    const todayKey = `${today.getFullYear()}-${pad(today.getMonth() + 1)}-${pad(today.getDate())}`;
+    let html = `<div class="adm-dp-head">` +
+      `<button type="button" class="adm-dp-nav" data-nav="-1" aria-label="Previous month">&#8249;</button>` +
+      `<span class="adm-dp-title">${MONTHS[m]} ${y}</span>` +
+      `<button type="button" class="adm-dp-nav" data-nav="1" aria-label="Next month">&#8250;</button></div>` +
+      `<div class="adm-dp-grid">` +
+      ['Mo', 'Tu', 'We', 'Th', 'Fr', 'Sa', 'Su'].map(d => `<span class="adm-dp-dow">${d}</span>`).join('');
+    for (let i = 0; i < startDow; i++) html += '<span></span>';
+    for (let d = 1; d <= dim; d++) {
+      const key = `${y}-${pad(m + 1)}-${pad(d)}`;
+      const cls = 'adm-dp-day' + (key === inp.value ? ' sel' : '') + (key === todayKey ? ' today' : '');
+      html += `<button type="button" class="${cls}" data-date="${key}">${d}</button>`;
+    }
+    html += `</div><div class="adm-dp-foot"><button type="button" class="adm-dp-clear">Clear date</button></div>`;
+    menu.innerHTML = html;
+    menu.querySelectorAll('.adm-dp-nav').forEach(b => b.addEventListener('click', e => {
+      e.stopPropagation();
+      view = new Date(view.getFullYear(), view.getMonth() + parseInt(b.dataset.nav, 10), 1);
+      render();
+    }));
+    menu.querySelectorAll('.adm-dp-day').forEach(b => b.addEventListener('click', () => setValue(b.dataset.date)));
+    menu.querySelector('.adm-dp-clear').addEventListener('click', () => setValue(''));
+  };
+  btn.addEventListener('click', e => {
+    e.stopPropagation();
+    if (wrap.classList.contains('open')) { wrap.classList.remove('open'); return; }
+    closeAdmPanels(wrap);
+    view = inp.value ? new Date(inp.value + 'T00:00:00') : new Date();
+    render(); wrap.classList.add('open');
+  });
+  inp._admRefresh = label;
+  label();
+}
+
+// ===== TOOLBAR WIRING =====================================================
+function wireToolbar(ids, render, clearId, defaults) {
   ids.forEach(id => {
     const el = document.getElementById(id);
     if (!el) return;
-    el.addEventListener('input', renderBookingsTable);
-    el.addEventListener('change', renderBookingsTable);
+    el.addEventListener('input', render);
+    el.addEventListener('change', render);
   });
-  const clear = document.getElementById('bk-clear');
+  const clear = document.getElementById(clearId);
   if (clear) clear.addEventListener('click', () => {
-    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = (id === 'bk-date-mode') ? 'staying' : ''; });
-    renderBookingsTable();
+    ids.forEach(id => {
+      const el = document.getElementById(id);
+      if (!el) return;
+      el.value = (defaults && defaults[id] != null) ? defaults[id] : '';
+      if (el._admRefresh) el._admRefresh();
+    });
+    render();
   });
 }
-initBookingFilters();
+function initAdminUx() {
+  // glass replacements for every native filter control
+  ['bk-room', 'bk-status', 'bk-date-mode', 'ld-type', 'ap-role'].forEach(id => initAdmSelect(document.getElementById(id)));
+  ['bk-date', 'ld-date', 'ap-date'].forEach(id => initAdmDate(document.getElementById(id)));
+  document.addEventListener('click', () => closeAdmPanels());
+  document.addEventListener('keydown', e => { if (e.key === 'Escape') closeAdmPanels(); });
+  wireToolbar(['bk-search', 'bk-room', 'bk-status', 'bk-date', 'bk-date-mode'], renderBookingsTable, 'bk-clear', { 'bk-date-mode': 'staying' });
+  wireToolbar(['ld-search', 'ld-type', 'ld-date'], renderLeadsTable, 'ld-clear');
+  wireToolbar(['ap-search', 'ap-role', 'ap-date'], renderApplicationsTable, 'ap-clear');
+  // clicking a preference summary opens the full-detail modal
+  const bkTbl = document.getElementById('tbl-bookings');
+  if (bkTbl) bkTbl.addEventListener('click', e => {
+    const b = e.target.closest('.pref-more');
+    if (b) openPrefModal(b.dataset.ref);
+  });
+}
+initAdminUx();
 
 // Overview KPIs come from a public aggregate-counts RPC (totals only, no PII),
 // so the headline shows real numbers to everyone, even logged out. The detailed
@@ -222,8 +491,10 @@ async function loadPublicKPIs() {
 // re-renders cleanly.
 function renderLockedTabs() {
   const note = LOCKED_NOTE;
-  const bkToolbar = document.getElementById('bookings-toolbar');
-  if (bkToolbar) bkToolbar.style.display = 'none';
+  ['bookings-toolbar', 'leads-toolbar', 'applications-toolbar'].forEach(id => {
+    const el = document.getElementById(id);
+    if (el) el.style.display = 'none';
+  });
   const tableNote = '<tbody><tr><td>' + note + '</td></tr></tbody>';
   ['tbl-leads','tbl-users','tbl-bookings','tbl-vouchers','tbl-applications','tbl-sessions','tbl-quiz','tbl-feedback','tbl-chatbot-miss','tbl-chatbot-leads'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = tableNote; });
   ['sessions-summary','chatbot-summary','finder-summary','funnel-view','mag-list'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = note; });
@@ -290,18 +561,12 @@ async function loadAll() {
       `<div class="note">${note}</div>`;
   }
 
-  // Leads (Supabase)
-  document.getElementById('tbl-leads').innerHTML = buildTable(
-    ['Date', 'Type', 'Name / Email', 'Phone', 'Source / Notes'],
-    leads.map(l => [
-      fmtDate(l.created_at),
-      leadTypeTag(l.type),
-      `${l.name || ''}<br/><small style="color:#999;">${l.email || ''}</small>`,
-      l.phone || '-',
-      l.booking_ref ? `Ref: ${l.booking_ref}` : l.applied_role ? `Role: ${l.applied_role}` : l.voucher_code || l.source_page || '-'
-    ]),
-    'Leads appear here when visitors fill the welcome popup, newsletter, or any contact form.'
-  );
+  // Leads (Supabase) - cached, then rendered through the search/filter toolbar
+  _ldCache = leads;
+  populateLeadFilterOptions();
+  const ldToolbar = document.getElementById('leads-toolbar');
+  if (ldToolbar) ldToolbar.style.display = '';
+  renderLeadsTable();
 
   // Accounts (Supabase profiles)
   document.getElementById('tbl-users').innerHTML = buildTable(
@@ -342,15 +607,12 @@ async function loadAll() {
     'Vouchers are auto-issued on signup and appear here.'
   );
 
-  // Applications (Supabase)
-  document.getElementById('tbl-applications').innerHTML = buildTable(
-    ['Date', 'Role', 'Name', 'Contact', 'Experience'],
-    apps.map(a => [
-      fmtDate(a.created_at), a.role || '-', `${a.first_name || ''} ${a.last_name || ''}`.trim() || '-',
-      `${a.email || ''}<br/><small style="color:#999;">${a.phone || ''}</small>`, a.years_experience || '-'
-    ]),
-    'Job applications submitted via the Career page.'
-  );
+  // Applications (Supabase) - cached, then rendered through the toolbar
+  _apCache = apps;
+  populateAppFilterOptions();
+  const apToolbar = document.getElementById('applications-toolbar');
+  if (apToolbar) apToolbar.style.display = '';
+  renderApplicationsTable();
 
   // Page views (Supabase events)
   document.getElementById('tbl-sessions').innerHTML = buildTable(

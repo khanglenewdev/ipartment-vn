@@ -50,7 +50,6 @@
         <h1>CRM Dashboard</h1>
       </div>
       <div class="dash-actions">
-        <button class="dash-btn" onclick="adminSignIn()">Admin sign in</button>
         <button class="dash-btn" onclick="downloadJSON()">Export JSON</button>
         <button class="dash-btn" onclick="downloadCSV()">Export CSV</button>
         <button class="dash-btn primary" onclick="loadAll()">Refresh</button>
@@ -96,6 +95,13 @@
         <div class="tab-content">
       <div class="tab-pane active" id="tab-leads">
         <div class="panel-intro"><h3>Leads</h3><p>Every contact a visitor volunteered, in one stream. Each row is written to the <strong>leads</strong> table in our Supabase database the moment a form is submitted on the site: the welcome voucher popup (type Popup), the newsletter form on the magazine page (Newsletter), a booking request (Booking), a career application (Career), plus captures from the chatbot and the apartment finder quiz. The same submission also triggers the automated branded email, so what you see here is exactly what the follow-up system saw.</p></div>
+        <div class="bookings-toolbar" id="leads-toolbar" style="display:none;">
+          <input type="text" id="ld-search" class="bk-input bk-grow" placeholder="Search name, email, phone or notes..." aria-label="Search leads" />
+          <select id="ld-type" class="bk-input" aria-label="Filter by lead type"><option value="">All types</option></select>
+          <input type="date" id="ld-date" class="bk-input" data-ph="Received on..." aria-label="Received on" />
+          <button type="button" id="ld-clear" class="dash-btn">Clear</button>
+          <span class="bk-count" id="ld-count"></span>
+        </div>
         <table id="tbl-leads"></table>
       </div>
       <div class="tab-pane" id="tab-users">
@@ -116,7 +122,7 @@
               <option value="checkout">Check-out</option>
               <option value="created">Booked on</option>
             </select>
-            <input type="date" id="bk-date" class="bk-input" aria-label="Date" />
+            <input type="date" id="bk-date" class="bk-input" data-ph="Any date" aria-label="Date" />
           </div>
           <button type="button" id="bk-clear" class="dash-btn">Clear</button>
           <span class="bk-count" id="bk-count"></span>
@@ -129,6 +135,13 @@
       </div>
       <div class="tab-pane" id="tab-applications">
         <div class="panel-intro"><h3>Applications</h3><p>Submissions from the Career page form, stored in the <strong>applications</strong> table: role applied for, name, contact and experience, exactly as the applicant typed them.</p></div>
+        <div class="bookings-toolbar" id="applications-toolbar" style="display:none;">
+          <input type="text" id="ap-search" class="bk-input bk-grow" placeholder="Search name, email or role..." aria-label="Search applications" />
+          <select id="ap-role" class="bk-input" aria-label="Filter by role"><option value="">All roles</option></select>
+          <input type="date" id="ap-date" class="bk-input" data-ph="Applied on..." aria-label="Applied on" />
+          <button type="button" id="ap-clear" class="dash-btn">Clear</button>
+          <span class="bk-count" id="ap-count"></span>
+        </div>
         <table id="tbl-applications"></table>
       </div>
       <div class="tab-pane" id="tab-sessions">
