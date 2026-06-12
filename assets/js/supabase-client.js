@@ -143,13 +143,8 @@
         if (window.ipartmentOpenAuth) window.ipartmentOpenAuth('login');
       });
     });
-
-    // Optional: show first name on the account link when logged in
-    if (profile && profile.first_name) {
-      document.querySelectorAll('a[href="my-account.html"]').forEach(function (a) {
-        if (!a.classList.contains('nav-cta')) a.textContent = profile.first_name;
-      });
-    }
+    // The account link always reads "My Account"; it is not relabelled with the
+    // guest's name on login (the name lives inside the account page instead).
   }
 
   document.addEventListener('DOMContentLoaded', refreshNavState);
