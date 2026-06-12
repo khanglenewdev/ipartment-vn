@@ -13,7 +13,6 @@
     { "label": "Career", "url": "career.html" },
     { "label": "FAQ", "url": "faq.html" },
     { "label": "My Account", "url": "my-account.html" },
-    { "label": "Admin", "url": "admin.html" },
     { "label": "Book my stay", "url": "booking.html", "cta": true }
   ],
 

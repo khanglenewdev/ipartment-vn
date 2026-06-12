@@ -103,7 +103,24 @@
         <table id="tbl-users"></table>
       </div>
       <div class="tab-pane" id="tab-bookings">
-        <div class="panel-intro"><h3>Bookings</h3><p>One row per completed booking flow, written to the <strong>bookings</strong> table when the guest confirms the final step. Nights and total are computed live by the booking calculator (including weekly and monthly discounts and any voucher); guest contact comes from the details step. These same rows feed the public availability calendar, which is why booked dates grey out for the next visitor.</p></div>
+        <div class="panel-intro"><h3>Bookings</h3><p>One row per completed booking flow, written to the <strong>bookings</strong> table when the guest confirms the final step. Nights and total are computed live by the booking calculator (including weekly and monthly discounts and any voucher); guest contact comes from the details step. The Preference column merges what we know about how to host them: the room category and stay preference saved in their account settings, plus whatever they typed in the "make your stay perfect" box after this booking. These same rows feed the public availability calendar, which is why booked dates grey out for the next visitor.</p></div>
+        <!-- Search + filters (admin only; revealed by admin.js with the data) -->
+        <div class="bookings-toolbar" id="bookings-toolbar" style="display:none;">
+          <input type="text" id="bk-search" class="bk-input bk-grow" placeholder="Search name, email or ref..." aria-label="Search bookings" />
+          <select id="bk-room" class="bk-input" aria-label="Filter by apartment"><option value="">All apartments</option></select>
+          <select id="bk-status" class="bk-input" aria-label="Filter by status"><option value="">All statuses</option></select>
+          <div class="bk-date-group">
+            <select id="bk-date-mode" class="bk-input" aria-label="Date filter mode">
+              <option value="staying">Staying on</option>
+              <option value="checkin">Check-in</option>
+              <option value="checkout">Check-out</option>
+              <option value="created">Booked on</option>
+            </select>
+            <input type="date" id="bk-date" class="bk-input" aria-label="Date" />
+          </div>
+          <button type="button" id="bk-clear" class="dash-btn">Clear</button>
+          <span class="bk-count" id="bk-count"></span>
+        </div>
         <table id="tbl-bookings"></table>
       </div>
       <div class="tab-pane" id="tab-vouchers">

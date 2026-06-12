@@ -180,6 +180,33 @@ body.lg { background: var(--black-deep); }
   max-height: 640px; overflow: auto;
 }
 
+/* ===== BOOKINGS TOOLBAR (search + filters) ============================= */
+.bookings-toolbar {
+  display: flex; flex-wrap: wrap; align-items: center; gap: 9px;
+  margin-bottom: 16px;
+}
+.bk-input {
+  background: rgba(255,255,255,0.05); border: 1.5px solid rgba(255,255,255,0.12); border-radius: 11px;
+  color: #fff; font-family: var(--font-body); font-size: 13px; padding: 9px 12px;
+  outline: none; transition: border-color 0.2s, background 0.2s;
+}
+.bk-input::placeholder { color: rgba(255,255,255,0.35); }
+.bk-input:focus { border-color: var(--yellow); background: rgba(255,255,255,0.08); }
+select.bk-input { cursor: pointer; }
+select.bk-input option { background: #17120f; color: #fff; }
+.bk-grow { flex: 1 1 200px; min-width: 170px; }
+.bk-date-group { display: inline-flex; gap: 0; }
+.bk-date-group select { border-radius: 11px 0 0 11px; border-right: none; }
+.bk-date-group input { border-radius: 0 11px 11px 0; }
+/* the native date icon on a dark background */
+.bk-date-group input::-webkit-calendar-picker-indicator { filter: invert(1); opacity: 0.6; cursor: pointer; }
+.bk-count { font-family: var(--font-mono); font-size: 10.5px; letter-spacing: 0.08em; text-transform: uppercase; color: rgba(255,255,255,0.5); margin-left: auto; }
+@media (max-width: 760px) {
+  .bookings-toolbar { gap: 8px; }
+  .bk-grow { flex-basis: 100%; }
+  .bk-count { margin-left: 0; flex-basis: 100%; }
+}
+
 /* ===== DATA TABLES (dark glass) ======================================= */
 table { width: 100%; border-collapse: collapse; font-size: 13px; min-width: 600px; }
 thead th { position: sticky; top: 0; z-index: 2; }

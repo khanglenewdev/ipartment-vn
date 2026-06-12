@@ -30,7 +30,6 @@
       <a href="career.html">Career</a>
       <a href="faq.html">FAQ</a>
       <a href="my-account.html" class="active">My Account</a>
-      <a href="admin.html">Admin</a>
       <a href="booking.html" class="nav-cta">Book my stay</a>
     </nav>
   </div>
@@ -48,6 +47,9 @@
     <button class="tab-btn" data-tab="vouchers">My Vouchers</button>
     <button class="tab-btn" data-tab="wishlist">Wishlist</button>
     <button class="tab-btn" data-tab="settings">Settings</button>
+    <!-- Admin entrance: only revealed (by my-account.js) when the logged-in
+         profile has role admin. Replaces the old public nav link. -->
+    <button class="tab-btn" data-tab="admin" id="tab-admin" style="display:none;">Admin</button>
     <button class="tab-btn" data-tab="logout" id="tab-logout">Log Out</button>
   </div>
 
@@ -85,6 +87,11 @@
         </div>
         <div class="form-group"><label class="form-label">Email Address</label><input class="form-input" type="email" id="st-email" readonly /></div>
         <div class="form-group"><label class="form-label">Phone Number</label><input class="form-input" type="tel" id="st-phone" /></div>
+        <div class="form-group">
+          <label class="form-label">Stay preference</label>
+          <input class="form-input" type="text" id="st-stay-pref" placeholder="High floor, quiet room, baby cot, extra desk..." />
+          <p class="form-hint">Saved to your account and filled in automatically whenever you book.</p>
+        </div>
         <div class="form-group">
           <label class="form-label">Preferred Apartment Category</label>
           <select class="form-select" id="st-pref"><option>No preference</option><option>XS (25-30 m&sup2;)</option><option>S (35-40 m&sup2;)</option><option>M (45-55 m&sup2;)</option><option>L (65-75 m&sup2;)</option></select>

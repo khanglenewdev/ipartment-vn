@@ -865,7 +865,9 @@
     // guests_detail. Admins see all bookings either way.
     if (window.sb) {
       const appliedVouchers = state.vouchers.slice();
-      const getUser = window.ipartmentAuth ? window.ipartmentAuth.getUser() : Promise.resolve(null);
+      // getProfile (not getUser) so the account's saved stay preference can be
+      // stamped onto the booking row itself; profile.id is the auth user id.
+      const getUser = window.ipartmentAuth ? window.ipartmentAuth.getProfile() : Promise.resolve(null);
       Promise.resolve(getUser).then(function (u) {
         window.sb.from('bookings').insert({
           user_id: u ? u.id : null,
@@ -876,7 +878,7 @@
           checkout: dateKey(state.checkout),
           nights: state.nights,
           guests: state.guests,
-          guests_detail: { name: (first + ' ' + last).trim(), email: email, phone: phone, nationality: nat, purpose: purpose, notes: notes },
+          guests_detail: { name: (first + ' ' + last).trim(), email: email, phone: phone, nationality: nat, purpose: purpose, notes: notes, stay_preference: (u && u.stay_preference) || null },
           extras: state.extras,
           rate: state.appliedRate,
           subtotal: state.totalPrice,
@@ -932,6 +934,12 @@
     set('guest-first', profile.first_name);
     set('guest-email', profile.email);
     set('guest-phone', profile.phone);
+    // Stay preference sync, account -> booking: their saved default lands in the
+    // "make your stay perfect" box ready to send (still editable), and the
+    // "save as default" tick becomes available for the reverse direction.
+    set('pref-perfect', profile.stay_preference);
+    const defWrap = document.getElementById('pref-default-wrap');
+    if (defWrap) defWrap.style.display = '';
     const banner = document.getElementById('guest-known');
     if (banner) {
       banner.style.display = 'block';
@@ -955,6 +963,17 @@
       const bookingRef = (document.getElementById('conf-ref') || {}).textContent || '';
       if (window.ipartmentTrack) {
         window.ipartmentTrack('preferences', 'submitted', { meta: { bookingRef: bookingRef, arrival: v('pref-arrival'), drink: v('pref-drink'), perfect: v('pref-perfect'), wishlist: wishlist } });
+      }
+      // Booking -> account sync: with the box ticked, this answer becomes the
+      // saved default in Account Settings (and prefills the next booking).
+      const tick = document.getElementById('pref-default-save');
+      if (tick && tick.checked && window.ipartmentAuth && window.sb) {
+        window.ipartmentAuth.getUser().then(function (u) {
+          if (!u) return;
+          return window.sb.from('profiles').update({ stay_preference: v('pref-perfect') }).eq('id', u.id);
+        }).then(function (res) {
+          if (res && !res.error && window.ipartmentToast) window.ipartmentToast('Saved as your default stay preference.');
+        }).catch(function () {});
       }
       const msg = document.getElementById('pref-msg');
       if (msg) { msg.style.display = 'block'; msg.textContent = 'Thank you. We have noted this and your stay will be set up around it.'; }

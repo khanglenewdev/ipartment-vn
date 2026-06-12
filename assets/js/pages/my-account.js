@@ -26,6 +26,7 @@
   // ---- Tabs ----
   window.showTab = function (name) {
     if (name === 'logout') { window.ipartmentConfirmLogout(window.logout); return; }
+    if (name === 'admin') { window.location.href = 'admin.html'; return; }
     document.querySelectorAll('.pane').forEach(function (p) { p.classList.remove('active'); });
     document.querySelectorAll('.tab-btn').forEach(function (b) { b.classList.remove('active'); });
     var pane = document.getElementById('pane-' + name);
@@ -52,6 +53,11 @@
       nameEl.textContent = 'Hi, Guest';
       roleEl.textContent = 'Log in to manage your stays.';
     }
+    // The Admin tab is the private door to the dashboard: visible only when the
+    // logged-in profile carries the admin role (the dashboard itself re-checks
+    // the role server-side, so this is convenience, not the security).
+    var adminTab = document.getElementById('tab-admin');
+    if (adminTab) adminTab.style.display = (profile && profile.role === 'admin') ? '' : 'none';
   }
 
   window.logout = async function () {
@@ -66,6 +72,8 @@
     document.getElementById('st-last').value = profile.last_name || '';
     document.getElementById('st-email').value = profile.email || '';
     document.getElementById('st-phone').value = profile.phone || '';
+    var stayPref = document.getElementById('st-stay-pref');
+    if (stayPref) stayPref.value = profile.stay_preference || '';
     var pref = document.getElementById('st-pref');
     if (pref && profile.preferred_category) {
       Array.prototype.forEach.call(pref.options, function (o) {
@@ -83,6 +91,7 @@
         first_name: document.getElementById('st-first').value.trim(),
         last_name: document.getElementById('st-last').value.trim(),
         phone: document.getElementById('st-phone').value.trim(),
+        stay_preference: document.getElementById('st-stay-pref') ? document.getElementById('st-stay-pref').value.trim() : null,
         preferred_category: document.getElementById('st-pref') ? document.getElementById('st-pref').value : null
       };
       var res = await sb.from('profiles').update(update).eq('id', profile.id).select().maybeSingle();

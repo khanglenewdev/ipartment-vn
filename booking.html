@@ -214,7 +214,16 @@
           <form id="pref-form">
             <div class="fg"><label>Estimated arrival time</label><select id="pref-arrival"><option value="">No preference</option><option>Morning</option><option>Afternoon</option><option>Evening</option><option>Late night</option></select></div>
             <div class="fg"><label>Coffee or tea waiting for you?</label><select id="pref-drink"><option value="">No preference</option><option>Coffee</option><option>Tea</option><option>Both</option><option>Neither</option></select></div>
-            <div class="fg"><label>Anything that would make your stay perfect?</label><input type="text" id="pref-perfect" placeholder="High floor, quiet room, baby cot, extra desk..." /></div>
+            <div class="fg">
+              <label>Anything that would make your stay perfect?</label>
+              <input type="text" id="pref-perfect" placeholder="High floor, quiet room, baby cot, extra desk..." />
+              <!-- Account holders only (revealed by booking.js): syncs this answer
+                   back to the Stay preference field in Account Settings. -->
+              <label class="pref-default-save" id="pref-default-wrap" style="display:none;">
+                <input type="checkbox" id="pref-default-save" />
+                <span>Save as my default stay preference</span>
+              </label>
+            </div>
             <div class="fg">
               <label>Which of these would you love us to offer? (we are exploring them)</label>
               <div id="pref-wishlist">

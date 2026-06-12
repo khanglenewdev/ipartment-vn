@@ -5,6 +5,10 @@ let currentTab = 'leads';
 // Whether the current viewer is an admin. The overview KPIs are public, but the
 // detailed per-tab data is shown only when this is true.
 let _adminView = false;
+// Bookings tab search/filter state: loadAll fills these caches, then
+// renderBookingsTable() re-renders from them whenever a filter changes,
+// without refetching anything.
+let _bkCache = [], _bkProfById = {}, _bkPrefByRef = {};
 const LOCKED_NOTE = '<div class="locked-note"><span class="locked-ico">&#128274;</span><span>For security reasons, only admin accounts can view this data.</span></div>';
 
 function showDash() {
@@ -88,6 +92,111 @@ function leadTypeTag(type) {
   return `<span class="tag-pill">${type || '-'}</span>`;
 }
 
+// ===== BOOKINGS TAB: search + filters =====================================
+function bkPrefCell(b, gd) {
+  const escp = s => String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c]));
+  const prof = b.user_id ? (_bkProfById[b.user_id] || {}) : {};
+  const evMeta = _bkPrefByRef[b.booking_ref] || {};
+  const stay = (evMeta.perfect || '').trim() || ((gd.stay_preference || '') + '').trim() || (prof.stay_preference || '').trim();
+  const room = (prof.preferred_category || '').trim();
+  const bits = [];
+  if (room && !/^no preference$/i.test(room)) bits.push(`Room: ${escp(room)}`);
+  if (stay) bits.push(`Stay: ${escp(stay)}`);
+  return bits.length ? `<small>${bits.join('<br/>')}</small>` : '-';
+}
+
+// Fill the apartment + status dropdowns from the values actually present in the
+// data (so a new status never needs a code change). Keeps the current selection
+// when it still exists.
+function populateBookingFilterOptions() {
+  const fill = (id, values, labelFn) => {
+    const sel = document.getElementById(id);
+    if (!sel) return;
+    const current = sel.value;
+    const all = sel.querySelector('option').outerHTML; // keep the "All ..." option
+    sel.innerHTML = all + values.map(v => `<option value="${v}">${labelFn(v)}</option>`).join('');
+    if (values.indexOf(current) > -1) sel.value = current;
+  };
+  const uniq = arr => Array.from(new Set(arr.filter(Boolean)));
+  fill('bk-room', uniq(_bkCache.map(b => (b.room || '').toLowerCase())).sort(), v => v.toUpperCase());
+  fill('bk-status', uniq(_bkCache.map(b => (b.status || '').toLowerCase())).sort(), v => v.replace(/_/g, ' '));
+}
+
+function bookingMatchesFilters(b, f) {
+  const gd = b.guests_detail || {};
+  if (f.q) {
+    const hay = [b.booking_ref, gd.name, gd.email, gd.phone, b.room, b.room_name]
+      .map(x => (x || '') + '').join(' ').toLowerCase();
+    if (hay.indexOf(f.q) < 0) return false;
+  }
+  if (f.room && (b.room || '').toLowerCase() !== f.room) return false;
+  if (f.status && (b.status || '').toLowerCase() !== f.status) return false;
+  if (f.date) {
+    // checkin/checkout are stored as YYYY-MM-DD strings, so plain string
+    // comparison is correct date ordering.
+    const ci = b.checkin || '', co = b.checkout || '';
+    if (f.dateMode === 'checkin') { if (ci !== f.date) return false; }
+    else if (f.dateMode === 'checkout') { if (co !== f.date) return false; }
+    else if (f.dateMode === 'created') { if ((b.created_at || '').slice(0, 10) !== f.date) return false; }
+    else { if (!(ci && co && ci <= f.date && f.date < co)) return false; } // staying on (checkout day is free again)
+  }
+  return true;
+}
+
+function renderBookingsTable() {
+  const tbl = document.getElementById('tbl-bookings');
+  if (!tbl || !_adminView) return;
+  const val = id => { const el = document.getElementById(id); return el ? el.value : ''; };
+  const f = {
+    q: val('bk-search').trim().toLowerCase(),
+    room: val('bk-room'),
+    status: val('bk-status'),
+    date: val('bk-date'),
+    dateMode: val('bk-date-mode') || 'staying'
+  };
+  const rows = _bkCache.filter(b => bookingMatchesFilters(b, f));
+  const countEl = document.getElementById('bk-count');
+  if (countEl) countEl.textContent = (rows.length === _bkCache.length)
+    ? `${_bkCache.length} booking${_bkCache.length === 1 ? '' : 's'}`
+    : `${rows.length} of ${_bkCache.length} bookings`;
+  const anyFilter = f.q || f.room || f.status || f.date;
+  tbl.innerHTML = buildTable(
+    ['Ref', 'Guest', 'Apartment', 'Dates', 'Nights', 'Total', 'Preference', 'Status', 'Created'],
+    rows.map(b => {
+      const gd = b.guests_detail || {};
+      const who = b.user_id ? 'account' : (gd.email || 'guest');
+      return [
+        b.booking_ref || (b.id || '').slice(0, 8),
+        `${gd.name || '-'}<br/><small style="color:#999;">${who}</small>`,
+        `${b.room || ''}, ${b.room_name || ''}`,
+        `${b.checkin || '-'} to ${b.checkout || '-'}`,
+        b.nights || '-',
+        `${(b.total || 0).toLocaleString('vi-VN')} VND`,
+        bkPrefCell(b, gd),
+        b.status || '-',
+        fmtDate(b.created_at)
+      ];
+    }),
+    anyFilter ? 'No bookings match these filters. Try clearing them.' : 'Bookings appear here when a guest completes the booking flow.'
+  );
+}
+
+function initBookingFilters() {
+  const ids = ['bk-search', 'bk-room', 'bk-status', 'bk-date', 'bk-date-mode'];
+  ids.forEach(id => {
+    const el = document.getElementById(id);
+    if (!el) return;
+    el.addEventListener('input', renderBookingsTable);
+    el.addEventListener('change', renderBookingsTable);
+  });
+  const clear = document.getElementById('bk-clear');
+  if (clear) clear.addEventListener('click', () => {
+    ids.forEach(id => { const el = document.getElementById(id); if (el) el.value = (id === 'bk-date-mode') ? 'staying' : ''; });
+    renderBookingsTable();
+  });
+}
+initBookingFilters();
+
 // Overview KPIs come from a public aggregate-counts RPC (totals only, no PII),
 // so the headline shows real numbers to everyone, even logged out. The detailed
 // rows below stay protected by row-level security (admin accounts only).
@@ -113,6 +222,8 @@ async function loadPublicKPIs() {
 // re-renders cleanly.
 function renderLockedTabs() {
   const note = LOCKED_NOTE;
+  const bkToolbar = document.getElementById('bookings-toolbar');
+  if (bkToolbar) bkToolbar.style.display = 'none';
   const tableNote = '<tbody><tr><td>' + note + '</td></tr></tbody>';
   ['tbl-leads','tbl-users','tbl-bookings','tbl-vouchers','tbl-applications','tbl-sessions','tbl-quiz','tbl-feedback','tbl-chatbot-miss','tbl-chatbot-leads'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = tableNote; });
   ['sessions-summary','chatbot-summary','finder-summary','funnel-view','mag-list'].forEach(function(id){ const el = document.getElementById(id); if (el) el.innerHTML = note; });
@@ -128,9 +239,9 @@ async function loadAll() {
   if (!isAdminUser) { renderLockedTabs(); return; }
 
   // Everything below is read from Supabase, the single source of truth.
-  let profiles = [], bookings = [], vouchers = [], leads = [], apps = [], pageviews = [], quiz = [], chatEvents = [], finderEvents = [], totalViewsExact = null;
+  let profiles = [], bookings = [], vouchers = [], leads = [], apps = [], pageviews = [], quiz = [], chatEvents = [], finderEvents = [], prefEvents = [], totalViewsExact = null;
   try {
-    const [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe] = await Promise.all([
+    const [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe, pe] = await Promise.all([
       sb.from('profiles').select('*').order('created_at', { ascending: false }),
       sb.from('bookings').select('*').order('created_at', { ascending: false }),
       sb.from('vouchers').select('*').order('created_at', { ascending: false }),
@@ -141,13 +252,15 @@ async function loadAll() {
       sb.from('password_quiz').select('*').order('created_at', { ascending: false }),
       sb.from('site_feedback').select('*').order('created_at', { ascending: false }),
       sb.from('events').select('name,meta,created_at').eq('type', 'chatbot').order('created_at', { ascending: false }).limit(3000),
-      sb.from('events').select('name,meta,created_at').eq('type', 'finder').order('created_at', { ascending: false }).limit(3000)
+      sb.from('events').select('name,meta,created_at').eq('type', 'finder').order('created_at', { ascending: false }).limit(3000),
+      sb.from('events').select('meta,created_at').eq('type', 'preferences').order('created_at', { ascending: false }).limit(2000)
     ]);
     profiles = pr.data || []; bookings = br.data || []; vouchers = vr.data || [];
     leads = lr.data || []; apps = ar.data || []; pageviews = sv.data || [];
     quiz = qz.data || []; chatEvents = ce.data || []; finderEvents = fe.data || [];
+    prefEvents = pe.data || [];
     totalViewsExact = (cv && typeof cv.count === 'number') ? cv.count : null;
-    [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe].forEach(r => { if (r.error) console.warn('[admin] load:', r.error.message); });
+    [pr, br, vr, lr, ar, sv, cv, qz, fb, ce, fe, pe].forEach(r => { if (r.error) console.warn('[admin] load:', r.error.message); });
     window.__feedback = fb.data || [];
   } catch (e) { console.warn('[admin] supabase load failed', e); }
 
@@ -203,25 +316,24 @@ async function loadAll() {
     'Registered accounts appear here when visitors sign up on the main site.'
   );
 
-  // Bookings (Supabase) - guest contact comes from guests_detail
-  document.getElementById('tbl-bookings').innerHTML = buildTable(
-    ['Ref', 'Guest', 'Apartment', 'Dates', 'Nights', 'Total', 'Status', 'Created'],
-    bookings.map(b => {
-      const gd = b.guests_detail || {};
-      const who = b.user_id ? 'account' : (gd.email || 'guest');
-      return [
-        b.booking_ref || (b.id || '').slice(0, 8),
-        `${gd.name || '-'}<br/><small style="color:#999;">${who}</small>`,
-        `${b.room || ''}, ${b.room_name || ''}`,
-        `${b.checkin || '-'} to ${b.checkout || '-'}`,
-        b.nights || '-',
-        `${(b.total || 0).toLocaleString('vi-VN')} VND`,
-        b.status || '-',
-        fmtDate(b.created_at)
-      ];
-    }),
-    'Bookings appear here when a guest completes the booking flow.'
-  );
+  // Bookings (Supabase) - guest contact comes from guests_detail.
+  // The Preference column merges three sources, most specific first:
+  //  - the "make your stay perfect" answer submitted for THIS booking
+  //    (events table, type preferences, matched by booking ref),
+  //  - the stay preference stamped into guests_detail at booking time,
+  //  - the account's saved defaults (profiles.stay_preference + preferred_category).
+  _bkProfById = {};
+  profiles.forEach(p => { _bkProfById[p.id] = p; });
+  _bkPrefByRef = {};
+  prefEvents.forEach(ev => {
+    const m = ev.meta || {};
+    if (m.bookingRef && !_bkPrefByRef[m.bookingRef]) _bkPrefByRef[m.bookingRef] = m; // newest first
+  });
+  _bkCache = bookings;
+  populateBookingFilterOptions();
+  const bkToolbar = document.getElementById('bookings-toolbar');
+  if (bkToolbar) bkToolbar.style.display = '';
+  renderBookingsTable();
 
   // Vouchers (Supabase)
   document.getElementById('tbl-vouchers').innerHTML = buildTable(
