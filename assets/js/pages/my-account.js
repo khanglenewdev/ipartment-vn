@@ -34,6 +34,7 @@
     var btn = document.querySelector('.tab-btn[data-tab="' + name + '"]');
     if (btn) btn.classList.add('active');
     if (name === 'bookings') renderBookings();
+    if (name === 'assistant') renderAssistant();
     if (name === 'vouchers') renderVouchers();
     if (name === 'settings') fillSettings();
   };
@@ -131,7 +132,7 @@
               (b.guests || 1) + ' guest' + ((b.guests || 1) > 1 ? 's' : '') +
               (extras.length ? '<br/>Add-ons: ' + esc(extras.join(', ')) : '') +
             '</div>' +
-            '<span class="status ' + statusClass(b.status) + '">' + esc(statusLabel(b.status)) + '</span>' +
+            (function () { var st = liveStatus(b); return '<span class="status ' + st[1] + '">' + esc(st[0]) + '</span>'; })() +
           '</div>' +
           '<div class="booking-total-col">' +
             '<div class="total">' + fmtVND(b.total) + '</div>' +
@@ -140,16 +141,161 @@
     }).join('');
   }
 
-  function statusLabel(s) {
-    if (s === 'confirmed') return 'Confirmed';
-    if (s === 'cancelled') return 'Cancelled';
-    return 'Pending Confirmation';
+  // The tag follows the LIFE of the booking, not just the stored field:
+  // cancelled stays cancelled; once checkout has passed it is Checked out;
+  // between checkin and checkout it is Staying; otherwise the stored status
+  // decides between Confirmed and Pending Confirmation. checkin/checkout are
+  // YYYY-MM-DD strings, so string comparison is correct date ordering.
+  function todayKey() {
+    var d = new Date(), p = function (n) { return (n < 10 ? '0' : '') + n; };
+    return d.getFullYear() + '-' + p(d.getMonth() + 1) + '-' + p(d.getDate());
+  }
+  function liveStatus(b) {
+    if (b.status === 'cancelled') return ['Cancelled', 'status-cancelled'];
+    var t = todayKey();
+    if (b.checkout && b.checkout <= t) return ['Checked out', 'status-done'];
+    if (b.checkin && b.checkin <= t && (!b.checkout || t < b.checkout)) return ['Staying', 'status-staying'];
+    if (b.status === 'confirmed') return ['Confirmed', 'status-confirmed'];
+    return ['Pending Confirmation', 'status-pending'];
   }
 
-  function statusClass(s) {
-    if (s === 'confirmed') return 'status-confirmed';
-    if (s === 'cancelled') return 'status-cancelled';
-    return 'status-pending';
+  // ---- Stay Assistant ----
+  // One place for everything a guest needs DURING a stay: see the stay at a
+  // glance, request help in two taps, and reach a human instantly. Requests
+  // write to the leads table (type stay_request) so they land in the same
+  // admin inbox as every other contact, plus an analytics event.
+  var ASSIST_REQUESTS = [
+    { id: 'cleaning', ico: '\u{1F9F9}', label: 'Room cleaning' },
+    { id: 'towels', ico: '\u{1F9FA}', label: 'Fresh towels and linens' },
+    { id: 'toiletries', ico: '\u{1F9F4}', label: 'Toiletries refill' },
+    { id: 'maintenance', ico: '\u{1F527}', label: 'Something needs fixing' },
+    { id: 'late-checkout', ico: '\u{1F552}', label: 'Late check-out' },
+    { id: 'bedding', ico: '\u{1F6CF}️', label: 'Extra bedding or pillows' }
+  ];
+  function reqHistory() {
+    try { return JSON.parse(localStorage.getItem('ipartment_stay_requests') || '[]'); } catch (e) { return []; }
+  }
+  function pushReqHistory(entry) {
+    var h = reqHistory(); h.unshift(entry);
+    try { localStorage.setItem('ipartment_stay_requests', JSON.stringify(h.slice(0, 10))); } catch (e) {}
+  }
+
+  async function renderAssistant() {
+    var body = document.getElementById('assistant-body');
+    if (!body) return;
+    if (!profile) {
+      body.innerHTML = emptyCard('Log in to use the Stay Assistant.', 'Book a Stay', 'booking.html');
+      return;
+    }
+    body.innerHTML = '<p class="list-loading">Checking your stay...</p>';
+    var res = await sb.from('bookings').select('*').order('checkin', { ascending: true });
+    if (res.error) { body.innerHTML = '<p class="list-error">Could not load your stay: ' + esc(res.error.message) + '</p>'; return; }
+    var t = todayKey();
+    var rows = (res.data || []).filter(function (b) { return b.status !== 'cancelled'; });
+    // the stay that matters NOW: one you are inside of, else the next upcoming
+    var stay = rows.find(function (b) { return b.checkin && b.checkin <= t && b.checkout && t < b.checkout; })
+            || rows.find(function (b) { return b.checkin && b.checkin > t; })
+            || null;
+    if (!stay) {
+      body.innerHTML = emptyCard('No current or upcoming stay on this account. The assistant wakes up when you have one.', 'Book a Stay', 'booking.html');
+      return;
+    }
+    var st = liveStatus(stay);
+    var staying = st[0] === 'Staying';
+    var total = stay.nights || Math.max(1, Math.round((new Date(stay.checkout) - new Date(stay.checkin)) / 86400000));
+    var night = staying ? Math.min(total, Math.max(1, Math.round((new Date(t) - new Date(stay.checkin)) / 86400000) + 1)) : 0;
+    var daysUntil = staying ? 0 : Math.max(0, Math.round((new Date(stay.checkin) - new Date(t)) / 86400000));
+    var pct = staying ? Math.round(((night - 1) / Math.max(1, total)) * 100) : 0;
+
+    var chips = ASSIST_REQUESTS.map(function (r) {
+      return '<button type="button" class="as-chip" data-id="' + r.id + '" data-label="' + esc(r.label) + '">' +
+        '<span class="as-chip-ico">' + r.ico + '</span><span>' + esc(r.label) + '</span><span class="as-chip-tick">&#10003;</span></button>';
+    }).join('');
+
+    var hist = reqHistory().filter(function (h) { return h.ref === stay.booking_ref; });
+    var histHtml = hist.length
+      ? '<div class="as-history"><div class="as-history-title">Recent requests (this device)</div>' +
+        hist.slice(0, 4).map(function (h) {
+          return '<div class="as-history-row"><span>' + esc(h.items.join(', ') + (h.note ? (h.items.length ? ' + ' : '') + 'note' : '')) + '</span><span class="as-history-time">' + esc(h.time) + '</span></div>';
+        }).join('') + '</div>'
+      : '';
+
+    body.innerHTML =
+      '<div class="as-card as-stay">' +
+        '<div class="as-stay-head">' +
+          '<div>' +
+            '<div class="as-ref">' + esc(stay.booking_ref || '') + '</div>' +
+            '<div class="as-room">Category ' + esc(stay.room || '') + ', ' + esc(stay.room_name || '') + '</div>' +
+            '<div class="as-dates">' + fmtDate(stay.checkin) + ' to ' + fmtDate(stay.checkout) + ' &middot; ' + total + ' night' + (total > 1 ? 's' : '') + '</div>' +
+          '</div>' +
+          '<span class="status ' + st[1] + '">' + esc(st[0]) + '</span>' +
+        '</div>' +
+        '<div class="as-progress"><div class="as-progress-fill" style="width:' + pct + '%"></div></div>' +
+        '<div class="as-progress-lbl">' + (staying
+          ? 'Night ' + night + ' of ' + total + '. Enjoying Thao Dien?'
+          : (daysUntil === 0 ? 'Check-in is today. See you soon!' : 'Starts in ' + daysUntil + ' day' + (daysUntil > 1 ? 's' : '') + '. We are getting your place ready.')) + '</div>' +
+      '</div>' +
+
+      '<div class="as-card">' +
+        '<h3 class="as-h">Need a hand? <em>Tap what you need.</em></h3>' +
+        '<div class="as-grid">' + chips + '</div>' +
+        '<textarea id="as-note" class="as-note" rows="2" placeholder="Anything else? Tell us in a sentence (optional)..."></textarea>' +
+        '<button type="button" class="as-send" id="as-send">Send request</button>' +
+        '<p class="as-promise">Goes straight to the team. During the day we usually respond within 30 minutes.</p>' +
+        histHtml +
+      '</div>' +
+
+      '<div class="as-card">' +
+        '<h3 class="as-h">Stay <em>essentials.</em></h3>' +
+        '<div class="as-ess"><span class="as-ess-k">Wi-Fi</span><span class="as-ess-v">ipartment-home &middot; password <b>thaodien2026</b></span></div>' +
+        '<div class="as-ess"><span class="as-ess-k">Check-in</span><span class="as-ess-v">From 14:00, self check-in 24/7 (code in your confirmation email)</span></div>' +
+        '<div class="as-ess"><span class="as-ess-k">Check-out</span><span class="as-ess-v">By 11:00, just close the door behind you</span></div>' +
+        '<div class="as-ess"><span class="as-ess-k">Address</span><span class="as-ess-v">Xuan Thuy St, Thao Dien, Ho Chi Minh City</span></div>' +
+      '</div>' +
+
+      '<div class="as-card">' +
+        '<h3 class="as-h">Prefer a <em>human?</em></h3>' +
+        '<div class="as-human">' +
+          '<a class="as-human-btn" href="tel:+84779488070"><span>&#128222;</span> Call us</a>' +
+          '<button type="button" class="as-human-btn" id="as-chat"><span>&#128172;</span> Chat now</button>' +
+          '<a class="as-human-btn" href="mailto:khangle.forwork@gmail.com"><span>&#9993;</span> Email</a>' +
+        '</div>' +
+      '</div>';
+
+    // chip toggling + send
+    body.querySelectorAll('.as-chip').forEach(function (c) {
+      c.addEventListener('click', function () { c.classList.toggle('selected'); });
+    });
+    var chatBtn = document.getElementById('as-chat');
+    if (chatBtn) chatBtn.addEventListener('click', function () {
+      var l = document.querySelector('.ipc-launcher');
+      if (l) l.click(); else window.location.href = 'faq.html';
+    });
+    var sendBtn = document.getElementById('as-send');
+    if (sendBtn) sendBtn.addEventListener('click', async function () {
+      var items = Array.prototype.map.call(body.querySelectorAll('.as-chip.selected'), function (c) { return c.dataset.label; });
+      var note = (document.getElementById('as-note').value || '').trim();
+      if (!items.length && !note) { window.ipartmentToast('Tap at least one request, or write us a note.'); return; }
+      sendBtn.disabled = true; sendBtn.textContent = 'Sending...';
+      var payload = {
+        type: 'stay_request',
+        name: ((profile.first_name || '') + ' ' + (profile.last_name || '')).trim() || null,
+        email: profile.email || null,
+        phone: profile.phone || null,
+        booking_ref: stay.booking_ref || null,
+        source_page: 'my-account',
+        meta: { requests: items, note: note || null }
+      };
+      var ins = await sb.from('leads').insert(payload);
+      if (window.ipartmentTrack) window.ipartmentTrack('stay_request', 'submitted', { meta: { ref: stay.booking_ref, requests: items, hasNote: !!note } });
+      sendBtn.disabled = false; sendBtn.textContent = 'Send request';
+      if (ins.error) { window.ipartmentToast('Could not send right now: ' + ins.error.message); return; }
+      pushReqHistory({ ref: stay.booking_ref, items: items, note: note, time: new Date().toLocaleString('en-GB', { day: '2-digit', month: 'short', hour: '2-digit', minute: '2-digit' }) });
+      body.querySelectorAll('.as-chip.selected').forEach(function (c) { c.classList.remove('selected'); });
+      document.getElementById('as-note').value = '';
+      window.ipartmentToast('Request sent. We are on it!');
+      renderAssistant();   // refresh the history list
+    });
   }
 
   // ---- Vouchers ----

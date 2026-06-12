@@ -246,6 +246,10 @@ body.lg { background: var(--black-deep); }
 .adm-dp-clear { background: none; border: none; color: rgba(255,255,255,0.55); font-size: 11px; cursor: pointer; text-decoration: underline; }
 .adm-dp-clear:hover { color: #fff; }
 
+/* guest email under the name in the Bookings table: small, grey, and allowed
+   to wrap anywhere so long addresses never blow the column out */
+.bk-email { color: #999; overflow-wrap: anywhere; word-break: break-all; }
+
 /* ===== PREFERENCE CELL + FULL-DETAIL MODAL ============================= */
 .pref-more {
   background: none; border: none; padding: 0; text-align: left; cursor: pointer;

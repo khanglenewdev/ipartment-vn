@@ -354,12 +354,14 @@
     cur = n;
     document.querySelectorAll('.scene').forEach(function (s) { s.classList.toggle('active', +s.dataset.scene === n); });
     updateControls();
-    if (window.matchMedia && window.matchMedia('(max-width: 1000px)').matches) {
-      var sc = document.querySelector('.scene[data-scene="' + n + '"]');
-      if (sc && sc.scrollIntoView) sc.scrollIntoView({ behavior: 'smooth', block: 'start' });
-    } else {
-      window.scrollTo({ top: 0, behavior: 'smooth' });
-    }
+    // Every chapter starts at its top: reset the scene's own scroll (scenes
+    // scroll internally on desktop) and the page scroll (mobile).
+    var sc = document.querySelector('.scene[data-scene="' + n + '"]');
+    if (sc) sc.scrollTop = 0;
+    window.scrollTo({ top: 0, behavior: 'smooth' });
+    // Tuck the mobile receipt sheet away between chapters.
+    var rec = document.getElementById('receipt');
+    if (rec) rec.classList.remove('sheet-open');
     if (window.ipartmentTrack) window.ipartmentTrack('funnel', 'step_' + n, { meta: { room: state.room, nights: state.nights } });
   };
 
@@ -799,14 +801,22 @@
       el.style.color = ok ? '#166534' : '#c0392b';
     };
 
+    // A failed check must be SEEN: scroll the offending field into the middle
+    // of the screen and toast it. (Before this, the shake + message could
+    // happen entirely off-screen, so tapping Confirm looked like it did
+    // nothing, especially on phones.)
+    const reveal = (el, msg) => {
+      try { if (el) el.scrollIntoView({ behavior: 'smooth', block: 'center' }); } catch (e) {}
+      if (msg && window.ipartmentToast) window.ipartmentToast(msg);
+    };
     if (!state.checkin || !state.checkout) {
       if (window.ipartmentToast) window.ipartmentToast('Please choose your dates first.');
       window.goToStep(2);
       return;
     }
-    if (!first) { showMsg('Please enter your first name.', false); shakeField(document.getElementById('guest-first'), true); return; }
-    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMsg('Please enter a valid email so we can send your confirmation.', false); shakeField(document.getElementById('guest-email'), true); return; }
-    if (!terms) { showMsg('Please agree to the Terms and Conditions to proceed.', false); shakeField(document.querySelector('.terms'), false); return; }
+    if (!first) { showMsg('Please enter your first name.', false); shakeField(document.getElementById('guest-first'), true); reveal(document.getElementById('guest-first'), 'Please enter your first name.'); return; }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) { showMsg('Please enter a valid email so we can send your confirmation.', false); shakeField(document.getElementById('guest-email'), true); reveal(document.getElementById('guest-email'), 'Please enter a valid email.'); return; }
+    if (!terms) { showMsg('Please agree to the Terms and Conditions to proceed.', false); shakeField(document.querySelector('.terms'), false); reveal(document.querySelector('.terms'), 'Please tick the agreement box to confirm.'); return; }
     showMsg('');
 
     // Optional: create a free account during booking (inline, no popup).
@@ -981,8 +991,73 @@
     });
   }
 
+  // On narrow screens the live receipt docks as a slim total bar above the
+  // controls; tapping it expands the full breakdown as a bottom sheet.
+  function initReceiptSheet() {
+    const rec = document.getElementById('receipt');
+    if (!rec) return;
+    rec.addEventListener('click', function (e) {
+      if (window.innerWidth > 1000) return;        // desktop: receipt floats, no sheet
+      if (e.target.closest('a, button, input')) return;
+      rec.classList.toggle('sheet-open');
+    });
+  }
+
+  // Replace the two native selects on the confirmation form with glass
+  // dropdowns (the native popup menu is unstylable browser chrome). The
+  // hidden <select> stays as the value store so the submit code is untouched.
+  function glassifySelect(sel) {
+    if (!sel || sel._glass) return;
+    sel._glass = true;
+    const wrap = document.createElement('div');
+    wrap.className = 'gsel';
+    sel.parentNode.insertBefore(wrap, sel);
+    wrap.appendChild(sel);
+    const btn = document.createElement('button');
+    btn.type = 'button'; btn.className = 'gsel-btn';
+    btn.innerHTML = '<span class="gsel-label"></span><span class="gsel-chev">&#9662;</span>';
+    wrap.appendChild(btn);
+    const menu = document.createElement('div');
+    menu.className = 'gsel-menu';
+    wrap.appendChild(menu);
+    const label = () => {
+      const o = sel.options[sel.selectedIndex];
+      btn.querySelector('.gsel-label').textContent = o ? o.text : '';
+    };
+    const rebuild = () => {
+      menu.innerHTML = '';
+      Array.prototype.forEach.call(sel.options, o => {
+        const it = document.createElement('button');
+        it.type = 'button';
+        it.className = 'gsel-opt' + (o.value === sel.value ? ' active' : '');
+        it.textContent = o.text;
+        it.addEventListener('click', e => {
+          e.stopPropagation();
+          sel.value = o.value;
+          sel.dispatchEvent(new Event('change', { bubbles: true }));
+          label(); wrap.classList.remove('open');
+        });
+        menu.appendChild(it);
+      });
+    };
+    btn.addEventListener('click', e => {
+      e.stopPropagation();
+      if (wrap.classList.contains('open')) { wrap.classList.remove('open'); return; }
+      document.querySelectorAll('.gsel.open').forEach(g => g.classList.remove('open'));
+      rebuild(); wrap.classList.add('open');
+    });
+    document.addEventListener('click', () => wrap.classList.remove('open'));
+    // form.elements disabling (after the pref form submits) should grey the
+    // visible button too
+    new MutationObserver(() => { btn.disabled = sel.disabled; }).observe(sel, { attributes: true, attributeFilter: ['disabled'] });
+    label();
+  }
+
   // INIT
   document.addEventListener('DOMContentLoaded', () => {
+    initReceiptSheet();
+    glassifySelect(document.getElementById('pref-arrival'));
+    glassifySelect(document.getElementById('pref-drink'));
     document.querySelectorAll('.room-btn').forEach(b => b.classList.toggle('selected', b.dataset.room === state.room));
     if (state.checkin && state.checkout && state.checkout > state.checkin) {
       const n = Math.round((state.checkout - state.checkin) / 86400000);

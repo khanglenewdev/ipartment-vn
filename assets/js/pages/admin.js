@@ -82,12 +82,25 @@ function leadTypeTag(type) {
   if (type === 'newsletter_signup') return '<span class="tag-pill newsletter">Newsletter</span>';
   if (type === 'booking_request') return '<span class="tag-pill booking">Booking</span>';
   if (type === 'career_application') return '<span class="tag-pill career">Career</span>';
+  if (type === 'stay_request') return '<span class="tag-pill booking">Stay request</span>';
   return `<span class="tag-pill">${type || '-'}</span>`;
 }
 
 // ===== BOOKINGS TAB: search + filters =====================================
 function escp(s) { return String(s).replace(/[&<>"]/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;' }[c])); }
 function truncate(s, n) { s = String(s); return s.length > n ? s.slice(0, n - 1).trimEnd() + '…' : s; }
+
+// Same lifecycle derivation the My Account page shows the guest, so both
+// sides of the system tell one story: cancelled, checked out (dates passed),
+// staying (today inside the stay), confirmed, or pending confirmation.
+function bkLiveStatus(b) {
+  if (b.status === 'cancelled') return 'cancelled';
+  const d = new Date(), p = n => (n < 10 ? '0' : '') + n;
+  const t = `${d.getFullYear()}-${p(d.getMonth() + 1)}-${p(d.getDate())}`;
+  if (b.checkout && b.checkout <= t) return 'checked out';
+  if (b.checkin && b.checkin <= t && (!b.checkout || t < b.checkout)) return 'staying';
+  return b.status === 'confirmed' ? 'confirmed' : 'pending confirmation';
+}
 
 // Collect everything we know about how to host this booking's guest, merged
 // most-specific-first (this booking's answers, then the snapshot stamped on the
@@ -158,7 +171,8 @@ function openPrefModal(ref) {
 function populateBookingFilterOptions() {
   const uniq = arr => Array.from(new Set(arr.filter(Boolean)));
   fillSelectOptions('bk-room', uniq(_bkCache.map(b => (b.room || '').toLowerCase())).sort(), v => v.toUpperCase());
-  fillSelectOptions('bk-status', uniq(_bkCache.map(b => (b.status || '').toLowerCase())).sort(), v => v.replace(/_/g, ' '));
+  // filter on the LIVE status (what the column actually shows), not the raw field
+  fillSelectOptions('bk-status', uniq(_bkCache.map(b => bkLiveStatus(b))).sort(), v => v);
 }
 
 function bookingMatchesFilters(b, f) {
@@ -169,7 +183,7 @@ function bookingMatchesFilters(b, f) {
     if (hay.indexOf(f.q) < 0) return false;
   }
   if (f.room && (b.room || '').toLowerCase() !== f.room) return false;
-  if (f.status && (b.status || '').toLowerCase() !== f.status) return false;
+  if (f.status && bkLiveStatus(b) !== f.status) return false;
   if (f.date) {
     // checkin/checkout are stored as YYYY-MM-DD strings, so plain string
     // comparison is correct date ordering.
@@ -203,16 +217,20 @@ function renderBookingsTable() {
     ['Ref', 'Guest', 'Apartment', 'Dates', 'Nights', 'Total', 'Preference', 'Status', 'Created'],
     rows.map(b => {
       const gd = b.guests_detail || {};
-      const who = b.user_id ? 'account' : (gd.email || 'guest');
+      // always show the actual email (from the booking itself, falling back to
+      // the linked account's profile); a small pill marks account holders
+      const prof = b.user_id ? (_bkProfById[b.user_id] || {}) : {};
+      const email = gd.email || prof.email || '-';
+      const acctPill = b.user_id ? ' <span class="tag-pill booking">account</span>' : '';
       return [
         b.booking_ref || (b.id || '').slice(0, 8),
-        `${gd.name || '-'}<br/><small style="color:#999;">${who}</small>`,
+        `${escp(gd.name || '-')}${acctPill}<br/><small class="bk-email">${escp(email)}</small>`,
         `${b.room || ''}, ${b.room_name || ''}`,
         `${b.checkin || '-'} to ${b.checkout || '-'}`,
         b.nights || '-',
         `${(b.total || 0).toLocaleString('vi-VN')} VND`,
         bkPrefCell(b),
-        b.status || '-',
+        bkLiveStatus(b),
         fmtDate(b.created_at)
       ];
     }),
@@ -253,7 +271,10 @@ function renderLeadsTable() {
       leadTypeTag(l.type),
       `${l.name || ''}<br/><small style="color:#999;">${l.email || ''}</small>`,
       l.phone || '-',
-      l.booking_ref ? `Ref: ${l.booking_ref}` : l.applied_role ? `Role: ${l.applied_role}` : l.voucher_code || l.source_page || '-'
+      // stay requests show WHAT was asked for; other leads keep their context
+      (l.type === 'stay_request' && l.meta)
+        ? `${escp(((l.meta.requests || []).join(', ') || 'Request') + (l.meta.note ? ' - "' + l.meta.note + '"' : ''))}<br/><small style="color:#999;">Ref: ${escp(l.booking_ref || '-')}</small>`
+        : (l.booking_ref ? `Ref: ${l.booking_ref}` : l.applied_role ? `Role: ${l.applied_role}` : l.voucher_code || l.source_page || '-')
     ]),
     (f.q || f.type || f.date) ? 'No leads match these filters. Try clearing them.' : 'Leads appear here when visitors fill the welcome popup, newsletter, or any contact form.'
   );
