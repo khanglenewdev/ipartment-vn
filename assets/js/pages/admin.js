@@ -616,7 +616,8 @@ async function loadAll() {
   if (apToolbar) apToolbar.style.display = '';
   renderApplicationsTable();
 
-  // Page views (Supabase events)
+  // Page views (Supabase events) - charts first, then the raw log
+  renderSessionCharts(pageviews);
   document.getElementById('tbl-sessions').innerHTML = buildTable(
     ['Time', 'Page', 'Referrer'],
     pageviews.slice(0, 100).map(s => [fmtDate(s.created_at), (s.meta && s.meta.path) || s.page || '-', (s.meta && s.meta.ref) || '-']),
@@ -917,6 +918,82 @@ function renderDashboard() {
     c.addEventListener('click', e => { if (e.target.closest('.dc-go')) return; gotoTab(c.dataset.gotab); });
     c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); gotoTab(c.dataset.gotab); } });
   });
+}
+
+// ── PAGE VIEWS charts (referrer + top pages) ──
+// A long list of referrers tells the owner nothing at a glance. These two glass
+// cards turn the same rows into bars: where visitors come from, and which pages
+// pull the most traffic. Built from the most-recent pageviews already loaded.
+function renderSessionCharts(pageviews) {
+  const wrap = document.getElementById('sessions-charts');
+  if (!wrap) return;
+  if (!pageviews || !pageviews.length) { wrap.innerHTML = ''; return; }
+
+  const esc = s => String(s == null ? '' : s).replace(/[&<>"']/g, c => ({ '&': '&amp;', '<': '&lt;', '>': '&gt;', '"': '&quot;', "'": '&#39;' }[c]));
+  // the site's own hosts count as "within the site", not an outside source
+  const SITE_HOSTS = ['ipartment-vn.vercel.app', 'ipartment.vn', 'localhost', '127.0.0.1', '0.0.0.0'];
+
+  // turn a raw referrer string into a clean, friendly source label
+  function source(ref) {
+    if (!ref || ref === '-') return 'Direct / typed in';
+    let host = '';
+    try { host = new URL(ref).hostname; } catch (e) { host = String(ref); }
+    host = host.replace(/^www\./, '').toLowerCase();
+    if (SITE_HOSTS.some(h => host === h || host.endsWith('.' + h))) return 'Within the site';
+    if (host.indexOf('google') > -1) return 'Google';
+    if (host.indexOf('facebook') > -1 || host === 'fb.com' || host.indexOf('fb.me') > -1 || host.indexOf('l.facebook') > -1) return 'Facebook';
+    if (host.indexOf('instagram') > -1) return 'Instagram';
+    if (host === 't.co' || host.indexOf('twitter') > -1 || host === 'x.com') return 'X / Twitter';
+    if (host.indexOf('tiktok') > -1) return 'TikTok';
+    if (host.indexOf('bing') > -1) return 'Bing';
+    if (host.indexOf('reddit') > -1) return 'Reddit';
+    if (host.indexOf('vercel') > -1) return 'Vercel';
+    return host || 'Other';
+  }
+
+  const total = pageviews.length;
+
+  // count by referrer source, fold the long tail into "Other sites"
+  const refCount = {};
+  pageviews.forEach(p => { const k = source((p.meta && p.meta.ref) || '-'); refCount[k] = (refCount[k] || 0) + 1; });
+  let refs = Object.entries(refCount).sort((a, b) => b[1] - a[1]);
+  if (refs.length > 8) {
+    const tail = refs.slice(7).reduce((s, r) => s + r[1], 0);
+    refs = refs.slice(0, 7).concat([['Other sites', tail]]);
+  }
+  const maxRef = Math.max(1, ...refs.map(r => r[1]));
+
+  // count by page path, top 8
+  const pageCount = {};
+  pageviews.forEach(p => {
+    let path = (p.meta && p.meta.path) || p.page || '-';
+    path = String(path).split('?')[0].split('#')[0];
+    if (path === '') path = '/';
+    pageCount[path] = (pageCount[path] || 0) + 1;
+  });
+  const pages = Object.entries(pageCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
+  const maxPage = Math.max(1, ...pages.map(p => p[1]));
+
+  // one horizontal bar: label, proportional fill, count + faded share
+  const bar = (label, val, max) => {
+    const w = Math.round(val / max * 100);
+    const pct = total ? Math.round(val / total * 100) : 0;
+    return '<div class="dcs-row"><span class="dcs-lbl" title="' + esc(label) + '">' + esc(label) + '</span>'
+      + '<div class="dcs-track"><div class="dcs-fill" style="width:' + w + '%"></div></div>'
+      + '<span class="dcs-n">' + val + '<i class="dcs-pct">' + pct + '%</i></span></div>';
+  };
+
+  wrap.innerHTML =
+    '<div class="sv-charts">' +
+      '<div class="sv-card"><div class="sv-card-h">Where visitors come from</div>' +
+        '<p class="sv-card-sub">Page views grouped by referrer. "Within the site" is people clicking between your own pages; everything else is how visitors find you from outside.</p>' +
+        refs.map(r => bar(r[0], r[1], maxRef)).join('') +
+      '</div>' +
+      '<div class="sv-card"><div class="sv-card-h">Most viewed pages</div>' +
+        '<p class="sv-card-sub">Which pages pull the most traffic, across the most recent ' + total.toLocaleString('en-US') + ' views.</p>' +
+        pages.map(p => bar(p[0], p[1], maxPage)).join('') +
+      '</div>' +
+    '</div>';
 }
 
 // ── BOOKING FUNNEL (Supabase events) ──
