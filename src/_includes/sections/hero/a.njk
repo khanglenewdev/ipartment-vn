@@ -15,6 +15,8 @@
       <div class="hero-pill-row">
         <span class="hero-pill"><span class="dot"></span>{{ sec.pill | safe }}</span>
         <span class="hero-pill" id="socialProofPill" hidden></span>
+        {# Filled + revealed by supabase-client.js for signed-in guests #}
+        <span class="hero-pill hero-pill-member" id="welcomeBackPill" hidden></span>
       </div>
       <h1>{{ sec.headline | safe }}</h1>
       <p class="deck">{{ sec.deck }}</p>

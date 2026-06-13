@@ -55,6 +55,9 @@
 }
 .hero-pill[hidden] { display: none !important; }
 .hero-pill .dot { width: 7px; height: 7px; border-radius: 50%; background: var(--yellow); box-shadow: 0 0 10px var(--yellow); animation: lgPulse 1.8s infinite; }
+/* signed-in welcome pill: same shape, member tint with a calm green dot */
+.hero-pill-member { border-color: rgba(74,222,128,0.35); color: #d9f7e4; }
+.hero-pill-member .dot-member { width: 7px; height: 7px; border-radius: 50%; background: #4ade80; box-shadow: 0 0 10px rgba(74,222,128,0.8); }
 .hero h1 {
   font-family: var(--font-heading); font-weight: 500;
   font-size: clamp(48px, 6.6vw, 98px); line-height: 0.95; letter-spacing: -0.025em;

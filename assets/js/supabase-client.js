@@ -142,9 +142,32 @@
         e.preventDefault();
         if (window.ipartmentOpenAuth) window.ipartmentOpenAuth('login');
       });
+      // The label tells the truth about what a click does: logged out it opens
+      // the login modal, so it reads "Log in"; logged in it reads "My Account"
+      // with a small green signed-in dot. Never the guest's name (clean nav).
+      if (!clone.classList.contains('nav-cta')) {
+        clone.textContent = profile ? 'My Account' : 'Log in';
+        if (profile) {
+          var dot = document.createElement('span');
+          dot.className = 'nav-dot';
+          dot.setAttribute('aria-label', 'Signed in');
+          clone.appendChild(dot);
+        }
+      }
     });
-    // The account link always reads "My Account"; it is not relabelled with the
-    // guest's name on login (the name lives inside the account page instead).
+
+    // Homepage hero: a quiet "welcome back" pill for signed-in guests, in the
+    // same pill row as "Now Open" so the hero stays composed.
+    var wb = document.getElementById('welcomeBackPill');
+    if (wb) {
+      if (profile) {
+        var fn = (profile.first_name || '').trim();
+        wb.innerHTML = '<span class="dot dot-member"></span>Welcome back' + (fn ? ', ' + fn.replace(/[<>&"]/g, '') : '') + '';
+        wb.hidden = false;
+      } else {
+        wb.hidden = true;
+      }
+    }
   }
 
   document.addEventListener('DOMContentLoaded', refreshNavState);

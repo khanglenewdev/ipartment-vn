@@ -113,6 +113,13 @@ body.lg nav.site-nav a.nav-cta {
 }
 body.lg nav.site-nav a.nav-cta:hover { background: #fff; color: #0a0a0a; transform: translateY(-1px); }
 body.lg nav.site-nav a.nav-cta.active { background: var(--yellow); }
+/* signed-in marker: a quiet green dot after "My Account" (the label itself
+   flips between "Log in" and "My Account" in supabase-client.js) */
+body.lg nav.site-nav a .nav-dot {
+  display: inline-block; width: 6px; height: 6px; border-radius: 50%;
+  margin-left: 7px; vertical-align: 1px;
+  background: #4ade80; box-shadow: 0 0 6px rgba(74,222,128,0.8);
+}
 
 /* Educational disclaimer - small glass pill pinned to the top-left,
    filling the empty space beside the centered nav pill. */
