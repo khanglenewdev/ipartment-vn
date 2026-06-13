@@ -428,6 +428,21 @@ body.lg .cta-success .cta-spam-hint::before { color: var(--yellow); }
   border: 1.5px solid rgba(127,127,127,0.3); border-radius: 12px; background: transparent; color: inherit;
 }
 .cta-acct-row input:focus { outline: none; border-color: var(--yellow); box-shadow: 0 0 0 3px rgba(255,237,0,0.28); }
+/* password field + peek toggle */
+.cta-acct-row .cta-acct-field { position: relative; flex: 1 1 auto; min-width: 0; }
+.cta-acct-row .cta-acct-field input { width: 100%; padding-right: 40px; }
+.cta-acct-eye {
+  position: absolute; right: 4px; top: 50%; transform: translateY(-50%);
+  width: 32px; height: 32px; padding: 0; border: none; background: transparent; cursor: pointer;
+  display: flex; align-items: center; justify-content: center; color: #8a8378; transition: color 0.15s;
+}
+.cta-acct-eye:hover { color: #4a4636; }
+.cta-acct-eye svg { width: 18px; height: 18px; display: block; }
+.cta-acct-eye .icon-off { display: none; }
+.cta-acct-eye.is-on .icon-on { display: none; }
+.cta-acct-eye.is-on .icon-off { display: block; }
+body.lg .cta-acct-eye { color: rgba(255,255,255,0.5); }
+body.lg .cta-acct-eye:hover { color: rgba(255,255,255,0.9); }
 .cta-acct-btn {
   flex-shrink: 0; padding: 11px 15px; border: none; border-radius: 12px; cursor: pointer;
   background: var(--yellow); color: #0a0a0a; font-weight: 700; font-size: 13px;

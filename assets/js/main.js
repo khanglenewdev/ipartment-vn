@@ -285,6 +285,19 @@
     try { if (sessionStorage.getItem('ipartment_welcome_shown') === '1') return; } catch (e) {}
     // Never stack on top of another popup (exit survey or auth modal).
     if (document.getElementById('exit-survey') || document.querySelector('.auth-overlay.open')) return;
+    // Don't pester signed-in visitors with the signup-bonus offer: they already
+    // have an account and the welcome voucher is sitting in their wallet. The
+    // session is persisted, so check it (async) and bail before building anything.
+    if (window.ipartmentAuth && window.ipartmentAuth.getUser) {
+      window.ipartmentAuth.getUser()
+        .then(function (u) { if (!u) buildAndShowWelcomePopup(); })
+        .catch(function () { buildAndShowWelcomePopup(); });
+      return;
+    }
+    buildAndShowWelcomePopup();
+  }
+
+  function buildAndShowWelcomePopup() {
     buildPopupMarkup();
     const overlay = document.getElementById('cta-overlay');
     if (!overlay) return;
@@ -351,7 +364,13 @@
         <div class="cta-acct" id="cta-acct">
           <p class="cta-acct-lead">One more step and you never type this again: add a password and we keep this voucher in a free account, with your name and email already filled in at checkout.</p>
           <div class="cta-acct-row">
-            <input type="password" id="cta-acct-pass" placeholder="Min. 8 characters" autocomplete="new-password" aria-label="Create a password" />
+            <div class="cta-acct-field">
+              <input type="password" id="cta-acct-pass" placeholder="Min. 8 characters" autocomplete="new-password" aria-label="Create a password" />
+              <button type="button" class="cta-acct-eye" id="cta-acct-eye" aria-label="Show password" aria-pressed="false">
+                <svg class="icon-on" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M1 12s4-7 11-7 11 7 11 7-4 7-11 7-11-7-11-7z"/><circle cx="12" cy="12" r="3"/></svg>
+                <svg class="icon-off" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M17.94 17.94A10.07 10.07 0 0 1 12 20c-7 0-11-8-11-8a18.45 18.45 0 0 1 5.06-5.94M9.9 4.24A9.12 9.12 0 0 1 12 4c7 0 11 8 11 8a18.5 18.5 0 0 1-2.16 3.19m-6.72-1.07a3 3 0 1 1-4.24-4.24"/><line x1="1" y1="1" x2="23" y2="23"/></svg>
+              </button>
+            </div>
             <button type="button" class="cta-acct-btn" id="cta-acct-btn">Save my voucher</button>
           </div>
           <p class="cta-acct-msg" id="cta-acct-msg"></p>
@@ -377,6 +396,16 @@
     const pass = document.getElementById('cta-acct-pass');
     const btn = document.getElementById('cta-acct-btn');
     const msg = document.getElementById('cta-acct-msg');
+    // Peek toggle: let the guest see what they typed instead of guessing blind.
+    const eye = document.getElementById('cta-acct-eye');
+    if (eye) eye.addEventListener('click', function () {
+      const showing = pass.type === 'text';
+      pass.type = showing ? 'password' : 'text';
+      eye.classList.toggle('is-on', !showing);
+      eye.setAttribute('aria-pressed', showing ? 'false' : 'true');
+      eye.setAttribute('aria-label', showing ? 'Show password' : 'Hide password');
+      pass.focus();
+    });
     function note(text, ok) { msg.textContent = text; msg.style.color = ok ? '#4ade80' : '#f87171'; }
     async function submit() {
       const p = pass.value;
