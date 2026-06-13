@@ -861,7 +861,7 @@ function renderDashboard() {
   const maxSrc = Math.max(1, ...srcs.map(s => s[1]));
 
   // exit reasons + top chat questions + top miss
-  const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing' };
+  const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing', other: 'Other' };
   const exitCount = {};
   _dashExit.forEach(e => { if (e.name && e.name !== 'detail' && e.name !== 'offer_wish') exitCount[e.name] = (exitCount[e.name] || 0) + 1; });
   const exits = Object.entries(exitCount).sort((a, b) => b[1] - a[1]).slice(0, 4);
@@ -1046,7 +1046,7 @@ async function renderFunnel() {
   // The section ALWAYS renders: when there is no data yet it explains how the
   // survey works instead of silently vanishing (which read as "not recorded").
   const ex = (eres && !eres.error && eres.data) ? eres.data : [];
-  const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing' };
+  const rl = { price: 'The price', dates: 'Dates did not work', more_info: 'Needed more info', confusing: 'Website was confusing', browsing: 'Just browsing', other: 'Other' };
   if (!ex.length) {
     html += '<div style="max-width:680px;margin-top:32px;border-top:1px solid rgba(255,255,255,0.1);padding-top:24px;">'
       + '<h3 style="font-family:var(--font-heading);font-size:20px;font-weight:900;margin-bottom:12px;">Why visitors leave</h3>'

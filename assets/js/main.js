@@ -439,6 +439,7 @@
               <button type="button" data-r="more_info">I need more info</button>
               <button type="button" data-r="confusing">The website was confusing</button>
               <button type="button" data-r="browsing">Just browsing</button>
+              <button type="button" data-r="other">Other</button>
             </div>
           </div>
           <p class="exit-survey-note">Your opinions matter a lot to us, and we read every single one. Thank you for being here.</p>
@@ -464,7 +465,8 @@
     dates:     { q: 'What dates were you hoping to stay?',               ph: 'e.g. June 10 to 20, or a long weekend' },
     more_info: { q: 'What information were you missing?',                ph: 'e.g. exact size, more photos, the neighbourhood' },
     confusing: { q: 'What was confusing or hard to find?',               ph: 'e.g. choosing dates, where the prices are' },
-    browsing:  { q: 'What would bring you back to book later?',          ph: 'e.g. a reminder, a deal, more time to plan' }
+    browsing:  { q: 'What would bring you back to book later?',          ph: 'e.g. a reminder, a deal, more time to plan' },
+    other:     { q: 'What was it? Tell us in your own words.',            ph: 'Anything at all, we read every note' }
   };
 
   function recordExitReason(reason, context) {
