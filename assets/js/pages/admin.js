@@ -879,34 +879,44 @@ function renderDashboard() {
   if (topMiss) attention.push({ ico: '&#128049;', txt: '<b>Teach the chatbot</b>, "' + escp(topMiss.q) + '" was asked ' + topMiss.n + 'x with no answer in the library', tab: 'chatbot' });
   if (exits.length) attention.push({ ico: '&#128682;', txt: '<b>Top exit reason:</b> ' + escp(rl[exits[0][0]] || exits[0][0]) + ' (' + exits[0][1] + 'x). Worth a closer look.', tab: 'funnel' });
 
-  const kpi = (lbl, val, sub) => '<div class="dc dc-kpi"><div class="dc-lbl">' + lbl + '</div><div class="dc-val">' + val + '</div><div class="dc-sub">' + (sub || '') + '</div></div>';
+  // Each block is a doorway to the tab that holds its detail. The corner arrow
+  // lights up on hover (the glow now means "click to open"). data-gotab says
+  // where it leads.
+  const arrow = '<span class="dc-arrow" aria-hidden="true">&rarr;</span>';
+  const kpi = (lbl, val, sub, tab) => '<div class="dc dc-kpi dc-click" data-gotab="' + tab + '"><div class="dc-lbl">' + lbl + '</div><div class="dc-val">' + val + '</div><div class="dc-sub">' + (sub || '') + '</div>' + arrow + '</div>';
   const bars = months.map(m => '<div class="dch-col"><div class="dch-bar" style="height:' + Math.max(4, Math.round(m.v / maxM * 100)) + '%"><span>' + (m.v ? fmtM(m.v) : '') + '</span></div><div class="dch-lbl">' + m.lbl + '</div></div>').join('');
   const srcBars = srcs.length ? srcs.map(s => '<div class="dcs-row"><span class="dcs-lbl">' + escp(s[0]) + '</span><div class="dcs-track"><div class="dcs-fill" style="width:' + Math.round(s[1] / maxSrc * 100) + '%"></div></div><span class="dcs-n">' + s[1] + '</span></div>').join('') : '<p class="dc-empty">No leads yet.</p>';
 
   wrap.innerHTML =
     '<div class="dash-grid">' +
-      kpi('Revenue booked', fmtM(revenue) + ' ₫', revThisMonth ? fmtM(revThisMonth) + ' ₫ this month' : 'all time') +
-      kpi('Nights sold', nights, 'across ' + bk.length + ' booking' + (bk.length === 1 ? '' : 's')) +
-      kpi('Bookings', _bkCache.length, pending.length ? (pending.length + ' awaiting confirmation') : 'none pending') +
-      kpi('Leads', _ldCache.length, leads7 + ' in the last 7 days') +
-      kpi('Visitors', _dashStats.visitors, _dashStats.views + ' page views') +
-      '<div class="dc dc-wide"><div class="dc-lbl">Booked revenue by month</div><div class="dch">' + bars + '</div></div>' +
-      '<div class="dc"><div class="dc-lbl">Booking conversion</div><div class="dc-ring" style="--p:' + convPct + '"><div class="dc-ring-hole"><b>' + convPct + '%</b><span>visit &rarr; book</span></div></div></div>' +
-      '<div class="dc"><div class="dc-lbl">Where leads come from</div>' + srcBars + '</div>' +
+      kpi('Revenue booked', fmtM(revenue) + ' ₫', revThisMonth ? fmtM(revThisMonth) + ' ₫ this month' : 'all time', 'bookings') +
+      kpi('Nights sold', nights, 'across ' + bk.length + ' booking' + (bk.length === 1 ? '' : 's'), 'bookings') +
+      kpi('Bookings', _bkCache.length, pending.length ? (pending.length + ' awaiting confirmation') : 'none pending', 'bookings') +
+      kpi('Leads', _ldCache.length, leads7 + ' in the last 7 days', 'leads') +
+      kpi('Visitors', _dashStats.visitors, _dashStats.views + ' page views', 'sessions') +
+      '<div class="dc dc-wide dc-click" data-gotab="bookings"><div class="dc-lbl">Booked revenue by month</div><div class="dch">' + bars + '</div>' + arrow + '</div>' +
+      '<div class="dc dc-click" data-gotab="funnel"><div class="dc-lbl">Booking conversion</div><div class="dc-ring" style="--p:' + convPct + '"><div class="dc-ring-hole"><b>' + convPct + '%</b><span>visit &rarr; book</span></div></div>' + arrow + '</div>' +
+      '<div class="dc dc-click" data-gotab="leads"><div class="dc-lbl">Where leads come from</div>' + srcBars + arrow + '</div>' +
       '<div class="dc dc-wide"><div class="dc-lbl">Needs your attention</div>' +
         (attention.length ? attention.map(a => '<div class="dc-attn-row"><span class="dc-attn-ico">' + a.ico + '</span><span class="dc-attn-txt">' + a.txt + '</span><button type="button" class="dc-go" data-tab="' + a.tab + '">Open</button></div>').join('') : '<p class="dc-empty">All clear. Nothing is waiting on you right now.</p>') +
       '</div>' +
-      '<div class="dc"><div class="dc-lbl">Why visitors leave</div>' +
+      '<div class="dc dc-click" data-gotab="funnel"><div class="dc-lbl">Why visitors leave</div>' +
         (exits.length ? exits.map(e2 => '<div class="dcs-row"><span class="dcs-lbl">' + escp(rl[e2[0]] || e2[0]) + '</span><div class="dcs-track"><div class="dcs-fill" style="width:' + Math.round(e2[1] / exits[0][1] * 100) + '%"></div></div><span class="dcs-n">' + e2[1] + '</span></div>').join('') : '<p class="dc-empty">No exit answers yet. The survey shows on desktop when the cursor leaves the top of the page (after 30 seconds and a scroll), and a record is written the moment a visitor taps a reason.</p>') +
+        arrow +
       '</div>' +
-      '<div class="dc"><div class="dc-lbl">What guests ask the most</div>' +
+      '<div class="dc dc-click" data-gotab="chatbot"><div class="dc-lbl">What guests ask the most</div>' +
         (topQ.length ? topQ.map(q => '<div class="dcs-row"><span class="dcs-lbl dcs-q">' + escp(q.q) + '</span><span class="dcs-n">' + q.n + 'x</span></div>').join('') : '<p class="dc-empty">No chat questions yet.</p>') +
+        arrow +
       '</div>' +
     '</div>';
-  wrap.querySelectorAll('.dc-go').forEach(b => b.addEventListener('click', () => {
-    const t = document.querySelector('.tab-btn-admin[data-tab="' + b.dataset.tab + '"]');
-    if (t) t.click();
-  }));
+  const gotoTab = name => { const t = document.querySelector('.tab-btn-admin[data-tab="' + name + '"]'); if (t) t.click(); };
+  wrap.querySelectorAll('.dc-go').forEach(b => b.addEventListener('click', e => { e.stopPropagation(); gotoTab(b.dataset.tab); }));
+  wrap.querySelectorAll('.dc-click').forEach(c => {
+    c.setAttribute('tabindex', '0');
+    c.setAttribute('role', 'button');
+    c.addEventListener('click', e => { if (e.target.closest('.dc-go')) return; gotoTab(c.dataset.gotab); });
+    c.addEventListener('keydown', e => { if (e.key === 'Enter' || e.key === ' ') { e.preventDefault(); gotoTab(c.dataset.gotab); } });
+  });
 }
 
 // ── BOOKING FUNNEL (Supabase events) ──

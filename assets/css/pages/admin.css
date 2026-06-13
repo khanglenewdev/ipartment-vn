@@ -191,6 +191,18 @@ body.lg { background: var(--black-deep); }
   transition: transform 0.25s var(--ease), border-color 0.25s, box-shadow 0.25s;
 }
 .dc:hover { transform: translateY(-3px); border-color: rgba(255,237,0,0.35); box-shadow: 0 18px 44px -18px rgba(0,0,0,0.6); }
+/* clickable blocks: pointer + a corner arrow that lights up on hover, so the
+   glow reads as "click to open the detail tab" */
+.dc-click { cursor: pointer; }
+.dc-click:focus-visible { outline: 2px solid var(--yellow); outline-offset: 2px; }
+.dc-arrow {
+  position: absolute; top: 14px; right: 16px; z-index: 2;
+  color: rgba(255,255,255,0.22); font-size: 16px; line-height: 1;
+  transition: color 0.25s var(--ease), transform 0.25s var(--ease);
+}
+.dc-click:hover .dc-arrow, .dc-click:focus-visible .dc-arrow { color: var(--yellow); transform: translate(3px, -3px); }
+/* keep the arrow clear of the KPI label/value */
+.dc-kpi .dc-lbl { padding-right: 18px; }
 /* glossy sheen sweep on hover */
 .dc::after {
   content: ''; position: absolute; top: 0; left: -80%; width: 55%; height: 100%;
