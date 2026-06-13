@@ -113,7 +113,7 @@
     // Default Make.com webhook baked into the site so EVERY visitor's
     // submission fires it (not just the admin's browser). The admin panel
     // can still override this per-browser via setWebhook().
-    DEFAULT_WEBHOOK: 'https://hook.eu1.make.com/wloue5ukgywnd4ftjsjz4uqjxspxygv2',
+    DEFAULT_WEBHOOK: 'https://hook.eu1.make.com/t1u9c8pjcp624hkzv66e98ome4cmyvxn',
     setWebhook(url) { localStorage.setItem('ipartment_webhook_url', url || ''); },
     getWebhook() {
       const override = localStorage.getItem('ipartment_webhook_url');
@@ -347,6 +347,7 @@
         <div class="check">&#10003;</div>
         <h3>Your offer is on the way</h3>
         <p>Check <strong>${escapeHtml(email)}</strong> for your <strong>${escapeHtml(offer.code)}</strong> code (${escapeHtml(offer.promo)}), valid on your first stay. We saved your details to follow up.</p>
+        <p class="cta-spam-hint">Not in your inbox in a minute? Check your <strong>Spam</strong> or <strong>Promotions</strong> tab, new senders sometimes land there.</p>
         <div class="cta-acct" id="cta-acct">
           <p class="cta-acct-lead">One more step and you never type this again: add a password and we keep this voucher in a free account, with your name and email already filled in at checkout.</p>
           <div class="cta-acct-row">

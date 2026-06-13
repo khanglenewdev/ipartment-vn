@@ -403,6 +403,21 @@ body.has-header { padding-top: var(--header-height); }
   margin-bottom: 8px;
 }
 .cta-success p { font-size: 14px; color: #555; line-height: 1.6; max-width: 320px; }
+/* gentle heads-up so the guest knows where to look if Gmail files the email
+   under Promotions/Spam (common for a generic sender). Base rule is for a light
+   popup; the body.lg rule below matches the real dark glass card and is specific
+   enough (0,3,1) to beat the generic "body.lg .cta-success p" text override. */
+.cta-success .cta-spam-hint {
+  position: relative; margin: 14px auto 0; max-width: 340px;
+  padding: 10px 14px 10px 36px; border-radius: 12px; text-align: left;
+  background: rgba(255,237,0,0.16); border: 1px solid rgba(0,0,0,0.07);
+  font-size: 12.5px; color: #6b6453; line-height: 1.5;
+}
+.cta-success .cta-spam-hint::before { content: '\2709'; position: absolute; left: 13px; top: 10px; font-size: 14px; }
+.cta-success .cta-spam-hint strong { color: #4a4636; font-weight: 700; }
+body.lg .cta-success .cta-spam-hint { background: rgba(255,237,0,0.12); border-color: rgba(255,237,0,0.28); color: rgba(255,255,255,0.82); }
+body.lg .cta-success .cta-spam-hint strong { color: var(--yellow); }
+body.lg .cta-success .cta-spam-hint::before { color: var(--yellow); }
 
 /* optional "save my voucher to an account" step on the popup success screen */
 .cta-acct { margin-top: 20px; padding-top: 18px; border-top: 1px solid rgba(127,127,127,0.18); max-width: 340px; }

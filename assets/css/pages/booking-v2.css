@@ -281,6 +281,16 @@ body { background: var(--black-deep); color: var(--white); font-family: var(--fo
 @keyframes pop { 0% { transform: scale(0); } 70% { transform: scale(1.15); } 100% { transform: scale(1); } }
 .conf h2 { font-size: clamp(50px, 8vw, 110px); margin-bottom: 14px; }
 .conf .ref { font-family: var(--font-mono); font-size: 13px; letter-spacing: 0.24em; color: var(--yellow); margin-bottom: 24px; }
+/* heads-up so the guest knows to check Spam/Promotions for the confirmation
+   email (a generic Gmail sender often lands outside the main inbox) */
+.conf-spam-hint {
+  position: relative; max-width: 460px; margin: 0 auto 24px;
+  padding: 11px 16px 11px 40px; border-radius: 12px; text-align: left;
+  background: rgba(255,237,0,0.09); border: 1px solid rgba(255,237,0,0.26);
+  font-size: 12.5px; color: rgba(255,255,255,0.82); line-height: 1.55;
+}
+.conf-spam-hint::before { content: '\2709'; position: absolute; left: 15px; top: 11px; font-size: 15px; }
+.conf-spam-hint strong { color: var(--yellow); font-weight: 700; }
 .conf-actions { display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin: 20px 0 8px; }
 
 /* The confirmation chapter sits over the middle of the photo where the scene

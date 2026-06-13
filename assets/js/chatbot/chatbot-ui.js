@@ -469,7 +469,12 @@
       var b = e.getBoundingClientRect();
       if (b.height < 24 || b.height > 160) return;
       if (b.width < window.innerWidth * 0.5) return;
-      if (b.bottom < window.innerHeight - 80) return; // not actually at the bottom
+      // "at the bottom" must allow for STACKED bars: on the booking page the live
+      // receipt docks as a full-width bar sitting on top of the controls footer,
+      // so its bottom edge is ~90px up, not flush. An 80px window missed it and
+      // the launcher landed on the receipt. 170px catches a bar stacked above an
+      // ~84px footer while still ignoring genuinely mid-page fixed elements.
+      if (b.bottom < window.innerHeight - 170) return;
       if (top === null || b.top < top) top = b.top;
     });
     var lift = (top !== null) ? Math.max(base, Math.round(window.innerHeight - top) + 14) : base;

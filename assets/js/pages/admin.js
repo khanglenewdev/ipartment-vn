@@ -935,7 +935,9 @@ function renderSessionCharts(pageviews) {
 
   // turn a raw referrer string into a clean, friendly source label
   function source(ref) {
-    if (!ref || ref === '-') return 'Direct / typed in';
+    // the tracker stores document.referrer || 'direct', so "no referrer" arrives
+    // as the literal string 'direct' (not empty) - catch it here
+    if (!ref || ref === '-' || ref === 'direct' || ref === 'none') return 'Direct / typed in';
     let host = '';
     try { host = new URL(ref).hostname; } catch (e) { host = String(ref); }
     host = host.replace(/^www\./, '').toLowerCase();
@@ -963,16 +965,18 @@ function renderSessionCharts(pageviews) {
   }
   const maxRef = Math.max(1, ...refs.map(r => r[1]));
 
-  // count by page path, top 8
+  // count by page path, top 8. The home page arrives as "/", "" or "/index.html";
+  // all three are the same page, so they merge into one row labelled "Home page".
   const pageCount = {};
   pageviews.forEach(p => {
     let path = (p.meta && p.meta.path) || p.page || '-';
     path = String(path).split('?')[0].split('#')[0];
-    if (path === '') path = '/';
+    if (path === '' || path === '/index.html' || path === '/index.htm') path = '/';
     pageCount[path] = (pageCount[path] || 0) + 1;
   });
   const pages = Object.entries(pageCount).sort((a, b) => b[1] - a[1]).slice(0, 8);
   const maxPage = Math.max(1, ...pages.map(p => p[1]));
+  const pageLabel = p => p === '/' ? 'Home page' : p;
 
   // one horizontal bar: label, proportional fill, count + faded share
   const bar = (label, val, max) => {
@@ -991,7 +995,7 @@ function renderSessionCharts(pageviews) {
       '</div>' +
       '<div class="sv-card"><div class="sv-card-h">Most viewed pages</div>' +
         '<p class="sv-card-sub">Which pages pull the most traffic, across the most recent ' + total.toLocaleString('en-US') + ' views.</p>' +
-        pages.map(p => bar(p[0], p[1], maxPage)).join('') +
+        pages.map(p => bar(pageLabel(p[0]), p[1], maxPage)).join('') +
       '</div>' +
     '</div>';
 }
