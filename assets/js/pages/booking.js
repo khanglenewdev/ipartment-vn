@@ -595,7 +595,10 @@
       const pct = parseInt(percentArg, 10) || (VOUCHERS[code] && VOUCHERS[code].percent) || 0;
       if (pct) match = { id: voucherId, code, percent: pct };
     } else {
-      const res = await window.sb.from('vouchers').select('id,code,discount,status').eq('status', 'active').eq('code', code);
+      // Scoped to THIS user's vouchers explicitly. RLS already does this for
+      // normal accounts, but an admin can read every voucher, so without the
+      // filter an admin would match (and later consume) someone else's row.
+      const res = await window.sb.from('vouchers').select('id,code,discount,status').eq('status', 'active').eq('code', code).eq('user_id', user.id);
       if (!res.error && res.data && res.data.length) {
         const v = res.data[0];
         const pct = parseInt((v.discount || '').replace(/[^0-9]/g, ''), 10) || (VOUCHERS[v.code] && VOUCHERS[v.code].percent) || 0;
@@ -705,25 +708,10 @@
     setTimeout(function() { if (ov && ov.parentNode) ov.remove(); }, 300);
   };
 
-  // For logged-in guests: surface their active account vouchers as one-tap chips.
-  async function loadAccountVouchers() {
-    if (!window.ipartmentAuth || !window.sb) return;
-    let user = null;
-    try { user = await window.ipartmentAuth.getUser(); } catch (e) { return; }
-    if (!user) return;
-    const res = await window.sb.from('vouchers').select('id,code,discount,status').eq('status', 'active');
-    if (res.error || !res.data || !res.data.length) return;
-    const wrap = document.getElementById('promo-chips');
-    if (!wrap) return;
-    wrap.style.display = 'block';
-    wrap.innerHTML = '<div style="font-size:12px;color:#666;margin-bottom:8px;">Tap to use an account voucher:</div>' +
-      res.data.map(function(v) {
-        const pct = parseInt((v.discount || '').replace(/[^0-9]/g, ''), 10) || (VOUCHERS[v.code] && VOUCHERS[v.code].percent) || 0;
-        return '<button type="button" onclick="applyPromo(\'' + v.code + '\',\'' + v.id + '\',' + pct + ')" ' +
-          'style="background:var(--yellow);color:var(--black);border:none;padding:8px 14px;font-size:12px;font-weight:700;letter-spacing:0.04em;cursor:pointer;margin:0 8px 4px 0;">' +
-          v.code + ' (-' + pct + '%)</button>';
-      }).join('');
-  }
+  // The voucher UI is the WALLET ("Choose from my vouchers" -> glass panel).
+  // The old inline chip list that used to render under the button is gone: it
+  // duplicated the wallet, looked off-brand, and (queried without a user filter)
+  // showed an admin viewer every account's vouchers in the system.
 
   function updateSidebar() {
     const r = RATES[state.room];
@@ -1076,7 +1064,6 @@
     updateRateTiers();
     updateSidebar();
     if (state.checkin && state.checkout) { recalcPricing(); document.getElementById('date-pricing-panel').style.display = 'block'; }
-    loadAccountVouchers();
     loadAvailability();
     prefillFromAccount();
     initPrefForm();

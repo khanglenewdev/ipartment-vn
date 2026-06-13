@@ -28,22 +28,9 @@
     </nav>
   </div>
 
-  <div class="login-shell" id="login-shell">
-    <div class="login-card">
-      <h1>Admin access</h1>
-      <p class="sub">Log in with an ipartment admin account to manage live customer data.</p>
-      <form id="login-form" autocomplete="off">
-        <input type="email" id="admin-email" placeholder="Admin email" autocomplete="username" />
-        <input type="password" id="admin-pass" placeholder="Password" autocomplete="current-password" class="login-pass" />
-        <button type="submit">Log in</button>
-      </form>
-      <div id="admin-login-msg" class="login-msg"></div>
-      <div class="login-hint">
-        Only accounts with the admin role can open this dashboard. Anyone can sign up and log in from the main site, but managing data here requires admin access.
-      </div>
-    </div>
-  </div>
-
+  <!-- No login form here anymore: admin access is account-based. Non-admins
+       are redirected to my-account.html by admin.js; admins arrive through
+       the Admin tab on their account page. -->
   <div class="dash" id="dash" style="display:none;">
     <div class="dash-header">
       <div>
@@ -89,7 +76,7 @@
         </div>
       </aside>
       <div class="tab-main">
-        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Toggle data menu" aria-expanded="true" aria-controls="admin-sidebar">
+        <button class="sidebar-toggle" id="sidebar-toggle" type="button" aria-label="Toggle data menu" aria-expanded="false" aria-controls="admin-sidebar">
           <span class="sidebar-toggle-bars" aria-hidden="true"><span></span><span></span><span></span></span>
           <span class="sidebar-toggle-text">Menu</span>
         </button>
@@ -305,7 +292,9 @@
       var sb = document.getElementById('admin-sidebar');
       if (sb && !sb.contains(e.target) && !toggle.contains(e.target)) setOpen(false);
     });
-    if (narrow()) setOpen(false);  // start collapsed on small screens
+    // Start collapsed everywhere: the dashboard is the landing view, so the
+    // data-set menu stays out of the way until the owner asks for it.
+    setOpen(false);
   })();
 </script>
 </body>

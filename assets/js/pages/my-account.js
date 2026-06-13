@@ -112,7 +112,10 @@
       return;
     }
     list.innerHTML = '<p class="list-loading">Loading your bookings...</p>';
-    var res = await sb.from('bookings').select('*').order('created_at', { ascending: false });
+    // Explicitly scoped to the signed-in user. RLS already limits normal
+    // accounts to their own rows, but an admin can read everything, so without
+    // this filter the admin's "My Bookings" showed other guests' stays.
+    var res = await sb.from('bookings').select('*').eq('user_id', profile.id).order('created_at', { ascending: false });
     if (res.error) { list.innerHTML = '<p class="list-error">Could not load bookings: ' + esc(res.error.message) + '</p>'; return; }
     var rows = res.data || [];
     if (!rows.length) {
@@ -188,7 +191,7 @@
       return;
     }
     body.innerHTML = '<p class="list-loading">Checking your stay...</p>';
-    var res = await sb.from('bookings').select('*').order('checkin', { ascending: true });
+    var res = await sb.from('bookings').select('*').eq('user_id', profile.id).order('checkin', { ascending: true });
     if (res.error) { body.innerHTML = '<p class="list-error">Could not load your stay: ' + esc(res.error.message) + '</p>'; return; }
     var t = todayKey();
     var rows = (res.data || []).filter(function (b) { return b.status !== 'cancelled'; });
@@ -304,7 +307,7 @@
     if (!list) return;
     if (!profile) { list.innerHTML = emptyCard('Log in to see your vouchers.', 'Browse Apartments', 'accommodation.html'); return; }
     list.innerHTML = '<p class="list-loading">Loading your vouchers...</p>';
-    var res = await sb.from('vouchers').select('*').order('created_at', { ascending: false });
+    var res = await sb.from('vouchers').select('*').eq('user_id', profile.id).order('created_at', { ascending: false });
     if (res.error) { list.innerHTML = '<p class="list-error">Could not load vouchers: ' + esc(res.error.message) + '</p>'; return; }
     var rows = res.data || [];
     if (!rows.length) { list.innerHTML = emptyCard('No vouchers yet. Watch your inbox for offers.', 'Browse Apartments', 'accommodation.html'); return; }

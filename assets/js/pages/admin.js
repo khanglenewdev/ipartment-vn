@@ -15,49 +15,23 @@ let _dashFunnel = [], _dashExit = [], _dashChat = [], _dashStats = { visitors: 0
 const LOCKED_NOTE = '<div class="locked-note"><span class="locked-ico">&#128274;</span><span>For security reasons, only admin accounts can view this data.</span></div>';
 
 function showDash() {
-  document.getElementById('login-shell').style.display = 'none';
   document.getElementById('dash').style.display = 'block';
   document.getElementById('link-logout').style.display = 'inline';
   loadAll();
 }
 
-function showLogin(msg) {
-  document.getElementById('login-shell').style.display = 'flex';
-  document.getElementById('dash').style.display = 'none';
-  document.getElementById('link-logout').style.display = 'none';
-  const el = document.getElementById('admin-login-msg');
-  if (el) { el.textContent = msg || ''; el.style.display = msg ? 'block' : 'none'; }
+// Admin access is account-based now: there is no separate admin login page.
+// Anyone who is not a signed-in admin is sent to My Account, where they can
+// log in normally; admins find the Admin tab there and land back here.
+function sendToAccount() {
+  window.location.replace('my-account.html');
 }
-
-document.getElementById('login-form').addEventListener('submit', async e => {
-  e.preventDefault();
-  const email = document.getElementById('admin-email').value.trim();
-  const pass = document.getElementById('admin-pass').value;
-  if (!email || !pass) return;
-  const btn = e.target.querySelector('button');
-  const orig = btn.textContent; btn.disabled = true; btn.textContent = 'Logging in...';
-  try {
-    await Auth.signIn({ email, password: pass });
-    const admin = await Auth.isAdmin();
-    if (!admin) {
-      await Auth.signOut();
-      showLogin('That account is not an admin. Ask the site owner for access.');
-    } else {
-      showLogin('');
-      showDash();
-    }
-  } catch (err) {
-    showLogin(/invalid login/i.test((err && err.message) || '') ? 'Incorrect email or password.' : ((err && err.message) || 'Login failed.'));
-  } finally {
-    btn.disabled = false; btn.textContent = orig;
-  }
-});
 
 document.getElementById('link-logout').addEventListener('click', e => {
   e.preventDefault();
   window.ipartmentConfirmLogout(async () => {
     await Auth.signOut();
-    showLogin();
+    sendToAccount();
   });
 });
 
@@ -1236,17 +1210,18 @@ document.getElementById('art-form').addEventListener('submit', e => {
 });
 
 (async function initAdmin() {
-  // Gate ON: only an admin account sees the dashboard; everyone else gets the
-  // login screen. (The page can be opened to all again by calling showDash()
-  // unconditionally here, as it was during the showcase.)
+  // Gate ON, account-based: a signed-in admin sees the dashboard; everyone
+  // else is sent to My Account to log in (admins get back here via the Admin
+  // tab there). The real protection stays in the database (RLS); this page
+  // simply has nothing to show a non-admin.
+  let redirected = false;
   async function gate() {
     let admin = false;
     try { admin = await Auth.isAdmin(); } catch (e) {}
-    if (admin) { showLogin(''); showDash(); }
-    else { showLogin(); }
+    if (admin) { showDash(); }
+    else if (!redirected) { redirected = true; sendToAccount(); }
   }
   await gate();
-  // Re-evaluate the gate whenever auth state changes, so logging in shows the
-  // dashboard and logging out returns to the login screen without a refresh.
+  // Re-check on auth changes so logging out mid-session leaves the page.
   try { Auth.onChange(function () { gate(); }); } catch (e) {}
 })();
